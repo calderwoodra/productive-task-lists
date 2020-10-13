@@ -3,11 +3,11 @@ package com.awsick.productiveday.tasks.repo;
 import androidx.lifecycle.LiveData;
 import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.tasks.models.Task;
-import java.util.List;
+import com.google.common.collect.ImmutableList;
 
 public interface TasksRepo {
 
-  LiveData<RequestStatus<List<Task>>> getTasks();
+  LiveData<RequestStatus<ImmutableList<Task>>> getTasks();
 
   void createTask(Task task);
 
