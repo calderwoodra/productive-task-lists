@@ -1,5 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/tasks_nav_host">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/tasks_nav_host"
+  app:startDestination="@id/tasksLoadingFragment">
 
+  <fragment
+    android:id="@+id/tasksLoadingFragment"
+    android:name="com.awsick.productiveday.tasks.TasksLoadingFragment"
+    android:label="TasksLoadingFragment"
+    tools:layout="@layout/fragment_loading_tasks">
+    <action
+      android:id="@+id/action_tasks_loading_complete"
+      app:destination="@id/tasksViewFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/tasksViewFragment"
+    android:name="com.awsick.productiveday.tasks.view.TasksViewFragment"
+    android:label="TasksViewFragment"
+    tools:layout="@layout/fragment_view_tasks">
+    <action
+      android:id="@+id/action_create_task"
+      app:destination="@id/tasksCreateFragment" />
+  </fragment>
+  <fragment
+    android:id="@+id/tasksCreateFragment"
+    android:name="com.awsick.productiveday.tasks.create.TasksCreateFragment"
+    android:label="TasksCreateFragment"
+    tools:layout="@layout/fragment_create_task" />
 </navigation>
