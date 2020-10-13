@@ -102,8 +102,8 @@ public final class AppAnalyticsWorker extends Worker {
     // TODO(allen): Implement this call to amplitude
     // PostAnalyticsEventRequestBody body =
     //     new PostAnalyticsEventRequestBody(eventName, properties, timestamp);
-    // CharlieBackendService.CharlieBackend backend =
-    //     ServiceGenerator.createService(CharlieBackendService.CharlieBackend.class);
+    // AppBackendService.AppBackend backend =
+    //     ServiceGenerator.createService(AppBackendService.AppBackend.class);
     Call<Void> call = null; // = backend.postAnalyticsEvent(body);
 
     // Execute the request in this thread

@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public final class AppAnalytics {
 
-  private static final String TAG = "CharlieAnalytics";
+  private static final String TAG = "AppAnalytics";
 
   private static final String PROP_APP_VERSION = "app_version";
   private static final String PROP_PLATFORM = "platform";

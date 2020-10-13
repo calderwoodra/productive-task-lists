@@ -11,7 +11,7 @@
   -->
 
   <!-- NOTE: Do not use this style, use one of it's descendants instead. -->
-  <style name="CharlieButton" parent="@style/Widget.AppCompat.Button">
+  <style name="AppButton" parent="@style/Widget.AppCompat.Button">
     <item name="android:textAllCaps">false</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="fontFamily">sans-serif</item>
@@ -23,9 +23,9 @@
 
   <!--
     W.R.T. Style inheritance, parent takes priority over naming. Since the material borderless style
-    has all the same variables set as CharlieButton style, we need to duplicate them here.
+    has all the same variables set as AppButton style, we need to duplicate them here.
   -->
-  <style name="CharlieButton.Flat" parent="@style/Widget.AppCompat.Button.Borderless">
+  <style name="AppButton.Flat" parent="@style/Widget.AppCompat.Button.Borderless">
     <item name="android:textAllCaps">false</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="fontFamily">sans-serif-medium</item>
@@ -36,7 +36,7 @@
     <item name="background">?attr/selectableItemBackground</item>
   </style>
 
-  <style name="CharlieButton.Light">
+  <style name="AppButton.Light">
     <item name="android:minHeight">48dp</item>
     <item name="android:paddingStart">16dp</item>
     <item name="paddingStart">16dp</item>
@@ -49,7 +49,7 @@
     <item name="android:textColor">?android:attr/textColorPrimary</item>
   </style>
 
-  <style name="CharlieButton.Dark">
+  <style name="AppButton.Dark">
     <item name="android:minHeight">48dp</item>
     <item name="android:paddingStart">16dp</item>
     <item name="paddingStart">16dp</item>
@@ -62,16 +62,16 @@
     <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
   </style>
 
-  <style name="CharlieButton.Flat.Light">
+  <style name="AppButton.Flat.Light">
     <item name="android:textColor">?android:attr/textColorPrimary</item>
   </style>
 
-  <style name="CharlieButton.Flat.Dark">
+  <style name="AppButton.Flat.Dark">
     <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
   </style>
 
   <!-- Used for Image buttons (for example, settings icon, thumbs up/down, etc). -->
-  <style name="CharlieButton.Icon" parent="@style/Widget.AppCompat.Button.Borderless">
+  <style name="AppButton.Icon" parent="@style/Widget.AppCompat.Button.Borderless">
     <item name="android:layout_height">48dp</item>
     <item name="android:layout_width">48dp</item>
     <item name="android:padding">12dp</item>

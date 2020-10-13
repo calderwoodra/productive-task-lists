@@ -8,13 +8,13 @@
   <androidx.appcompat.widget.AppCompatTextView
     android:layout_marginTop="20dp"
     android:text="Dev Options Menu"
-    style="@style/CharlieTextHeadline5"
+    style="@style/AppTextHeadline5"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
 
   <androidx.appcompat.widget.AppCompatTextView
     android:text="Menu for developers only. Entries below open pre-release features and aren't garuenteed to work and could put your account into a broken state. Use at your own risk."
-    style="@style/CharlieTextBody1"
+    style="@style/AppTextBody1"
     android:layout_marginTop="4dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />
@@ -22,7 +22,7 @@
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/dev_options_wallet_kyc_setup"
     android:text="Launch Wallet Kyc Setup"
-    style="@style/CharlieButton.Flat"
+    style="@style/AppButton.Flat"
     android:gravity="start"
     android:layout_marginTop="8dp"
     android:paddingStart="0dp"
@@ -44,7 +44,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
       android:text="Submit wallet setup data"
-      style="@style/CharlieTextBody1"
+      style="@style/AppTextBody1"
       android:gravity="start"
       android:layout_marginTop="8dp"
       android:paddingStart="0dp"
@@ -54,7 +54,7 @@
 
     <androidx.appcompat.widget.AppCompatTextView
       android:text="Must fill out data above first"
-      style="@style/CharlieTextBody2"
+      style="@style/AppTextBody2"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content" />
   </androidx.appcompat.widget.LinearLayoutCompat>
@@ -67,7 +67,7 @@
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/dev_options_wallet_tab"
     android:text="Launch wallet tab"
-    style="@style/CharlieButton.Flat"
+    style="@style/AppButton.Flat"
     android:gravity="start"
     android:layout_marginTop="8dp"
     android:paddingStart="0dp"
@@ -83,7 +83,7 @@
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/dev_options_plaid_native"
     android:text="Launch Plaid Native"
-    style="@style/CharlieButton.Flat"
+    style="@style/AppButton.Flat"
     android:gravity="start"
     android:layout_marginTop="8dp"
     android:paddingStart="0dp"
@@ -99,7 +99,7 @@
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/dev_options_pay_wall"
     android:text="Launch pay wall"
-    style="@style/CharlieButton.Flat"
+    style="@style/AppButton.Flat"
     android:gravity="start"
     android:layout_marginTop="8dp"
     android:paddingStart="0dp"
@@ -115,7 +115,7 @@
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/dev_options_home_tab"
     android:text="Launch Home Tab"
-    style="@style/CharlieButton.Flat"
+    style="@style/AppButton.Flat"
     android:gravity="start"
     android:layout_marginTop="8dp"
     android:paddingStart="0dp"
