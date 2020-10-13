@@ -1,0 +1,82 @@
+apply plugin: 'com.android.application'
+apply plugin: 'dagger.hilt.android.plugin'
+
+android {
+    compileSdkVersion 29
+    defaultConfig {
+        applicationId "com.awsick.productiveday"
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        coreLibraryDesugaringEnabled true
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    sourceSets {
+        main {
+            res {
+                srcDirs 'src/main/res',
+                        'src/main/java/com/awsick/productiveday/devoptions/res', 'src/main/java/com/awsick/productiveday/tasks/res'
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    // Standard Android
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'com.google.android.material:material:1.2.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+
+    // Standard Testing
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation "com.google.truth:truth:0.43"
+    testImplementation 'org.mockito:mockito-core:2.19.0'
+
+    // Arch Components
+    implementation 'androidx.navigation:navigation-fragment:2.3.0'
+    implementation 'androidx.navigation:navigation-ui:2.3.0'
+
+    // Work Manager -- For background task scheduling
+    implementation 'androidx.work:work-runtime:2.4.0'
+    implementation 'androidx.work:work-gcm:2.4.0'
+
+    // Dependency Injection
+    implementation "com.google.dagger:hilt-android:2.28.3-alpha"
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    annotationProcessor 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
+    annotationProcessor "com.google.dagger:hilt-android-compiler:2.28.3-alpha"
+
+    // Retrofit deps
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    // Google Tools
+    implementation "com.google.guava:guava:29.0-android"
+    implementation 'com.google.googlejavaformat:google-java-format:1.8'
+
+    // Autovalue - Immutable POJOs with readable builders for less boilerplate
+    annotationProcessor 'com.google.auto.value:auto-value:1.5.2'
+    compileOnly 'com.jakewharton.auto.value:auto-value-annotations:1.5'
+}
+
+apply plugin: 'dagger.hilt.android.plugin'
+

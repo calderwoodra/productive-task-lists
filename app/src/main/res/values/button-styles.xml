@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!--
+    Global button themes, these should be sparingly changed and commonly used. If your designs/mocks
+    don't match one the button styles below, consider talking with UX to update the mocks to match.
+
+    To learn more about typography, see:
+    https://material.io/design/typography/the-type-system.html#type-scale
+
+    Note (07/30/2020): Most of these styles are still in development, so modify freely.
+  -->
+
+  <!-- NOTE: Do not use this style, use one of it's descendants instead. -->
+  <style name="CharlieButton" parent="@style/Widget.AppCompat.Button">
+    <item name="android:textAllCaps">false</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">16sp</item>
+    <item name="android:minWidth">72dp</item>
+    <item name="android:minHeight">48dp</item>
+  </style>
+
+  <!--
+    W.R.T. Style inheritance, parent takes priority over naming. Since the material borderless style
+    has all the same variables set as CharlieButton style, we need to duplicate them here.
+  -->
+  <style name="CharlieButton.Flat" parent="@style/Widget.AppCompat.Button.Borderless">
+    <item name="android:textAllCaps">false</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">17sp</item>
+    <item name="android:minWidth">72dp</item>
+    <item name="android:minHeight">48dp</item>
+    <item name="android:background">?attr/selectableItemBackground</item>
+    <item name="background">?attr/selectableItemBackground</item>
+  </style>
+
+  <style name="CharlieButton.Light">
+    <item name="android:minHeight">48dp</item>
+    <item name="android:paddingStart">16dp</item>
+    <item name="paddingStart">16dp</item>
+    <item name="android:paddingEnd">16dp</item>
+    <item name="paddingEnd">16dp</item>
+    <item name="elevation">4dp</item>
+    <item name="android:elevation">4dp</item>
+    <item name="android:background">@drawable/button_round_corners_8dp</item>
+    <item name="background">@drawable/button_round_corners_8dp</item>
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+  </style>
+
+  <style name="CharlieButton.Dark">
+    <item name="android:minHeight">48dp</item>
+    <item name="android:paddingStart">16dp</item>
+    <item name="paddingStart">16dp</item>
+    <item name="android:paddingEnd">16dp</item>
+    <item name="paddingEnd">16dp</item>
+    <item name="elevation">4dp</item>
+    <item name="android:elevation">4dp</item>
+    <item name="android:background">@drawable/button_round_corners_8dp</item>
+    <item name="background">@drawable/button_round_corners_8dp</item>
+    <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+  </style>
+
+  <style name="CharlieButton.Flat.Light">
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+  </style>
+
+  <style name="CharlieButton.Flat.Dark">
+    <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+  </style>
+
+  <!-- Used for Image buttons (for example, settings icon, thumbs up/down, etc). -->
+  <style name="CharlieButton.Icon" parent="@style/Widget.AppCompat.Button.Borderless">
+    <item name="android:layout_height">48dp</item>
+    <item name="android:layout_width">48dp</item>
+    <item name="android:padding">12dp</item>
+    <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+    <item name="background">?attr/selectableItemBackgroundBorderless</item>
+  </style>
+</resources>

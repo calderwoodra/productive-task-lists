@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?><!---->
+<!--
+    Global text themes, these should be sparingly changed and commonly used. If your designs/mocks
+    don't match one the text styles below, consider talking with UX to update the mocks to match.
+
+    To learn more about typography, see:
+    https://material.io/design/typography/the-type-system.html#type-scale
+-->
+<resources>
+  <!--
+      Headline texts
+
+      Headlines are the largest text on the screen, reserved for short, important text or numerals.
+  -->
+  <style name="CharlieTextHeadline1" parent="@style/TextAppearance.MaterialComponents.Headline1">
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <!--    <item name="android:fontFamily">@font/adelle_regular</item>-->
+    <!--    <item name="fontFamily">@font/adelle_regular</item>-->
+  </style>
+
+  <style name="CharlieTextHeadline2" parent="@style/TextAppearance.MaterialComponents.Headline2">
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <!--    <item name="android:fontFamily">@font/adelle_regular</item>-->
+    <!--    <item name="fontFamily">@font/adelle_regular</item>-->
+  </style>
+
+  <style name="CharlieTextHeadline3" parent="@style/TextAppearance.MaterialComponents.Headline3">
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <!--    <item name="android:fontFamily">@font/adelle_regular</item>-->
+    <!--    <item name="fontFamily">@font/adelle_regular</item>-->
+  </style>
+
+  <style name="CharlieTextHeadline4" parent="@style/TextAppearance.MaterialComponents.Headline4">
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">@dimen/text_size_headline4</item>
+  </style>
+
+  <style name="CharlieTextHeadline5" parent="@style/TextAppearance.MaterialComponents.Headline5">
+    <!--    <item name="android:fontFamily">@font/adelle_bold</item>-->
+    <!--    <item name="fontFamily">@font/adelle_bold</item>-->
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <item name="android:textSize">@dimen/text_size_headline5</item>
+  </style>
+
+  <style name="CharlieTextHeadline6" parent="@style/TextAppearance.MaterialComponents.Headline6">
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:textSize">@dimen/text_size_headline6</item>
+  </style>
+
+  <!--
+    Subtitle texts
+
+    Subtitles are smaller than headlines. They are typically reserved for medium-emphasis text that
+    is shorter in length.
+  -->
+  <style name="CharlieTextSubtitle1" parent="@style/TextAppearance.MaterialComponents.Subtitle1">
+    <!--    <item name="android:fontFamily">@font/adelle_regular</item>-->
+    <!--    <item name="fontFamily">@font/adelle_regular</item>-->
+    <item name="android:textColor">?android:attr/textColorSecondary</item>
+    <item name="android:textSize">@dimen/text_size_subtitle1</item>
+  </style>
+
+  <style name="CharlieTextSubtitle2" parent="@style/TextAppearance.MaterialComponents.Subtitle2">
+    <item name="android:fontFamily">sans-serif-medium</item>
+    <item name="fontFamily">sans-serif-medium</item>
+    <item name="android:textSize">11sp</item>
+  </style>
+
+  <!--
+    Body
+
+    Body text comes in ranges 1-2, and it’s typically used for long-form writing as it works well
+    for small text sizes.
+  -->
+  <style name="CharlieTextBody1" parent="@style/TextAppearance.MaterialComponents.Body1">
+    <item name="android:textColor">?android:attr/textColorPrimary</item>
+    <item name="android:textColorHint">?android:attr/textColorHint</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="android:textSize">@dimen/text_size_body1</item>
+  </style>
+
+  <style name="CharlieTextBody2" parent="@style/TextAppearance.MaterialComponents.Body2">
+    <item name="android:textColor">?android:attr/textColorSecondary</item>
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="fontFamily">sans-serif</item>
+  </style>
+
+  <!--
+    Caption & Overline
+
+    Caption and overline text (text with a line above it) are the smallest font sizes. They are used
+    sparingly to annotate imagery or to introduce a headline.
+  -->
+  <style name="CharlieTextCaption" parent="@style/TextAppearance.MaterialComponents.Caption">
+    <item name="android:fontFamily">sans-serif</item>
+    <item name="fontFamily">sans-serif</item>
+    <item name="android:textColor">?android:attr/textColorSecondary</item>
+  </style>
+
+  <style name="CharlieTextOverline" parent="@style/TextAppearance.MaterialComponents.Overline">
+    <item name="android:fontFamily">sans-serif-condensed</item>
+    <item name="fontFamily">sans-serif-condensed</item>
+    <item name="android:textSize">@dimen/text_size_overline</item>
+    <item name="android:textColor">?android:attr/textColorSecondary</item>
+  </style>
+</resources>
