@@ -17,6 +17,8 @@ import java.util.concurrent.TimeUnit;
 public final class DateUtils {
 
   // Different patterns to try and parse, based on whether the backend uses milliseconds or not.
+  public static final String HUMAN_TIME_FORMAT = "HH:mm aa";
+  public static final String HUMAN_DATE_FORMAT = "DDD, MMM dd, yyyy";
   public static final String MS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
   public static final String NO_MS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
@@ -68,6 +70,18 @@ public final class DateUtils {
     } catch (ParseException ignored) {
     }
     return sdfOut.format(date);
+  }
+
+  public static String getCurrentHumanReadableDateString() {
+    return humanReadableDate(getCurrentTimeMs());
+  }
+
+  public static String humanReadableTime(long millis) {
+    return convertDateToString(new Date(millis), HUMAN_TIME_FORMAT);
+  }
+
+  public static String humanReadableDate(long millis) {
+    return convertDateToString(new Date(millis), HUMAN_DATE_FORMAT);
   }
 
   public static String getCurrentDateString() {

@@ -16,22 +16,193 @@
       android:layout_width="match_parent"
       android:layout_height="?attr/actionBarSize"
       android:background="?attr/colorPrimary"
+      app:title="Create a task"
+      app:navigationIcon="@drawable/ic_baseline_close_24"
       app:popupTheme="@style/AppTheme.PopupOverlay" />
 
   </com.google.android.material.appbar.AppBarLayout>
 
-  <androidx.constraintlayout.widget.ConstraintLayout
+  <ScrollView
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <androidx.appcompat.widget.AppCompatTextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="Create Task"
-      app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintLeft_toLeftOf="parent"
-      app:layout_constraintRight_toRightOf="parent"
-      app:layout_constraintTop_toTopOf="parent" />
-  </androidx.constraintlayout.widget.ConstraintLayout>
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+      <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/icon_guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="72dp" />
+
+      <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/create_task_title"
+        style="@style/AppTextHeadline5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_vert_margin_small"
+        android:layout_marginStart="@dimen/guideline_standard_side_margin"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical"
+        android:hint="Add title"
+        android:inputType="textCapSentences"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_guideline"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <View
+        android:background="#DEDEDE"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/standard_vert_margin_small"
+        app:layout_constraintTop_toBottomOf="@id/create_task_title" />
+
+      <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_baseline_notes_24"
+        android:tint="?attr/colorControlNormal"
+        app:layout_constraintBottom_toBottomOf="@id/create_task_notes"
+        app:layout_constraintEnd_toEndOf="@id/icon_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/create_task_notes" />
+
+      <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/create_task_notes"
+        style="@style/AppTextBody1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="@dimen/guideline_standard_side_margin"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:background="@android:color/transparent"
+        android:gravity="center_vertical"
+        android:hint="Add details"
+        android:inputType="textCapSentences"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/icon_guideline"
+        app:layout_constraintTop_toBottomOf="@id/create_task_title" />
+
+      <View
+        android:background="#DEDEDE"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/standard_vert_margin_small"
+        app:layout_constraintTop_toBottomOf="@id/create_task_notes" />
+
+      <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_baseline_access_time_24"
+        android:tint="?attr/colorControlNormal"
+        app:layout_constraintBottom_toBottomOf="@id/create_task_deadline_date"
+        app:layout_constraintEnd_toEndOf="@id/icon_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/create_task_deadline_date" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/create_task_deadline_date"
+        style="@style/AppTextBody1"
+        android:minHeight="48dp"
+        android:gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="@dimen/guideline_standard_side_margin"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        app:layout_constraintStart_toEndOf="@id/icon_guideline"
+        app:layout_constraintEnd_toStartOf="@id/create_task_deadline_time"
+        app:layout_constraintTop_toBottomOf="@id/create_task_notes"
+        tools:text="Tue, Oct 13, 2020" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/create_task_deadline_time"
+        style="@style/AppTextBody1"
+        android:minHeight="48dp"
+        android:minWidth="72dp"
+        android:gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        app:layout_constraintBaseline_toBaselineOf="@id/create_task_deadline_date"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Midnight" />
+
+      <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_baseline_autorenew_24"
+        android:tint="?attr/colorControlNormal"
+        app:layout_constraintBottom_toBottomOf="@id/create_task_repeat"
+        app:layout_constraintEnd_toEndOf="@id/icon_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/create_task_repeat" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/create_task_repeat"
+        style="@style/AppTextBody1"
+        android:minHeight="48dp"
+        android:gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/guideline_standard_side_margin"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        app:layout_constraintStart_toEndOf="@id/icon_guideline"
+        app:layout_constraintTop_toBottomOf="@id/create_task_deadline_date"
+        tools:text="Does not repeat" />
+
+      <View
+        android:background="#DEDEDE"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/standard_vert_margin_small"
+        app:layout_constraintTop_toBottomOf="@id/create_task_repeat" />
+
+      <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:src="@drawable/ic_baseline_format_list_bulleted_24"
+        android:tint="?attr/colorControlNormal"
+        app:layout_constraintBottom_toBottomOf="@id/create_task_directory"
+        app:layout_constraintEnd_toEndOf="@id/icon_guideline"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/create_task_directory" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/create_task_directory"
+        style="@style/AppTextBody1"
+        android:minHeight="48dp"
+        android:gravity="center_vertical"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="@dimen/guideline_standard_side_margin"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        app:layout_constraintStart_toEndOf="@id/icon_guideline"
+        app:layout_constraintTop_toBottomOf="@id/create_task_repeat"
+        tools:text="Uncatogirzed" />
+
+      <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/task_create_save"
+        style="@style/AppButton.Dark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_side_margin"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        android:text="Save"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/create_task_directory" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+  </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

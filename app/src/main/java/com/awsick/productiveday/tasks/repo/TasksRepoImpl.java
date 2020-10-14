@@ -38,9 +38,9 @@ class TasksRepoImpl implements TasksRepo {
   private void refreshTasks() {
     // TODO(allen): Read tasks from DB
     tasks.setValue(RequestStatus.success(ImmutableList.<Task>builder()
-        .add(new Task())
-        .add(new Task())
-        .add(new Task())
+        // .add(Task.builder().build())
+        // .add(Task.builder().build())
+        // .add(Task.builder().build())
         .build()));
   }
 

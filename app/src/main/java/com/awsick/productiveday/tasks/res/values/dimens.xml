@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="guideline_standard_side_margin">8dp</dimen>
+  <dimen name="standard_side_margin">16dp</dimen>
+
+  <dimen name="standard_vert_margin_xs">4dp</dimen>
+  <dimen name="standard_vert_margin_small">8dp</dimen>
+  <dimen name="standard_vert_margin_med">16dp</dimen>
+  <dimen name="standard_vert_margin_large">24dp</dimen>
+  <dimen name="standard_vert_margin_xl">32dp</dimen>
+</resources>

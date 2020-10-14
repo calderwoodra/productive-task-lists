@@ -18,7 +18,9 @@
     <item name="android:textStyle">bold</item>
     <item name="android:textSize">16sp</item>
     <item name="android:minWidth">72dp</item>
+    <item name="minWidth">72dp</item>
     <item name="android:minHeight">48dp</item>
+    <item name="minHeight">48dp</item>
   </style>
 
   <!--
@@ -37,7 +39,6 @@
   </style>
 
   <style name="AppButton.Light">
-    <item name="android:minHeight">48dp</item>
     <item name="android:paddingStart">16dp</item>
     <item name="paddingStart">16dp</item>
     <item name="android:paddingEnd">16dp</item>
@@ -50,7 +51,6 @@
   </style>
 
   <style name="AppButton.Dark">
-    <item name="android:minHeight">48dp</item>
     <item name="android:paddingStart">16dp</item>
     <item name="paddingStart">16dp</item>
     <item name="android:paddingEnd">16dp</item>
@@ -60,14 +60,8 @@
     <item name="android:background">@drawable/button_round_corners_8dp</item>
     <item name="background">@drawable/button_round_corners_8dp</item>
     <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
-  </style>
-
-  <style name="AppButton.Flat.Light">
-    <item name="android:textColor">?android:attr/textColorPrimary</item>
-  </style>
-
-  <style name="AppButton.Flat.Dark">
-    <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
+    <item name="android:backgroundTint">?android:attr/colorAccent</item>
+    <item name="backgroundTint">?attr/colorAccent</item>
   </style>
 
   <!-- Used for Image buttons (for example, settings icon, thumbs up/down, etc). -->
