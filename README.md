@@ -43,7 +43,7 @@ tasks and project setup.
 5. Install commit hooks?
 6. Add more...
 
-## Things left to do
+## Things left to do (in no particular order)
 1. add room database to save tasks
 2. allow users to mark tasks complete
 3. allow users to edit tasks
@@ -64,3 +64,5 @@ tasks and project setup.
 18. allow users to move directories
 19. allow users to rename directories
 20. Implement data dashboard (tasks completed this week, this month, all time).
+21. Add demo gifs to README
+22. Deploy to play store
