@@ -64,7 +64,7 @@ public final class TasksCreateFragment extends Fragment {
           Navigation.findNavController(root).popBackStack();
           break;
         case FAILED_TO_SAVE:
-          Snackbar.make(root, "Something went wrong", Snackbar.LENGTH_SHORT)
+          Snackbar.make(root, "Something went wrong", Snackbar.LENGTH_INDEFINITE)
               .setAction("Try again",
                   view -> viewModel.saveTask(
                       titleEt.getText().toString(), notesEt.getText().toString()))

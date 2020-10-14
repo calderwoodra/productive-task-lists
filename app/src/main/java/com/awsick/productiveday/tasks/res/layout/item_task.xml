@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/task_item_click_target"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content"
+  android:paddingTop="8dp"
+  android:paddingBottom="8dp"
+  android:background="?attr/selectableItemBackground"
+  android:minHeight="56dp">
+
+  <androidx.appcompat.widget.AppCompatImageView
+    android:id="@+id/task_item_done"
+    style="@style/AppButton.Icon"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_baseline_radio_button_unchecked_24"
+    android:tint="?attr/colorControlNormal"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/task_item_title"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/task_item_title"
+    style="@style/AppTextHeadline6"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="72dp"
+    android:layout_marginEnd="16dp"
+    android:maxLines="2"
+    app:layout_constraintBottom_toTopOf="@id/task_item_notes"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="Purcahse groceries" />
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/task_item_notes"
+    style="@style/AppTextSubtitle1"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:maxLines="1"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="@id/task_item_title"
+    app:layout_constraintStart_toStartOf="@id/task_item_title"
+    app:layout_constraintTop_toBottomOf="@id/task_item_title"
+    android:ellipsize="end"
+    tools:text="Head to whole foods to get some lettuce, tomatoes, broccoli, foo bar." />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
