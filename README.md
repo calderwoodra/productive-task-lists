@@ -40,8 +40,13 @@ tasks and project setup.
 2. Import project
 3. Install plugins (save actions, google-java-format, etc.)
 4. Import my style guide
-5. Install commit hooks?
-6. Add more...
+  4a. [Intellij Style Guide](https://github.com/calderwoodra/intellij-java-style-guides/blob/master/GJF.xml)
+  4b. [Save actions config](https://github.com/calderwoodra/intellij-java-style-guides/blob/master/Screen%20Shot%202020-10-15%20at%2012.48.55%20AM.png)
+5. Install commit hooks:
+  5a. `$ brew install pre-commit`
+  5d. `$ cd ~/path/to/repo`
+  5a. `$ pre-commit install`
+6. `$ ./gradlew installDebug` or build in Android Studio
 
 ## Things left to do (in no particular order)
 ### Tasks
