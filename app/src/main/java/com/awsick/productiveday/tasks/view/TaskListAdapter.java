@@ -19,9 +19,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
   private ImmutableList<TaskListItemData> tasks = ImmutableList.of();
 
   void setTasks(ImmutableList<Task> tasks) {
-    this.tasks = ImmutableList.copyOf(tasks.stream()
-        .map(TaskListItemData::task)
-        .collect(toList()));
+    this.tasks = ImmutableList.copyOf(tasks.stream().map(TaskListItemData::task).collect(toList()));
     notifyDataSetChanged();
   }
 
@@ -34,8 +32,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
                 .inflate(R.layout.item_task_header, parent, false));
       case TaskListItemData.TASK_VIEW_TYPE:
         return new TaskViewHolder(
-            LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_task, parent, false));
+            LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false));
       case TaskListItemData.UNKNOWN_VIEW_TYPE:
       default:
         throw new IllegalArgumentException("Unknown viewtype: " + viewType);
@@ -122,12 +119,14 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
       Task task = data.task.get();
       title.setText(task.title());
       notes.setText(task.notes());
-      done.setOnClickListener(view -> {
-        // TODO(allen): Mark a task as completed
-      });
-      clickTarget.setOnClickListener(view -> {
-        // TODO(allen): open edit/details screen
-      });
+      done.setOnClickListener(
+          view -> {
+            // TODO(allen): Mark a task as completed
+          });
+      clickTarget.setOnClickListener(
+          view -> {
+            // TODO(allen): open edit/details screen
+          });
     }
   }
 }

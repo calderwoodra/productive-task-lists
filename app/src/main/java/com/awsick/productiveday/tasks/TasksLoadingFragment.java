@@ -18,8 +18,7 @@ import javax.inject.Inject;
 @AndroidEntryPoint
 public final class TasksLoadingFragment extends Fragment {
 
-  @Inject
-  TasksRepo tasksRepo;
+  @Inject TasksRepo tasksRepo;
 
   @Nullable
   @Override
@@ -33,14 +32,18 @@ public final class TasksLoadingFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
-    tasksRepo.getIncompleteTasks().observe(getViewLifecycleOwner(), tasks -> {
-      Log.i("###", "tasks status: " + tasks.status);
-      if (tasks.status != Status.SUCCESS) {
-        // No-op
-        return;
-      }
-      Log.i("###", "tasks available");
-      Navigation.findNavController(root).navigate(R.id.action_tasks_loading_complete);
-    });
+    tasksRepo
+        .getIncompleteTasks()
+        .observe(
+            getViewLifecycleOwner(),
+            tasks -> {
+              Log.i("###", "tasks status: " + tasks.status);
+              if (tasks.status != Status.SUCCESS) {
+                // No-op
+                return;
+              }
+              Log.i("###", "tasks available");
+              Navigation.findNavController(root).navigate(R.id.action_tasks_loading_complete);
+            });
   }
 }

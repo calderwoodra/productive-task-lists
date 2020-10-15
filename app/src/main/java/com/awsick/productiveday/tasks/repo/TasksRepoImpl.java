@@ -74,9 +74,8 @@ class TasksRepoImpl implements TasksRepo {
             Log.i("###", "Success");
             tasks.setValue(
                 RequestStatus.success(
-                    ImmutableList.copyOf(result.stream()
-                        .map(TaskEntity::toTask)
-                        .collect(Collectors.toList()))));
+                    ImmutableList.copyOf(
+                        result.stream().map(TaskEntity::toTask).collect(Collectors.toList()))));
             Log.i("###", "Success 2");
           }
 

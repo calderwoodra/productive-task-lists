@@ -55,7 +55,7 @@ public class RequestStatus<T> {
   public static <T> RequestStatus<T> errorWithDebugToast(Throwable error) {
     if (BuildConfig.DEBUG) {
       Toast.makeText(
-          PdApplication.getContext(), "failure: " + error.getMessage(), Toast.LENGTH_SHORT)
+              PdApplication.getContext(), "failure: " + error.getMessage(), Toast.LENGTH_SHORT)
           .show();
     }
     return error(error);

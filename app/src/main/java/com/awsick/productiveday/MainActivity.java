@@ -11,8 +11,7 @@ import javax.inject.Inject;
 @AndroidEntryPoint
 public class MainActivity extends AppCompatActivity {
 
-  @Inject
-  TasksRepo tasksRepo;
+  @Inject TasksRepo tasksRepo;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     // if (id == R.id.action_settings) {
     //   return true;
     // }
-    
+
     return super.onOptionsItemSelected(item);
   }
 }

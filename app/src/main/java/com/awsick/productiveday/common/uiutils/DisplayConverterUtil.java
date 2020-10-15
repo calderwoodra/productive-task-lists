@@ -10,7 +10,7 @@ public final class DisplayConverterUtil {
     return (int)
         (dp
             * ((float) context.getResources().getDisplayMetrics().densityDpi
-            / DisplayMetrics.DENSITY_DEFAULT));
+                / DisplayMetrics.DENSITY_DEFAULT));
   }
 
   private DisplayConverterUtil() {}

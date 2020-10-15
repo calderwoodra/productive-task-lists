@@ -11,8 +11,7 @@ public final class DevOptionsFragmentHostActivity extends AppCompatActivity {
 
   private static final String FRAG_KEY = "frag";
 
-  enum Frag {
-  }
+  enum Frag {}
 
   public static Intent create(Context context, Frag frag) {
     Intent intent = new Intent(context, DevOptionsFragmentHostActivity.class);

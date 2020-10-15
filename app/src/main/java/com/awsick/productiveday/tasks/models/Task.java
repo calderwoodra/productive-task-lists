@@ -29,7 +29,7 @@ public abstract class Task {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder setUid(int uid);
 

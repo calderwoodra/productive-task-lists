@@ -52,12 +52,14 @@ public final class TasksCreateViewModel extends ViewModel {
   }
 
   public LiveData<String> getRepeatable() {
-    return Transformations.map(repeatable, repeat -> {
-      if (repeat == null) {
-        return "Does not repeat";
-      }
-      return repeat.toString();
-    });
+    return Transformations.map(
+        repeatable,
+        repeat -> {
+          if (repeat == null) {
+            return "Does not repeat";
+          }
+          return repeat.toString();
+        });
   }
 
   public LiveData<String> getDirectoryName() {
@@ -76,14 +78,15 @@ public final class TasksCreateViewModel extends ViewModel {
   public void saveTask(String title, String notes) {
     this.title.setValue(title);
     this.notes.setValue(notes);
-    tasksRepo.createTask(Task.builder()
-        .setTitle(title)
-        .setNotes(notes)
-        // TODO(allen): implement these
-        // .setDeadlineMillis(timeMillis.getValue())
-        // .setRepeatability(repeatable.getValue())
-        // .setDirectoryId(-1)
-        .build());
+    tasksRepo.createTask(
+        Task.builder()
+            .setTitle(title)
+            .setNotes(notes)
+            // TODO(allen): implement these
+            // .setDeadlineMillis(timeMillis.getValue())
+            // .setRepeatability(repeatable.getValue())
+            // .setDirectoryId(-1)
+            .build());
     saveEvents.setValue(SaveEvents.SUCCESSFULLY_SAVED);
   }
 }

@@ -20,8 +20,7 @@ import javax.inject.Inject;
 @AndroidEntryPoint
 public final class TasksViewFragment extends Fragment {
 
-  @Inject
-  TasksRepo tasksRepo;
+  @Inject TasksRepo tasksRepo;
 
   @Nullable
   @Override
@@ -36,8 +35,8 @@ public final class TasksViewFragment extends Fragment {
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
     root.findViewById(R.id.fab)
-        .setOnClickListener(view ->
-            Navigation.findNavController(root).navigate(R.id.action_create_task));
+        .setOnClickListener(
+            view -> Navigation.findNavController(root).navigate(R.id.action_create_task));
 
     TasksViewViewModel viewModel = new ViewModelProvider(this).get(TasksViewViewModel.class);
 
@@ -45,22 +44,26 @@ public final class TasksViewFragment extends Fragment {
     rv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
     TaskListAdapter adapter = new TaskListAdapter();
     rv.setAdapter(adapter);
-    viewModel.getTasks().observe(getViewLifecycleOwner(), tasks -> {
-      switch (tasks.status) {
-        case INITIAL:
-          // No-op
-          break;
-        case PENDING:
-          // TODO(allen): Show loading indicator
-          break;
-        case SUCCESS:
-          adapter.setTasks(tasks.getResult());
-          break;
-        case FAILED:
-          // TODO(allen): Show try again action
-          Snackbar.make(root, "Something went wrong", Snackbar.LENGTH_INDEFINITE).show();
-          break;
-      }
-    });
+    viewModel
+        .getTasks()
+        .observe(
+            getViewLifecycleOwner(),
+            tasks -> {
+              switch (tasks.status) {
+                case INITIAL:
+                  // No-op
+                  break;
+                case PENDING:
+                  // TODO(allen): Show loading indicator
+                  break;
+                case SUCCESS:
+                  adapter.setTasks(tasks.getResult());
+                  break;
+                case FAILED:
+                  // TODO(allen): Show try again action
+                  Snackbar.make(root, "Something went wrong", Snackbar.LENGTH_INDEFINITE).show();
+                  break;
+              }
+            });
   }
 }

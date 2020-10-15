@@ -38,7 +38,7 @@ public abstract class TaskRepeatability {
   }
 
   @AutoValue.Builder
-  public static abstract class Builder {
+  public abstract static class Builder {
 
     public abstract Builder monday(boolean monday);
 

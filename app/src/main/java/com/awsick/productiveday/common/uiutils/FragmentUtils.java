@@ -28,7 +28,7 @@ public class FragmentUtils {
       @NonNull Fragment fragment, @NonNull Class<T> callbackInterface) {
     if (callbackInterface.isInstance(parentForTesting)) {
       @SuppressWarnings("unchecked") // Casts are checked using runtime methods
-          T parent = (T) parentForTesting;
+      T parent = (T) parentForTesting;
       return Optional.of(parent);
     }
     Fragment parentFragment = fragment.getParentFragment();

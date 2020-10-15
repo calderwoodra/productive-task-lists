@@ -37,7 +37,7 @@ public final class AppAnalytics {
   /**
    * Helper to generate a hash map that contains the first {key: value} mapping passed.
    *
-   * @param key   String
+   * @param key String
    * @param value String
    * @return HashMap {key: value}
    */
