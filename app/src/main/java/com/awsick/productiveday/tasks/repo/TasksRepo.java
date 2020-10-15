@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 
 public interface TasksRepo {
 
-  LiveData<RequestStatus<ImmutableList<Task>>> getTasks();
+  LiveData<RequestStatus<ImmutableList<Task>>> getIncompleteTasks();
 
   void createTask(Task task);
 

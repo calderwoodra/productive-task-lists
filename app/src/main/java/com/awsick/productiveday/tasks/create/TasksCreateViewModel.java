@@ -79,9 +79,10 @@ public final class TasksCreateViewModel extends ViewModel {
     tasksRepo.createTask(Task.builder()
         .setTitle(title)
         .setNotes(notes)
-        .setStartTimeMillis(timeMillis.getValue())
-        .setRepeatability(repeatable.getValue())
-        .setDirectoryId(directoryName.getValue())
+        // TODO(allen): implement these
+        // .setDeadlineMillis(timeMillis.getValue())
+        // .setRepeatability(repeatable.getValue())
+        // .setDirectoryId(-1)
         .build());
     saveEvents.setValue(SaveEvents.SUCCESSFULLY_SAVED);
   }

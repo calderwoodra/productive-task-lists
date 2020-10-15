@@ -18,6 +18,6 @@ public final class TasksViewViewModel extends ViewModel {
   }
 
   public LiveData<RequestStatus<ImmutableList<Task>>> getTasks() {
-    return tasksRepo.getTasks();
+    return tasksRepo.getIncompleteTasks();
   }
 }

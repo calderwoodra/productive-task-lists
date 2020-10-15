@@ -31,13 +31,6 @@ public class RequestStatus<T> {
     return result.get();
   }
 
-  @Deprecated
-  /** Returns the optimistic result if it is there, otherwise returns {@code defaultValue}. */
-  public Optional<T> getOptimisticResult() {
-    Assert.checkArgument(status == Status.PENDING, "No data present for status: " + status);
-    return result;
-  }
-
   public Optional<T> getFallbackResult() {
     Assert.checkArgument(status == Status.FAILED, "No results available for status: " + status);
     return result;
@@ -78,11 +71,6 @@ public class RequestStatus<T> {
 
   public static <T> RequestStatus<T> pending() {
     return new RequestStatus<>(Status.PENDING, Optional.absent(), Optional.absent());
-  }
-
-  @Deprecated
-  public static <T> RequestStatus<T> optimisticSuccess(T result) {
-    return new RequestStatus<>(Status.PENDING, Optional.of(result), Optional.absent());
   }
 
   public static <T> RequestStatus<T> errorWithFallback(T result, Throwable error) {

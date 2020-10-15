@@ -6,33 +6,42 @@ import com.google.auto.value.AutoValue;
 @AutoValue
 public abstract class Task {
 
+  public abstract int uid();
+
   public abstract String title();
 
   public abstract String notes();
 
-  public abstract long startTimeMillis();
+  public abstract long deadlineMillis();
 
   @Nullable
   public abstract TaskRepeatability repeatability();
 
-  public abstract String directoryId();
+  public abstract int directoryId();
 
   public static Task.Builder builder() {
-    return new AutoValue_Task.Builder();
+    return new AutoValue_Task.Builder()
+        .setUid(0)
+        .setNotes("")
+        .setRepeatability(null)
+        .setDirectoryId(-1)
+        .setDeadlineMillis(-1);
   }
 
   @AutoValue.Builder
   public static abstract class Builder {
 
+    public abstract Builder setUid(int uid);
+
     public abstract Builder setTitle(String title);
 
     public abstract Builder setNotes(String notes);
 
-    public abstract Builder setStartTimeMillis(long startTimeMillis);
+    public abstract Builder setDeadlineMillis(long deadlineMillis);
 
     public abstract Builder setRepeatability(@Nullable TaskRepeatability repeatability);
 
-    public abstract Builder setDirectoryId(String directoryId);
+    public abstract Builder setDirectoryId(int directoryId);
 
     public abstract Task build();
   }
