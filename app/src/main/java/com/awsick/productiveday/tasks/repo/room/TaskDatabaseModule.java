@@ -16,6 +16,8 @@ public final class TaskDatabaseModule {
   @Provides
   @Singleton
   public TaskDatabase provideTaskDatabase(@ApplicationContext Context appContext) {
-    return Room.databaseBuilder(appContext, TaskDatabase.class, TaskDatabase.NAME).build();
+    return Room.databaseBuilder(appContext, TaskDatabase.class, TaskDatabase.NAME)
+        .fallbackToDestructiveMigration()
+        .build();
   }
 }

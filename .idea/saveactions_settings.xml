@@ -22,6 +22,7 @@
     <option name="configurationPath" value="" />
     <option name="exclusions">
       <set>
+        <option value="TaskDatabaseConverters.java" />
         <option value="TaskDatabaseModule.java" />
       </set>
     </option>

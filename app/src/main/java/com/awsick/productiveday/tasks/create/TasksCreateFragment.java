@@ -15,6 +15,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.awsick.productiveday.R;
+import com.awsick.productiveday.tasks.models.Task;
+import com.awsick.productiveday.tasks.models.Task.Type;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -38,24 +41,9 @@ public final class TasksCreateFragment extends Fragment {
     TasksCreateViewModel viewModel = new ViewModelProvider(this).get(TasksCreateViewModel.class);
 
     EditText titleEt = root.findViewById(R.id.create_task_title);
-    viewModel
-        .getTitle()
-        .observe(
-            getViewLifecycleOwner(),
-            title -> {
-              titleEt.setText(title);
-              titleEt.setSelection(title.length());
-            });
-
     EditText notesEt = root.findViewById(R.id.create_task_notes);
-    viewModel
-        .getNotes()
-        .observe(
-            getViewLifecycleOwner(),
-            notes -> {
-              notesEt.setText(notes);
-              notesEt.setSelection(notes.length());
-            });
+    ChipGroup chipGroup = root.findViewById(R.id.task_type_chip_group);
+    setupTitleAndNotes(viewModel, titleEt, notesEt);
 
     observe(viewModel.getDate(), R.id.create_task_deadline_date);
     observe(viewModel.getTime(), R.id.create_task_deadline_time);
@@ -64,9 +52,7 @@ public final class TasksCreateFragment extends Fragment {
 
     root.findViewById(R.id.task_create_save)
         .setOnClickListener(
-            view -> {
-              viewModel.saveTask(titleEt.getText().toString(), notesEt.getText().toString());
-            });
+            view -> viewModel.saveTask(titleEt.getText().toString(), notesEt.getText().toString()));
 
     viewModel
         .getSaveEvents()
@@ -92,10 +78,85 @@ public final class TasksCreateFragment extends Fragment {
               }
             });
 
+    setupChips(viewModel, root);
     // TODO(allen): Setup click listener for date
     // TODO(allen): Setup click listener for time
     // TODO(allen): Setup click listener for repeatability
     // TODO(allen): Setup click listener for category
+  }
+
+  private void setupTitleAndNotes(
+      TasksCreateViewModel viewModel, EditText titleEt, EditText notesEt) {
+    viewModel
+        .getTitle()
+        .observe(
+            getViewLifecycleOwner(),
+            title -> {
+              titleEt.setText(title);
+              titleEt.setSelection(title.length());
+            });
+
+    viewModel
+        .getNotes()
+        .observe(
+            getViewLifecycleOwner(),
+            notes -> {
+              notesEt.setText(notes);
+              notesEt.setSelection(notes.length());
+            });
+  }
+
+  private void setupChips(TasksCreateViewModel viewModel, View root) {
+    ChipGroup chipGroup = root.findViewById(R.id.task_type_chip_group);
+    chipGroup.setOnCheckedChangeListener(
+        (group, checkedId) -> viewModel.setTaskType(toTaskType(checkedId)));
+
+    viewModel
+        .getTaskType()
+        .observe(getViewLifecycleOwner(), type -> chipGroup.check(toChipId(type)));
+
+    View v1 = root.findViewById(R.id.create_task_repeat_icon);
+    View v2 = root.findViewById(R.id.create_task_repeat);
+    View v3 = root.findViewById(R.id.create_task_deadline_icon);
+    View v4 = root.findViewById(R.id.create_task_deadline_date);
+    View v5 = root.findViewById(R.id.create_task_deadline_time);
+    viewModel
+        .schedulingVisible()
+        .observe(
+            getViewLifecycleOwner(),
+            visible -> {
+              int visibility = visible ? View.VISIBLE : View.GONE;
+              v1.setVisibility(visibility);
+              v2.setVisibility(visibility);
+              v3.setVisibility(visibility);
+              v4.setVisibility(visibility);
+              v5.setVisibility(visibility);
+            });
+  }
+
+  private static Task.Type toTaskType(@IdRes int chipId) {
+    if (chipId == R.id.task_chip_deadline) {
+      return Type.DEADLINE;
+    } else if (chipId == R.id.task_chip_reminder) {
+      return Type.REMINDER;
+    } else if (chipId == R.id.task_chip_unscheduled) {
+      return Type.UNSCHEDULED;
+    } else {
+      throw new IllegalArgumentException("Unknown chip id: " + chipId);
+    }
+  }
+
+  @IdRes
+  private static int toChipId(Task.Type type) {
+    switch (type) {
+      case DEADLINE:
+        return R.id.task_chip_deadline;
+      case REMINDER:
+        return R.id.task_chip_reminder;
+      case UNSCHEDULED:
+        return R.id.task_chip_unscheduled;
+    }
+    throw new IllegalArgumentException("Unhandled type: " + type);
   }
 
   private void observe(LiveData<String> string, @IdRes int viewId) {
