@@ -12,7 +12,9 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.awsick.productiveday.R;
+import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
+import com.awsick.productiveday.tasks.view.TaskListAdapter.TaskItemActionListener;
 import com.google.android.material.snackbar.Snackbar;
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
@@ -42,7 +44,7 @@ public final class TasksViewFragment extends Fragment {
 
     RecyclerView rv = root.findViewById(R.id.task_list);
     rv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
-    TaskListAdapter adapter = new TaskListAdapter();
+    TaskListAdapter adapter = new TaskListAdapter(new TaskActionListener(tasksRepo));
     rv.setAdapter(adapter);
     viewModel
         .getTasks()
@@ -65,5 +67,24 @@ public final class TasksViewFragment extends Fragment {
                   break;
               }
             });
+  }
+
+  private static final class TaskActionListener implements TaskItemActionListener {
+
+    private final TasksRepo repo;
+
+    private TaskActionListener(TasksRepo repo) {
+      this.repo = repo;
+    }
+
+    @Override
+    public void onCompleteTaskRequested(Task task) {
+      repo.markTaskCompleted(task);
+    }
+
+    @Override
+    public void onEditTaskRequested(Task task) {
+      // TODO(allen): navigate to create task fragment with data prepopulate
+    }
   }
 }

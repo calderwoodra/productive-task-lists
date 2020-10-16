@@ -1,12 +1,13 @@
 package com.awsick.productiveday.tasks.view;
 
-import static java.util.stream.Collectors.toList;
+import static com.awsick.productiveday.common.utils.ImmutableUtils.toImmutableList;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.awsick.productiveday.R;
@@ -16,11 +17,20 @@ import com.google.common.collect.ImmutableList;
 
 public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
 
+  private final TaskItemActionListener listener;
+
   private ImmutableList<TaskListItemData> tasks = ImmutableList.of();
 
+  public TaskListAdapter(TaskItemActionListener listener) {
+    this.listener = listener;
+  }
+
   void setTasks(ImmutableList<Task> tasks) {
-    this.tasks = ImmutableList.copyOf(tasks.stream().map(TaskListItemData::task).collect(toList()));
-    notifyDataSetChanged();
+    ImmutableList<TaskListItemData> newTasks =
+        tasks.stream().map(TaskListItemData::task).collect(toImmutableList());
+    TaskDiffUtil callback = new TaskDiffUtil(this.tasks, newTasks);
+    this.tasks = newTasks;
+    DiffUtil.calculateDiff(callback).dispatchUpdatesTo(this);
   }
 
   @Override
@@ -32,6 +42,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
                 .inflate(R.layout.item_task_header, parent, false));
       case TaskListItemData.TASK_VIEW_TYPE:
         return new TaskViewHolder(
+            listener,
             LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false));
       case TaskListItemData.UNKNOWN_VIEW_TYPE:
       default:
@@ -102,13 +113,15 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
 
   private static final class TaskViewHolder extends RecyclerView.ViewHolder {
 
+    private final TaskItemActionListener listener;
     private final View clickTarget;
     private final TextView title;
     private final TextView notes;
     private final View done;
 
-    public TaskViewHolder(@NonNull View itemView) {
+    public TaskViewHolder(TaskItemActionListener listener, @NonNull View itemView) {
       super(itemView);
+      this.listener = listener;
       title = itemView.findViewById(R.id.task_item_title);
       notes = itemView.findViewById(R.id.task_item_notes);
       done = itemView.findViewById(R.id.task_item_done);
@@ -121,12 +134,77 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
       notes.setText(task.notes());
       done.setOnClickListener(
           view -> {
-            // TODO(allen): Mark a task as completed
+            listener.onCompleteTaskRequested(task);
           });
       clickTarget.setOnClickListener(
           view -> {
-            // TODO(allen): open edit/details screen
+            listener.onEditTaskRequested(task);
           });
     }
+  }
+
+  public static final class TaskDiffUtil extends DiffUtil.Callback {
+
+    private final ImmutableList<TaskListItemData> oldTasks;
+    private final ImmutableList<TaskListItemData> newTasks;
+
+    public TaskDiffUtil(
+        ImmutableList<TaskListItemData> oldTasks, ImmutableList<TaskListItemData> newTasks) {
+      this.oldTasks = oldTasks;
+      this.newTasks = newTasks;
+    }
+
+    @Override
+    public int getOldListSize() {
+      return oldTasks.size();
+    }
+
+    @Override
+    public int getNewListSize() {
+      return newTasks.size();
+    }
+
+    @Override
+    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+      TaskListItemData oldTask = oldTasks.get(oldItemPosition);
+      TaskListItemData newTask = newTasks.get(newItemPosition);
+
+      if (oldTask.viewType != newTask.viewType) {
+        return false;
+      }
+
+      switch (oldTask.viewType) {
+        case TaskListItemData.HEADER_VIEW_TYPE:
+          return oldTask.header.get().equals(newTask.header.get());
+        case TaskListItemData.TASK_VIEW_TYPE:
+          return oldTask.task.get().uid() == newTask.task.get().uid();
+        case TaskListItemData.UNKNOWN_VIEW_TYPE:
+        default:
+          throw new IllegalArgumentException("Unhandled view type: " + oldTask.viewType);
+      }
+    }
+
+    @Override
+    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+      TaskListItemData oldTask = oldTasks.get(oldItemPosition);
+      TaskListItemData newTask = newTasks.get(newItemPosition);
+
+      switch (oldTask.viewType) {
+        case TaskListItemData.HEADER_VIEW_TYPE:
+          return false;
+        case TaskListItemData.TASK_VIEW_TYPE:
+          return oldTask.task.get().equals(newTask.task.get());
+        case TaskListItemData.UNKNOWN_VIEW_TYPE:
+        default:
+          throw new IllegalArgumentException("Unhandled view type: " + oldTask.viewType);
+      }
+    }
+  }
+
+  public interface TaskItemActionListener {
+
+    void onCompleteTaskRequested(Task task);
+
+    void onEditTaskRequested(Task task);
   }
 }

@@ -19,6 +19,8 @@ public abstract class Task {
 
   public abstract int directoryId();
 
+  public abstract Task.Builder toBuilder();
+
   public static Task.Builder builder() {
     return new AutoValue_Task.Builder()
         .setUid(0)

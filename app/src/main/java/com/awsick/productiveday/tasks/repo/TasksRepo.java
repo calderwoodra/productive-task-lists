@@ -14,4 +14,6 @@ public interface TasksRepo {
   void updateTask(Task task);
 
   void deleteTask(Task task);
+
+  void markTaskCompleted(Task task);
 }

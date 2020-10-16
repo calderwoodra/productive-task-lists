@@ -1,6 +1,9 @@
 package com.awsick.productiveday.network.util;
 
 import com.awsick.productiveday.network.RequestStatus;
+import com.google.common.util.concurrent.FutureCallback;
+import java.util.function.Consumer;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
 /** Helpful utilities to reduce boilerplate with handling {@link RequestStatus}. */
 public class RequestStatusUtils<T> {
@@ -41,6 +44,21 @@ public class RequestStatusUtils<T> {
       }
     }
     return false;
+  }
+
+  public static <V> FutureCallback<V> futureCallback(
+      RequestStatusLiveData<?> liveData, Consumer<V> onSuccess) {
+    return new FutureCallback<V>() {
+      @Override
+      public void onSuccess(@NullableDecl V result) {
+        onSuccess.accept(result);
+      }
+
+      @Override
+      public void onFailure(Throwable throwable) {
+        liveData.setValue(RequestStatus.error(throwable));
+      }
+    };
   }
 
   private RequestStatusUtils() {}

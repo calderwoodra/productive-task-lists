@@ -1,21 +1,22 @@
 package com.awsick.productiveday.tasks.repo;
 
-import android.util.Log;
+import static com.awsick.productiveday.common.utils.ImmutableUtils.toImmutableList;
+
 import androidx.lifecycle.LiveData;
 import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.network.RequestStatus.Status;
 import com.awsick.productiveday.network.util.RequestStatusLiveData;
+import com.awsick.productiveday.network.util.RequestStatusUtils;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.room.TaskDatabase;
 import com.awsick.productiveday.tasks.repo.room.TaskEntity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 import org.jetbrains.annotations.NotNull;
 
 @Singleton
@@ -53,7 +54,7 @@ class TasksRepoImpl implements TasksRepo {
 
           @Override
           public void onFailure(@NotNull Throwable throwable) {
-            // TODO(allen): Consider pushing a "failed to save" event to the front-end
+            // TODO(allen): Push a "failed to save" event to the front-end
             refreshTasks();
           }
         },
@@ -62,29 +63,17 @@ class TasksRepoImpl implements TasksRepo {
 
   private void refreshTasks() {
     if (tasks.getValue().status != Status.SUCCESS) {
-      Log.i("###", "pending");
       tasks.setValue(RequestStatus.pending());
     }
 
     Futures.addCallback(
         tasksDatabase.taskDao().getAllIncomplete(),
-        new FutureCallback<List<TaskEntity>>() {
-          @Override
-          public void onSuccess(List<TaskEntity> result) {
-            Log.i("###", "Success");
-            tasks.setValue(
-                RequestStatus.success(
-                    ImmutableList.copyOf(
-                        result.stream().map(TaskEntity::toTask).collect(Collectors.toList()))));
-            Log.i("###", "Success 2");
-          }
-
-          @Override
-          public void onFailure(@NotNull Throwable throwable) {
-            Log.i("###", "failure");
-            tasks.setValue(RequestStatus.error(throwable));
-          }
-        },
+        RequestStatusUtils.futureCallback(
+            tasks,
+            result ->
+                tasks.setValue(
+                    RequestStatus.success(
+                        result.stream().map(TaskEntity::toTask).collect(toImmutableList())))),
         executor);
   }
 
@@ -96,5 +85,33 @@ class TasksRepoImpl implements TasksRepo {
   @Override
   public void deleteTask(Task task) {
     // TODO(allen): implement
+  }
+
+  @Override
+  public void markTaskCompleted(Task task) {
+    // Update task list to exclude compelted task
+    tasks.setValue(
+        RequestStatus.success(
+            tasks.getValue().getResult().stream()
+                .filter(t -> t.uid() != task.uid())
+                .collect(toImmutableList())));
+
+    TaskEntity entity = TaskEntity.from(task);
+    entity.completed = true;
+    Futures.addCallback(
+        tasksDatabase.taskDao().update(entity),
+        new FutureCallback<Void>() {
+          @Override
+          public void onSuccess(@NullableDecl Void result) {
+            // No-op
+          }
+
+          @Override
+          public void onFailure(Throwable throwable) {
+            // TODO(allen): Push a "failed to mark completed" event to front-end
+            refreshTasks();
+          }
+        },
+        executor);
   }
 }
