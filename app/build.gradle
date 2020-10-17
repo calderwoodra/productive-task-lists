@@ -26,7 +26,9 @@ android {
         main {
             res {
                 srcDirs 'src/main/res',
-                        'src/main/java/com/awsick/productiveday/devoptions/res', 'src/main/java/com/awsick/productiveday/tasks/res'
+                        'src/main/java/com/awsick/productiveday/devoptions/res',
+                        'src/main/java/com/awsick/productiveday/tasks/res',
+                        'src/main/java/com/awsick/productiveday/directories/res'
             }
         }
     }
@@ -85,4 +87,3 @@ dependencies {
 }
 
 apply plugin: 'dagger.hilt.android.plugin'
-
