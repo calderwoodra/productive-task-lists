@@ -3,6 +3,7 @@ package com.awsick.productiveday.directories.repo;
 import androidx.lifecycle.LiveData;
 import com.awsick.productiveday.directories.models.Directory;
 import com.awsick.productiveday.directories.models.DirectoryReference;
+import com.awsick.productiveday.directories.repo.room.DirectoryDatabase;
 import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.network.util.RequestStatusLiveData;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
@@ -17,12 +18,15 @@ import javax.inject.Singleton;
 @Singleton
 final class DirectoryRepoImpl implements DirectoryRepo {
 
-  private final Executor executor;
-  private final TasksRepo tasksRepo;
   private final HashMap<Integer, RequestStatusLiveData<Directory>> directoryCache = new HashMap<>();
 
+  private final DirectoryDatabase database;
+  private final TasksRepo tasksRepo;
+  private final Executor executor;
+
   @Inject
-  DirectoryRepoImpl(TasksRepo tasksRepo, Executor executor) {
+  DirectoryRepoImpl(DirectoryDatabase database, TasksRepo tasksRepo, Executor executor) {
+    this.database = database;
     this.tasksRepo = tasksRepo;
     this.executor = executor;
     create(-1);
@@ -31,7 +35,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
   @Override
   public LiveData<RequestStatus<Directory>> getDirectory(int uid) {
     if (!directoryCache.containsKey(uid)) {
-      return directoryCache.put(uid, create(uid));
+      directoryCache.put(uid, create(uid));
     }
     return directoryCache.get(uid);
   }

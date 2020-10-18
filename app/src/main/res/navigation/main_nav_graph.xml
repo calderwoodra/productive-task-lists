@@ -9,5 +9,15 @@
     android:id="@+id/tasksHostFragment"
     android:name="com.awsick.productiveday.tasks.TasksHostFragment"
     android:label="TasksHostFragment"
-    tools:layout="@layout/fragment_view_tasks" />
+    tools:layout="@layout/fragment_view_tasks">
+    <action
+      android:id="@+id/action_tasksHostFragment_to_directoriesHostFragment"
+      app:destination="@id/directoriesHostFragment" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/directoriesHostFragment"
+    android:name="com.awsick.productiveday.directories.DirectoriesHostFragment"
+    android:label="DirectoriesHostFragment"
+    tools:layout="@layout/fragment_browse_directory" />
 </navigation>

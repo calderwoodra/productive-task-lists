@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/directories_tab_nav_graph">
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/directories_tab_nav_graph"
+  app:startDestination="@id/directoryBrowseFragment">
 
+  <fragment
+    android:id="@+id/directoryBrowseFragment"
+    android:name="com.awsick.productiveday.directories.ui.DirectoryBrowseFragment"
+    android:label="DirectoryBrowseFragment"
+    tools:layout="@layout/fragment_browse_directory" />
 </navigation>

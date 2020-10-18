@@ -1,7 +1,6 @@
 package com.awsick.productiveday.tasks;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,12 +36,10 @@ public final class TasksLoadingFragment extends Fragment {
         .observe(
             getViewLifecycleOwner(),
             tasks -> {
-              Log.i("###", "tasks status: " + tasks.status);
               if (tasks.status != Status.SUCCESS) {
                 // No-op
                 return;
               }
-              Log.i("###", "tasks available");
               Navigation.findNavController(root).navigate(R.id.action_tasks_loading_complete);
             });
   }
