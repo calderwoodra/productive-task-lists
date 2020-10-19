@@ -30,6 +30,7 @@ public class TaskEntity {
   @ColumnInfo(name = "task_type")
   public Task.Type taskType;
 
+  // -1 comes from DirectoryRepo.ROOT_DIRECTORY_ID
   @ColumnInfo(name = "directory", defaultValue = "-1")
   public int directoryId;
 
@@ -40,6 +41,7 @@ public class TaskEntity {
     entity.notes = Strings.isNullOrEmpty(task.notes()) ? null : task.notes();
     entity.taskType = task.type();
     entity.deadlineMillis = task.deadlineMillis() == -1 ? null : task.deadlineMillis();
+    entity.directoryId = task.directoryId();
     entity.completed = false;
     return entity;
   }
@@ -52,7 +54,7 @@ public class TaskEntity {
         .setNotes(Strings.nullToEmpty(notes))
         .setDeadlineMillis(deadlineMillis == null ? -1 : deadlineMillis)
         .setRepeatability(null)
-        .setDirectoryId(-1)
+        .setDirectoryId(directoryId)
         .build();
   }
 }

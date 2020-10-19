@@ -8,7 +8,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.awsick.productiveday.R;
+import com.awsick.productiveday.directories.models.DirectoryReference;
+import com.awsick.productiveday.directories.ui.DirectoryListAdapter.DirectoryItemActionListener;
+import com.awsick.productiveday.network.RequestStatus.Status;
+import com.awsick.productiveday.tasks.models.Task;
 import dagger.hilt.android.AndroidEntryPoint;
 
 @AndroidEntryPoint
@@ -24,16 +30,49 @@ public final class DirectoryBrowseFragment extends Fragment {
   }
 
   @Override
-  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
+  public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(root, savedInstanceState);
     DirectoryBrowseViewModel viewModel =
         new ViewModelProvider(this).get(DirectoryBrowseViewModel.class);
+
+    RecyclerView rv = root.findViewById(R.id.directory_list);
+    rv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
+    DirectoryListAdapter adapter = new DirectoryListAdapter(new DirectoryItemListener(viewModel));
+    rv.setAdapter(adapter);
+
     viewModel
         .getCurrentDirectory()
         .observe(
             getViewLifecycleOwner(),
             directory -> {
-              // TODO(allen): implement ui
+              if (directory.status != Status.SUCCESS) {
+                return;
+              }
+              adapter.setDirectory(directory.getResult());
             });
+  }
+
+  private static final class DirectoryItemListener implements DirectoryItemActionListener {
+
+    private final DirectoryBrowseViewModel viewModel;
+
+    private DirectoryItemListener(DirectoryBrowseViewModel viewModel) {
+      this.viewModel = viewModel;
+    }
+
+    @Override
+    public void onNavigateToDirectory(DirectoryReference directory) {
+      viewModel.setCurrentDirectory(directory.uid());
+    }
+
+    @Override
+    public void onCompleteTaskRequested(Task task) {
+      viewModel.markTaskCompleted(task);
+    }
+
+    @Override
+    public void onEditTaskRequested(Task task) {
+      // TODO(allen): handle this
+    }
   }
 }
