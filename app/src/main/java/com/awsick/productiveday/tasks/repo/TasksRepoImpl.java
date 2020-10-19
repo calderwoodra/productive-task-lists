@@ -41,6 +41,23 @@ class TasksRepoImpl implements TasksRepo {
   }
 
   @Override
+  public LiveData<RequestStatus<ImmutableList<Task>>> getIncompleteTasks(int directoryId) {
+    // TODO(allen): Cache these LiveData in a map
+    RequestStatusLiveData<ImmutableList<Task>> tasks = new RequestStatusLiveData<>();
+    tasks.setValue(RequestStatus.pending());
+    Futures.addCallback(
+        tasksDatabase.taskDao().getAllIncomplete(directoryId),
+        RequestStatusUtils.futureCallback(
+            tasks,
+            result ->
+                tasks.setValue(
+                    RequestStatus.success(
+                        result.stream().map(TaskEntity::toTask).collect(toImmutableList())))),
+        executor);
+    return tasks;
+  }
+
+  @Override
   public void createTask(Task task) {
     // TODO(allen): Consider adding the task optimistically
     tasks.setValue(RequestStatus.pending());

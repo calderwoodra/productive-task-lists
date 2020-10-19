@@ -10,7 +10,7 @@ public abstract class DirectoryReference {
 
   public abstract String name();
 
-  public abstract Optional<DirectoryReference> parent();
+  public abstract Optional<Integer> parent();
 
   public static DirectoryReference.Builder builder() {
     return new AutoValue_DirectoryReference.Builder();
@@ -23,7 +23,7 @@ public abstract class DirectoryReference {
 
     public abstract Builder setName(String name);
 
-    public abstract Builder setParent(Optional<DirectoryReference> parent);
+    public abstract Builder setParent(Optional<Integer> parent);
 
     public abstract DirectoryReference build();
   }

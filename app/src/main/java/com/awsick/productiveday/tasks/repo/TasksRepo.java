@@ -7,7 +7,11 @@ import com.google.common.collect.ImmutableList;
 
 public interface TasksRepo {
 
+  /** Returns all the incomplete tasks. */
   LiveData<RequestStatus<ImmutableList<Task>>> getIncompleteTasks();
+
+  /** Returns all the incomplete tasks in the given directory. */
+  LiveData<RequestStatus<ImmutableList<Task>>> getIncompleteTasks(int directoryId);
 
   void createTask(Task task);
 

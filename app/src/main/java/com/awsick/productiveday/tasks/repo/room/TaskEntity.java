@@ -30,6 +30,9 @@ public class TaskEntity {
   @ColumnInfo(name = "task_type")
   public Task.Type taskType;
 
+  @ColumnInfo(name = "directory", defaultValue = "-1")
+  public int directoryId;
+
   public static TaskEntity from(Task task) {
     TaskEntity entity = new TaskEntity();
     entity.uid = task.uid();

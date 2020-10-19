@@ -11,7 +11,8 @@ import com.awsick.productiveday.network.RequestStatus;
 
 public final class DirectoryBrowseViewModel extends ViewModel {
 
-  private final MutableLiveData<Integer> currentUid = new MutableLiveData<>(-1);
+  private final MutableLiveData<Integer> currentUid =
+      new MutableLiveData<>(DirectoryRepo.ROOT_DIRECTORY_ID);
   private final CurrentDirectoryLiveData currentDirectory;
 
   @ViewModelInject

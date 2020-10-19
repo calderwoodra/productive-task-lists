@@ -22,6 +22,9 @@ public interface TaskDao {
   @Query("SELECT * FROM taskentity WHERE NOT completed")
   ListenableFuture<List<TaskEntity>> getAllIncomplete();
 
+  @Query("SELECT * FROM taskentity WHERE directory IS :directoryId")
+  ListenableFuture<List<TaskEntity>> getAllIncomplete(int directoryId);
+
   // UPDATE
   @Update
   ListenableFuture<Void> update(TaskEntity... tasks);

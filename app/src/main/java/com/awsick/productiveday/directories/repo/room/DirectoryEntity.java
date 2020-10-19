@@ -24,11 +24,15 @@ public class DirectoryEntity {
     DirectoryEntity entity = new DirectoryEntity();
     entity.uid = reference.uid();
     entity.name = reference.name();
-    entity.parentUid = reference.parent().isPresent() ? reference.parent().get().uid() : null;
+    entity.parentUid = reference.parent().isPresent() ? reference.parent().get() : null;
     return entity;
   }
 
-  public DirectoryReference toDirectoryReference(Optional<DirectoryReference> parent) {
-    return DirectoryReference.builder().setUid(uid).setName(name).setParent(parent).build();
+  public DirectoryReference toDirectoryReference() {
+    return DirectoryReference.builder()
+        .setUid(uid)
+        .setName(name)
+        .setParent(Optional.fromNullable(parentUid))
+        .build();
   }
 }
