@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.Task.Type;
@@ -31,7 +30,7 @@ public final class TasksCreateFragment extends Fragment {
       @Nullable Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.fragment_create_task, container, false);
     ((Toolbar) root.findViewById(R.id.toolbar))
-        .setNavigationOnClickListener(view -> Navigation.findNavController(root).popBackStack());
+        .setNavigationOnClickListener(view -> requireActivity().finish());
     return root;
   }
 
@@ -61,7 +60,7 @@ public final class TasksCreateFragment extends Fragment {
             event -> {
               switch (event) {
                 case SUCCESSFULLY_SAVED:
-                  Navigation.findNavController(root).popBackStack();
+                  requireActivity().finish();
                   break;
                 case FAILED_TO_SAVE:
                   Snackbar.make(root, "Something went wrong", Snackbar.LENGTH_INDEFINITE)

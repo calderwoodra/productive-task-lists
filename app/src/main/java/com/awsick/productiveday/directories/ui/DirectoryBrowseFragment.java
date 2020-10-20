@@ -11,8 +11,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.awsick.productiveday.R;
+import com.awsick.productiveday.common.uiutils.FragmentUtils;
 import com.awsick.productiveday.directories.models.DirectoryReference;
 import com.awsick.productiveday.directories.ui.DirectoryListAdapter.DirectoryItemActionListener;
+import com.awsick.productiveday.main.MainParentContainer;
 import com.awsick.productiveday.network.RequestStatus.Status;
 import com.awsick.productiveday.tasks.models.Task;
 import dagger.hilt.android.AndroidEntryPoint;
@@ -32,6 +34,9 @@ public final class DirectoryBrowseFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
+    MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
+    parent.setToolbarTitle("Directory Task List");
+
     DirectoryBrowseViewModel viewModel =
         new ViewModelProvider(this).get(DirectoryBrowseViewModel.class);
 

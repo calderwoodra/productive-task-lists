@@ -1,5 +1,6 @@
 package com.awsick.productiveday.tasks.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,10 +9,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.awsick.productiveday.R;
+import com.awsick.productiveday.common.uiutils.FragmentUtils;
+import com.awsick.productiveday.main.MainParentContainer;
+import com.awsick.productiveday.tasks.create.TaskCreateActivity;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.awsick.productiveday.tasks.view.TaskListAdapter.TaskItemActionListener;
@@ -36,9 +39,9 @@ public final class TasksViewFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
-    root.findViewById(R.id.fab)
-        .setOnClickListener(
-            view -> Navigation.findNavController(root).navigate(R.id.action_create_task));
+    MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
+    parent.setFabOcl(view -> startActivity(new Intent(requireContext(), TaskCreateActivity.class)));
+    parent.setToolbarTitle("Productive Task List");
 
     TasksViewViewModel viewModel = new ViewModelProvider(this).get(TasksViewViewModel.class);
 
