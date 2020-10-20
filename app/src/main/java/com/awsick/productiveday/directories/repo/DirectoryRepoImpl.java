@@ -30,8 +30,7 @@ import javax.inject.Singleton;
 @Singleton
 final class DirectoryRepoImpl implements DirectoryRepo {
 
-  private final HashMap<Integer, LiveData<RequestStatus<Directory>>> directoryCache =
-      new HashMap<>();
+  private final HashMap<Integer, DirectoryLiveData> directoryCache = new HashMap<>();
   private final MutableLiveData<Boolean> rootDirectoryReady = new MutableLiveData<>(false);
   private final DirectoryDatabase directoryDatabase;
   private final TasksRepo tasksRepo;
@@ -94,7 +93,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
     return directoryCache.get(uid);
   }
 
-  private LiveData<RequestStatus<Directory>> fetchDirectory(int uid) {
+  private DirectoryLiveData fetchDirectory(int uid) {
     MutableLiveData<DirectoryReference> directoryReference = new MutableLiveData<>();
     SimpleFutures.addCallback(
         directoryDatabase.directoryDao().getDirectory(uid),
@@ -104,9 +103,30 @@ final class DirectoryRepoImpl implements DirectoryRepo {
     return new DirectoryLiveData(tasksRepo, directoryDatabase, directoryReference, executor);
   }
 
+  private void refreshDirectory(int uid) {
+    if (!directoryCache.containsKey(uid)) {
+      return;
+    }
+    directoryCache.get(uid).refreshDirectories();
+  }
+
+  @Override
+  public void createDirectory(String name, int currentDirectory) {
+    DirectoryEntity entity = new DirectoryEntity();
+    entity.name = name;
+    entity.parentUid = currentDirectory;
+
+    SimpleFutures.addCallback(
+        directoryDatabase.directoryDao().insert(entity),
+        uid -> refreshDirectory(currentDirectory),
+        executor);
+  }
+
   private static final class DirectoryLiveData extends MediatorLiveData<RequestStatus<Directory>> {
 
     private final LiveData<DirectoryReference> reference;
+    private final DirectoryDatabase database;
+    private final Executor executor;
 
     private RequestStatus<ImmutableList<Task>> tasks = RequestStatus.initial();
     private RequestStatus<ImmutableList<DirectoryReference>> directories = RequestStatus.initial();
@@ -117,6 +137,8 @@ final class DirectoryRepoImpl implements DirectoryRepo {
         LiveData<DirectoryReference> reference,
         Executor executor) {
       this.reference = reference;
+      this.database = database;
+      this.executor = executor;
       setValue(RequestStatus.pending());
 
       addSource(
@@ -127,6 +149,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
             onChanged();
           });
 
+      // TODO(allen(: This is hella jank, can we clean it up?
       LiveData<RequestStatus<ImmutableList<DirectoryReference>>> foo =
           Transformations.switchMap(
               reference,
@@ -151,6 +174,23 @@ final class DirectoryRepoImpl implements DirectoryRepo {
             this.directories = directories;
             onChanged();
           });
+    }
+
+    public void refreshDirectories() {
+      directories = RequestStatus.pending();
+      onChanged();
+
+      SimpleFutures.addCallback(
+          database.directoryDao().getSiblingDirectories(reference.getValue().uid()),
+          result -> {
+            directories =
+                RequestStatus.success(
+                    result.stream()
+                        .map(DirectoryEntity::toDirectoryReference)
+                        .collect(toImmutableList()));
+            onChanged();
+          },
+          executor);
     }
 
     private void onChanged() {

@@ -12,4 +12,7 @@ public interface DirectoryRepo {
 
   /** Returns a directory with the Unique ID (@code uid}. */
   LiveData<RequestStatus<Directory>> getDirectory(int uid);
+
+  /** Create a new directory with nothing in it. */
+  void createDirectory(String name, int currentDirectory);
 }

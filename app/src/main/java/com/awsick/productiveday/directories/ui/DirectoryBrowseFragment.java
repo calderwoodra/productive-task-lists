@@ -34,7 +34,6 @@ public final class DirectoryBrowseFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
-    MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
     DirectoryBrowseViewModel viewModel =
         new ViewModelProvider(this).get(DirectoryBrowseViewModel.class);
 
@@ -43,6 +42,7 @@ public final class DirectoryBrowseFragment extends Fragment {
     DirectoryListAdapter adapter = new DirectoryListAdapter(new DirectoryItemListener(viewModel));
     rv.setAdapter(adapter);
 
+    MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
     viewModel
         .getCurrentDirectory()
         .observe(
@@ -52,6 +52,12 @@ public final class DirectoryBrowseFragment extends Fragment {
                 return;
               }
               parent.setToolbarTitle(directory.getResult().reference().name() + " Directory");
+              parent.setFabOcl(
+                  view -> {
+                    int currentDirectory = directory.getResult().reference().uid();
+                    CreateDirectoryDialogFragment.create(currentDirectory)
+                        .show(getChildFragmentManager(), null);
+                  });
               adapter.setDirectory(directory.getResult());
             });
   }
