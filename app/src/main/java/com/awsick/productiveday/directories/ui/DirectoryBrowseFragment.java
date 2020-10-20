@@ -35,8 +35,6 @@ public final class DirectoryBrowseFragment extends Fragment {
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
     MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
-    parent.setToolbarTitle("Directory Task List");
-
     DirectoryBrowseViewModel viewModel =
         new ViewModelProvider(this).get(DirectoryBrowseViewModel.class);
 
@@ -53,6 +51,7 @@ public final class DirectoryBrowseFragment extends Fragment {
               if (directory.status != Status.SUCCESS) {
                 return;
               }
+              parent.setToolbarTitle(directory.getResult().reference().name() + " Directory");
               adapter.setDirectory(directory.getResult());
             });
   }

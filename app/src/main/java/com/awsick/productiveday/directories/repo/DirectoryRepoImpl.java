@@ -73,6 +73,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
   @Override
   public LiveData<RequestStatus<Directory>> getDirectory(int uid) {
     if (uid == ROOT_DIRECTORY_ID) {
+      // wait until the root directory is ready before fetching it
       return Transformations.switchMap(
           rootDirectoryReady,
           ready -> {
@@ -87,6 +88,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
 
   public LiveData<RequestStatus<Directory>> getDirectoryInternal(int uid) {
     if (!directoryCache.containsKey(uid)) {
+      // Create the livedata for the directory if it doesn't exist yet
       directoryCache.put(uid, fetchDirectory(uid));
     }
     return directoryCache.get(uid);

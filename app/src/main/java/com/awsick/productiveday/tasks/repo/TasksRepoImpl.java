@@ -13,6 +13,7 @@ import com.awsick.productiveday.tasks.repo.room.TaskEntity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import java.util.HashMap;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -24,6 +25,8 @@ class TasksRepoImpl implements TasksRepo {
 
   private final TaskDatabase tasksDatabase;
   private final RequestStatusLiveData<ImmutableList<Task>> tasks = new RequestStatusLiveData<>();
+  private final HashMap<Integer, RequestStatusLiveData<ImmutableList<Task>>> directoryTasksMap =
+      new HashMap<>();
   private final Executor executor;
 
   @Inject
@@ -42,7 +45,10 @@ class TasksRepoImpl implements TasksRepo {
 
   @Override
   public LiveData<RequestStatus<ImmutableList<Task>>> getIncompleteTasks(int directoryId) {
-    // TODO(allen): Cache these LiveData in a map
+    if (directoryTasksMap.containsKey(directoryId)) {
+      return directoryTasksMap.get(directoryId);
+    }
+
     RequestStatusLiveData<ImmutableList<Task>> tasks = new RequestStatusLiveData<>();
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
@@ -54,6 +60,7 @@ class TasksRepoImpl implements TasksRepo {
                     RequestStatus.success(
                         result.stream().map(TaskEntity::toTask).collect(toImmutableList())))),
         executor);
+    directoryTasksMap.put(directoryId, tasks);
     return tasks;
   }
 
@@ -67,6 +74,7 @@ class TasksRepoImpl implements TasksRepo {
           @Override
           public void onSuccess(Long uid) {
             refreshTasks();
+            refreshDirectoryTasks(task.directoryId());
           }
 
           @Override
@@ -94,6 +102,24 @@ class TasksRepoImpl implements TasksRepo {
         executor);
   }
 
+  private void refreshDirectoryTasks(int directoryId) {
+    if (!directoryTasksMap.containsKey(directoryId)) {
+      return;
+    }
+
+    RequestStatusLiveData<ImmutableList<Task>> tasks = directoryTasksMap.get(directoryId);
+    tasks.setValue(RequestStatus.pending());
+    Futures.addCallback(
+        tasksDatabase.taskDao().getAllIncomplete(directoryId),
+        RequestStatusUtils.futureCallback(
+            tasks,
+            result ->
+                tasks.setValue(
+                    RequestStatus.success(
+                        result.stream().map(TaskEntity::toTask).collect(toImmutableList())))),
+        executor);
+  }
+
   @Override
   public void updateTask(Task task) {
     // TODO(allen): implement
@@ -112,6 +138,17 @@ class TasksRepoImpl implements TasksRepo {
             tasks.getValue().getResult().stream()
                 .filter(t -> t.uid() != task.uid())
                 .collect(toImmutableList())));
+
+    // Update directory list too, if it exists
+    if (directoryTasksMap.containsKey(task.directoryId())) {
+      RequestStatusLiveData<ImmutableList<Task>> directoryTasks =
+          directoryTasksMap.get(task.directoryId());
+      directoryTasks.setValue(
+          RequestStatus.success(
+              directoryTasks.getValue().getResult().stream()
+                  .filter(t -> t.uid() != task.uid())
+                  .collect(toImmutableList())));
+    }
 
     TaskEntity entity = TaskEntity.from(task);
     entity.completed = true;
