@@ -58,9 +58,9 @@ tasks and project setup.
 6. sort tasks based on deadline
 
 ### Directories
-1. allow users to select a directory
-2. allow users to browse directories and tasks
-3. allow users to create directories
+1. ~~allow users to select a directory~~
+2. ~~allow users to browse directories and tasks~~
+3. ~~allow users to create directories~~
 4. allow users to delete directories
 5. allow users to move directories
 6. allow users to rename directories
