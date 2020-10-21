@@ -25,6 +25,8 @@ import javax.inject.Inject;
 @AndroidEntryPoint
 public final class TasksViewFragment extends Fragment {
 
+  private boolean hidden = false;
+
   @Inject TasksRepo tasksRepo;
 
   @Nullable
@@ -70,6 +72,12 @@ public final class TasksViewFragment extends Fragment {
                   break;
               }
             });
+  }
+
+  @Override
+  public void onHiddenChanged(boolean hidden) {
+    super.onHiddenChanged(hidden);
+    this.hidden = hidden;
   }
 
   private static final class TaskActionListener implements TaskItemActionListener {

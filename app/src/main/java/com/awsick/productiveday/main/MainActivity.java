@@ -5,10 +5,11 @@ import android.view.View.OnClickListener;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.navigation.fragment.NavHostFragment;
-import androidx.navigation.ui.NavigationUI;
+import androidx.fragment.app.FragmentTransaction;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.common.uiutils.FragmentUtils.FragmentUtilListener;
+import com.awsick.productiveday.directories.DirectoriesHostFragment;
+import com.awsick.productiveday.tasks.TasksHostFragment;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -32,9 +33,45 @@ public class MainActivity extends AppCompatActivity implements FragmentUtilListe
 
   public void setUpNavigation() {
     BottomNavigationView bottomNavigationView = findViewById(R.id.main_bottom_nav);
-    NavHostFragment navHostFragment =
-        (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.main_nav_host);
-    NavigationUI.setupWithNavController(bottomNavigationView, navHostFragment.getNavController());
+    bottomNavigationView.setOnNavigationItemSelectedListener(
+        item -> {
+
+          // list of all fragments
+          TasksHostFragment taskFragment =
+              (TasksHostFragment) getSupportFragmentManager().findFragmentByTag("TASKS");
+          DirectoriesHostFragment directoryFragment =
+              (DirectoriesHostFragment) getSupportFragmentManager().findFragmentByTag("DIRECTORY");
+          FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+          // handle tasks fragment
+          if (item.getItemId() == R.id.tasksHostFragment) {
+            if (taskFragment == null) {
+              transaction.add(R.id.main_content, new TasksHostFragment(), "TASKS");
+            } else {
+              transaction.attach(taskFragment);
+            }
+
+            if (directoryFragment != null) {
+              transaction.detach(directoryFragment);
+            }
+
+            // handle directory fragment
+          } else if (item.getItemId() == R.id.directoriesHostFragment) {
+            if (directoryFragment == null) {
+              transaction.add(R.id.main_content, new DirectoriesHostFragment(), "DIRECTORY");
+            } else {
+              transaction.attach(directoryFragment);
+            }
+
+            if (taskFragment != null) {
+              transaction.detach(taskFragment);
+            }
+          }
+
+          transaction.commit();
+          return true;
+        });
+    bottomNavigationView.setSelectedItemId(R.id.tasksHostFragment);
   }
 
   @Nullable

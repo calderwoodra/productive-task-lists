@@ -5,9 +5,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import com.awsick.productiveday.common.utils.Assert;
 import com.awsick.productiveday.directories.models.Directory;
 import com.awsick.productiveday.directories.repo.DirectoryRepo;
 import com.awsick.productiveday.network.RequestStatus;
+import com.awsick.productiveday.network.RequestStatus.Status;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 
@@ -37,12 +39,26 @@ public final class DirectoryBrowseViewModel extends ViewModel {
     tasksRepo.markTaskCompleted(task);
   }
 
+  public void navigateUp() {
+    Assert.checkState(!isRootDirectory());
+    if (currentDirectory.getValue().status != Status.SUCCESS) {
+      return;
+    }
+    setCurrentDirectory(currentDirectory.getValue().getResult().reference().parent().get());
+  }
+
+  public boolean isRootDirectory() {
+    return currentDirectory.getValue().status == Status.SUCCESS
+        && currentDirectory.getValue().getResult().reference().uid() == -1;
+  }
+
   private static final class CurrentDirectoryLiveData
       extends MediatorLiveData<RequestStatus<Directory>> {
 
     private LiveData<RequestStatus<Directory>> currentDirectory = null;
 
     public CurrentDirectoryLiveData(DirectoryRepo directoryRepo, LiveData<Integer> uidLiveData) {
+      setValue(RequestStatus.initial());
       addSource(
           uidLiveData,
           uid -> {

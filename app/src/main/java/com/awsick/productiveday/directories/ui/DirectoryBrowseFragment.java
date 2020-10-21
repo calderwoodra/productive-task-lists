@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -42,6 +43,15 @@ public final class DirectoryBrowseFragment extends Fragment {
     DirectoryListAdapter adapter = new DirectoryListAdapter(new DirectoryItemListener(viewModel));
     rv.setAdapter(adapter);
 
+    OnBackPressedCallback callback =
+        new OnBackPressedCallback(!viewModel.isRootDirectory()) {
+          @Override
+          public void handleOnBackPressed() {
+            viewModel.navigateUp();
+          }
+        };
+    requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
     MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
     viewModel
         .getCurrentDirectory()
@@ -51,6 +61,7 @@ public final class DirectoryBrowseFragment extends Fragment {
               if (directory.status != Status.SUCCESS) {
                 return;
               }
+              callback.setEnabled(!viewModel.isRootDirectory());
               parent.setToolbarTitle(directory.getResult().reference().name() + " Directory");
               parent.setFabOcl(
                   view -> {
