@@ -52,7 +52,7 @@ tasks and project setup.
 ### Tasks
 1. ~~add room database to save tasks~~
 2. ~~allow users to mark tasks complete~~
-3. allow users to edit tasks
+3. ~~allow users to edit tasks~~
 4. allow users to set date and time (deadline), or start time or no time.
 5. allow users to set repeatable
 6. sort tasks based on deadline

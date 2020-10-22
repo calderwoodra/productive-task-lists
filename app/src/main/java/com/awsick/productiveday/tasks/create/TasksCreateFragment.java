@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
 import com.awsick.productiveday.R;
+import com.awsick.productiveday.network.RequestStatus.Status;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.Task.Type;
 import com.google.android.material.chip.ChipGroup;
@@ -23,14 +24,25 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public final class TasksCreateFragment extends Fragment {
 
+  static final String TASK_ID_KEY = "TASK_ID";
+
+  public static TasksCreateFragment create(int taskId) {
+    TasksCreateFragment fragment = new TasksCreateFragment();
+    Bundle args = new Bundle();
+    args.putInt(TASK_ID_KEY, taskId);
+    fragment.setArguments(args);
+    return fragment;
+  }
+
   @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
     View root = inflater.inflate(R.layout.fragment_create_task, container, false);
-    ((Toolbar) root.findViewById(R.id.toolbar))
-        .setNavigationOnClickListener(view -> requireActivity().finish());
+    Toolbar toolbar = root.findViewById(R.id.toolbar);
+    toolbar.setNavigationOnClickListener(view -> requireActivity().finish());
+    toolbar.setTitle(getArguments().getInt(TASK_ID_KEY, -1) == -1 ? "Create Task" : "Update Task");
     return root;
   }
 
@@ -41,13 +53,22 @@ public final class TasksCreateFragment extends Fragment {
 
     EditText titleEt = root.findViewById(R.id.create_task_title);
     EditText notesEt = root.findViewById(R.id.create_task_notes);
-    ChipGroup chipGroup = root.findViewById(R.id.task_type_chip_group);
     setupTitleAndNotes(viewModel, titleEt, notesEt);
 
     observe(viewModel.getDate(), R.id.create_task_deadline_date);
     observe(viewModel.getTime(), R.id.create_task_deadline_time);
     observe(viewModel.getRepeatable(), R.id.create_task_repeat);
-    observe(viewModel.getDirectoryName(), R.id.create_task_directory);
+    TextView directoryName = root.findViewById(R.id.create_task_directory);
+    viewModel
+        .getDirectoryName()
+        .observe(
+            getViewLifecycleOwner(),
+            name -> {
+              if (name.status != Status.SUCCESS) {
+                return;
+              }
+              directoryName.setText(name.getResult());
+            });
 
     root.findViewById(R.id.task_create_save)
         .setOnClickListener(

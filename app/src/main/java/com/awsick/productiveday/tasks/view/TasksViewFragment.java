@@ -1,6 +1,5 @@
 package com.awsick.productiveday.tasks.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +41,7 @@ public final class TasksViewFragment extends Fragment {
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
     MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
-    parent.setFabOcl(view -> startActivity(new Intent(requireContext(), TaskCreateActivity.class)));
+    parent.setFabOcl(view -> startActivity(TaskCreateActivity.create(requireContext())));
     parent.setToolbarTitle("Productive Task List");
 
     TasksViewViewModel viewModel = new ViewModelProvider(this).get(TasksViewViewModel.class);
@@ -80,7 +79,7 @@ public final class TasksViewFragment extends Fragment {
     this.hidden = hidden;
   }
 
-  private static final class TaskActionListener implements TaskItemActionListener {
+  private final class TaskActionListener implements TaskItemActionListener {
 
     private final TasksRepo repo;
 
@@ -95,7 +94,7 @@ public final class TasksViewFragment extends Fragment {
 
     @Override
     public void onEditTaskRequested(Task task) {
-      // TODO(allen): navigate to create task fragment with data prepopulate
+      startActivity(TaskCreateActivity.create(requireContext(), task));
     }
   }
 }

@@ -122,7 +122,24 @@ class TasksRepoImpl implements TasksRepo {
 
   @Override
   public void updateTask(Task task) {
-    // TODO(allen): implement
+    // TODO(allen): Consider adding the task optimistically
+    tasks.setValue(RequestStatus.pending());
+    Futures.addCallback(
+        tasksDatabase.taskDao().update(TaskEntity.from(task)),
+        new FutureCallback<Void>() {
+          @Override
+          public void onSuccess(Void voidd) {
+            refreshTasks();
+            refreshDirectoryTasks(task.directoryId());
+          }
+
+          @Override
+          public void onFailure(@NotNull Throwable throwable) {
+            // TODO(allen): Push a "failed to save" event to the front-end
+            refreshTasks();
+          }
+        },
+        executor);
   }
 
   @Override
