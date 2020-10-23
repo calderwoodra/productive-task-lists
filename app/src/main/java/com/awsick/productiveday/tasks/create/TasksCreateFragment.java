@@ -135,8 +135,6 @@ public final class TasksCreateFragment extends Fragment {
         .getTaskType()
         .observe(getViewLifecycleOwner(), type -> chipGroup.check(toChipId(type)));
 
-    View v1 = root.findViewById(R.id.create_task_repeat_icon);
-    View v2 = root.findViewById(R.id.create_task_repeat);
     View v3 = root.findViewById(R.id.create_task_deadline_icon);
     View v4 = root.findViewById(R.id.create_task_deadline_date);
     View v5 = root.findViewById(R.id.create_task_deadline_time);
@@ -146,11 +144,21 @@ public final class TasksCreateFragment extends Fragment {
             getViewLifecycleOwner(),
             visible -> {
               int visibility = visible ? View.VISIBLE : View.GONE;
-              v1.setVisibility(visibility);
-              v2.setVisibility(visibility);
               v3.setVisibility(visibility);
               v4.setVisibility(visibility);
               v5.setVisibility(visibility);
+            });
+
+    View v1 = root.findViewById(R.id.create_task_repeat_icon);
+    View v2 = root.findViewById(R.id.create_task_repeat);
+    viewModel
+        .repeatVisible()
+        .observe(
+            getViewLifecycleOwner(),
+            visible -> {
+              int visibility = visible ? View.VISIBLE : View.GONE;
+              v1.setVisibility(visibility);
+              v2.setVisibility(visibility);
             });
   }
 

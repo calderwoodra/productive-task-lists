@@ -124,6 +124,10 @@ public final class TasksCreateViewModel extends ViewModel {
     return Transformations.map(taskType, task -> task != Type.UNSCHEDULED);
   }
 
+  public LiveData<Boolean> repeatVisible() {
+    return Transformations.map(taskType, task -> task == Type.REMINDER);
+  }
+
   public void setTaskType(Type type) {
     taskType.setValue(type);
   }
