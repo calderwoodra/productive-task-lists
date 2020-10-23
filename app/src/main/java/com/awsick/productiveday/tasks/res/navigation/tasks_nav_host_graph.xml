@@ -18,14 +18,5 @@
     android:id="@+id/tasksViewFragment"
     android:name="com.awsick.productiveday.tasks.view.TasksViewFragment"
     android:label="TasksViewFragment"
-    tools:layout="@layout/fragment_view_tasks">
-    <action
-      android:id="@+id/action_create_task"
-      app:destination="@id/tasksCreateFragment" />
-  </fragment>
-  <fragment
-    android:id="@+id/tasksCreateFragment"
-    android:name="com.awsick.productiveday.tasks.create.TasksCreateFragment"
-    android:label="TasksCreateFragment"
-    tools:layout="@layout/fragment_create_task" />
+    tools:layout="@layout/fragment_view_tasks" />
 </navigation>

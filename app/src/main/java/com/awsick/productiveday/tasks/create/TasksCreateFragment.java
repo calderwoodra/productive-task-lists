@@ -49,7 +49,8 @@ public final class TasksCreateFragment extends Fragment {
   @Override
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
-    TasksCreateViewModel viewModel = new ViewModelProvider(this).get(TasksCreateViewModel.class);
+    TasksCreateViewModel viewModel =
+        new ViewModelProvider(requireActivity()).get(TasksCreateViewModel.class);
 
     EditText titleEt = root.findViewById(R.id.create_task_title);
     EditText notesEt = root.findViewById(R.id.create_task_notes);
@@ -59,6 +60,10 @@ public final class TasksCreateFragment extends Fragment {
     observe(viewModel.getTime(), R.id.create_task_deadline_time);
     observe(viewModel.getRepeatable(), R.id.create_task_repeat);
     TextView directoryName = root.findViewById(R.id.create_task_directory);
+    directoryName.setOnClickListener(
+        view -> {
+          new SelectDirectoryDialogFragment().showNow(getChildFragmentManager(), null);
+        });
     viewModel
         .getDirectoryName()
         .observe(

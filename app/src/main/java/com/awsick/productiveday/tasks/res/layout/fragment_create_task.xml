@@ -4,7 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:context=".MainActivity">
+  tools:context=".tasks.create.TaskCreateActivity">
 
   <com.google.android.material.appbar.AppBarLayout
     android:layout_width="match_parent"
@@ -220,7 +220,7 @@
       <androidx.appcompat.widget.AppCompatImageView
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@drawable/ic_baseline_format_list_bulleted_24"
+        android:src="@drawable/ic_baseline_folder_24"
         android:tint="?attr/colorControlNormal"
         app:layout_constraintBottom_toBottomOf="@id/create_task_directory"
         app:layout_constraintEnd_toEndOf="@id/icon_guideline"
@@ -239,7 +239,7 @@
         android:layout_marginEnd="@dimen/standard_side_margin"
         app:layout_constraintStart_toEndOf="@id/icon_guideline"
         app:layout_constraintTop_toBottomOf="@id/create_task_repeat"
-        tools:text="Uncatogirzed" />
+        tools:text="Home" />
 
       <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/task_create_save"

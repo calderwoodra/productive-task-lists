@@ -68,6 +68,7 @@ tasks and project setup.
 2. update app theme
 3. push notifications and reminders
 4. Deploy to play store
+5. Add rate app dialog
 
 ### Stretch
 -1. allow users to delete directories (move tasks to home or delete all tasks as well)
