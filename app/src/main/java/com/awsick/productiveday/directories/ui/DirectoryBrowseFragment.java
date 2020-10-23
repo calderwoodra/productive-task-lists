@@ -73,7 +73,7 @@ public final class DirectoryBrowseFragment extends Fragment {
             });
   }
 
-  private static final class DirectoryItemListener implements DirectoryItemActionListener {
+  private final class DirectoryItemListener implements DirectoryItemActionListener {
 
     private final DirectoryBrowseViewModel viewModel;
 
@@ -94,6 +94,13 @@ public final class DirectoryBrowseFragment extends Fragment {
     @Override
     public void onEditTaskRequested(Task task) {
       // TODO(allen): handle this
+    }
+
+    @Override
+    public void onEditDirectoryRequested(DirectoryReference reference) {
+      CreateDirectoryDialogFragment.create(
+              viewModel.getCurrentDirectory().getValue().getResult().reference().uid(), reference)
+          .show(getChildFragmentManager(), null);
     }
   }
 }

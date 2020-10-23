@@ -2,6 +2,7 @@ package com.awsick.productiveday.directories.repo;
 
 import androidx.lifecycle.LiveData;
 import com.awsick.productiveday.directories.models.Directory;
+import com.awsick.productiveday.directories.models.DirectoryReference;
 import com.awsick.productiveday.directories.repo.room.DirectoryDatabase;
 import com.awsick.productiveday.network.RequestStatus;
 
@@ -15,4 +16,7 @@ public interface DirectoryRepo {
 
   /** Create a new directory with nothing in it. */
   void createDirectory(String name, int currentDirectory);
+
+  /** Update's {@code directory} name to {@code updatedName}. Home directory cannot be renamed. */
+  void updateDirectory(DirectoryReference directory, String updatedName);
 }

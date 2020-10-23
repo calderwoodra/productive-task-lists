@@ -53,17 +53,15 @@ tasks and project setup.
 1. ~~add room database to save tasks~~
 2. ~~allow users to mark tasks complete~~
 3. ~~allow users to edit tasks~~
-4. allow users to set date and time (deadline), or start time or no time.
-5. allow users to set repeatable
+4. allow users to set deadlines and reminders
+5. allow users to set repeatable reminders
 6. sort tasks based on deadline
 
 ### Directories
 1. ~~allow users to select a directory~~
 2. ~~allow users to browse directories and tasks~~
 3. ~~allow users to create directories~~
-4. allow users to delete directories
-5. allow users to move directories
-6. allow users to rename directories
+4. ~~allow users to rename directories (long click)~~
 
 ### Launch
 1. allow users to purchase the app
@@ -72,6 +70,8 @@ tasks and project setup.
 4. Deploy to play store
 
 ### Stretch
+-1. allow users to delete directories (move tasks to home or delete all tasks as well)
+0. allow users to move directories
 1. add empty rv state
 2. add tutorials
 3. save tasks on the server

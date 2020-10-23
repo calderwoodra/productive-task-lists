@@ -47,7 +47,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
   // Check that the root directory exists and create it if it doesn't.
   private void init() {
     SimpleFutures.addCallback(
-        directoryDatabase.directoryDao().getDirectory(-1),
+        directoryDatabase.directoryDao().getDirectory(ROOT_DIRECTORY_ID),
         readResult -> {
           if (readResult != null) {
             rootDirectoryReady.setValue(true);
@@ -61,7 +61,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
                           DirectoryReference.builder()
                               .setParent(Optional.absent())
                               .setName("Home")
-                              .setUid(-1)
+                              .setUid(ROOT_DIRECTORY_ID)
                               .build())),
               (SimpleFutureCallback<Long>) insertResult -> rootDirectoryReady.setValue(true),
               executor);
@@ -79,7 +79,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
             if (!ready) {
               return new RequestStatusLiveData<>();
             }
-            return getDirectoryInternal(-1);
+            return getDirectoryInternal(ROOT_DIRECTORY_ID);
           });
     }
     return getDirectoryInternal(uid);
@@ -112,13 +112,32 @@ final class DirectoryRepoImpl implements DirectoryRepo {
 
   @Override
   public void createDirectory(String name, int currentDirectory) {
-    DirectoryEntity entity = new DirectoryEntity();
-    entity.name = name;
-    entity.parentUid = currentDirectory;
+    DirectoryEntity entity =
+        DirectoryEntity.from(
+            DirectoryReference.builder()
+                .setName(name)
+                .setParent(Optional.of(currentDirectory))
+                .build());
 
     SimpleFutures.addCallback(
         directoryDatabase.directoryDao().insert(entity),
         uid -> refreshDirectory(currentDirectory),
+        executor);
+  }
+
+  @Override
+  public void updateDirectory(DirectoryReference directory, String updatedName) {
+    DirectoryEntity entity =
+        DirectoryEntity.from(
+            DirectoryReference.builder()
+                .setUid(directory.uid())
+                .setParent(directory.parent())
+                .setName(updatedName)
+                .build());
+
+    SimpleFutures.addCallback(
+        directoryDatabase.directoryDao().update(entity),
+        voidd -> refreshDirectory(directory.parent().get()),
         executor);
   }
 

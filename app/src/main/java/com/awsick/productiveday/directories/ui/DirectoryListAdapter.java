@@ -87,9 +87,11 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
     @Override
     void bind(DirectoryListItemData data) {
       name.setText(data.directory.get().name());
-      root.setOnClickListener(
+      root.setOnClickListener(view -> listener.onNavigateToDirectory(data.directory.get()));
+      root.setOnLongClickListener(
           view -> {
-            listener.onNavigateToDirectory(data.directory.get());
+            listener.onEditDirectoryRequested(data.directory.get());
+            return true;
           });
     }
   }
@@ -171,5 +173,7 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
     void onCompleteTaskRequested(Task task);
 
     void onEditTaskRequested(Task task);
+
+    void onEditDirectoryRequested(DirectoryReference reference);
   }
 }
