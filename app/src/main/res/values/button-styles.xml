@@ -68,6 +68,8 @@
   <style name="AppButton.Icon" parent="@style/Widget.AppCompat.Button.Borderless">
     <item name="android:layout_height">48dp</item>
     <item name="android:layout_width">48dp</item>
+    <item name="android:minWidth">48dp</item>
+    <item name="minWidth">48dp</item>
     <item name="android:padding">12dp</item>
     <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     <item name="background">?attr/selectableItemBackgroundBorderless</item>

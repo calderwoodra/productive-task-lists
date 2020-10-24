@@ -15,6 +15,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Futures;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -71,37 +72,15 @@ final class DirectoryReferenceRepoImpl implements DirectoryReferenceRepo {
     return directoryCache.get(uid);
   }
 
-  private RequestStatusLiveData<DirectoryReference> fetchDirectory(
-      RequestStatusLiveData<DirectoryReference> directoryReference, int uid) {
-    directoryReference.setValue(RequestStatus.pending());
-    SimpleFutures.addCallback(
-        directoryDatabase.directoryDao().getDirectory(uid),
-        directory ->
-            directoryReference.setValue(RequestStatus.success(directory.toDirectoryReference())),
-        executor);
-    return directoryReference;
-  }
-
-  private void refreshDirectory(int uid) {
-    if (!directoryCache.containsKey(uid)) {
-      return;
-    }
-    RequestStatusLiveData<DirectoryReference> liveData = directoryCache.get(uid);
-    fetchDirectory(liveData, uid);
-  }
-
   @Override
   public void createDirectory(String name, int currentDirectory) {
-    DirectoryEntity entity =
-        DirectoryEntity.from(
-            DirectoryReference.builder()
-                .setName(name)
-                .setParent(Optional.of(currentDirectory))
-                .build());
+    DirectoryEntity entity = new DirectoryEntity();
+    entity.name = name;
+    entity.parentUid = currentDirectory;
 
     SimpleFutures.addCallback(
         directoryDatabase.directoryDao().insert(entity),
-        uid -> refreshDirectory(currentDirectory),
+        uid -> refreshChildDirectories(currentDirectory),
         executor);
   }
 
@@ -117,21 +96,35 @@ final class DirectoryReferenceRepoImpl implements DirectoryReferenceRepo {
 
     SimpleFutures.addCallback(
         directoryDatabase.directoryDao().update(entity),
-        voidd -> refreshDirectory(directory.parent().get()),
+        voidd -> refreshChildDirectories(directory.parent().get()),
         executor);
+  }
+
+  private RequestStatusLiveData<DirectoryReference> fetchDirectory(
+      RequestStatusLiveData<DirectoryReference> directoryReference, int uid) {
+    directoryReference.setValue(RequestStatus.pending());
+    SimpleFutures.addCallback(
+        directoryDatabase.directoryDao().getDirectory(uid),
+        directory ->
+            directoryReference.setValue(RequestStatus.success(directory.toDirectoryReference())),
+        executor);
+    return directoryReference;
   }
 
   @Override
   public LiveData<RequestStatus<ImmutableList<DirectoryReference>>> getChildDirectories(int uid) {
     if (!childDirectoriesCache.containsKey(uid)) {
-      childDirectoriesCache.put(uid, fetchChildDirectories(uid));
+      childDirectoriesCache.put(uid, fetchChildDirectories(new RequestStatusLiveData<>(), uid));
     }
     return childDirectoriesCache.get(uid);
   }
 
-  private RequestStatusLiveData<ImmutableList<DirectoryReference>> fetchChildDirectories(int uid) {
-    RequestStatusLiveData<ImmutableList<DirectoryReference>> children =
-        new RequestStatusLiveData<>();
+  private void refreshChildDirectories(int uid) {
+    fetchChildDirectories(Objects.requireNonNull(childDirectoriesCache.get(uid)), uid);
+  }
+
+  private RequestStatusLiveData<ImmutableList<DirectoryReference>> fetchChildDirectories(
+      RequestStatusLiveData<ImmutableList<DirectoryReference>> children, int uid) {
     children.setValue(RequestStatus.pending());
     SimpleFutures.addCallback(
         directoryDatabase.directoryDao().getSiblingDirectories(uid),
