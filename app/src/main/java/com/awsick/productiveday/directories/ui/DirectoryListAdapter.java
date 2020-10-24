@@ -19,23 +19,32 @@ import com.google.common.collect.ImmutableList;
 public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryListItemViewHolder> {
 
   private final DirectoryItemActionListener listener;
+  private final boolean includeTasks;
 
   private ImmutableList<DirectoryListItemData> items = ImmutableList.of();
 
-  DirectoryListAdapter(DirectoryItemActionListener listener) {
+  DirectoryListAdapter(DirectoryItemActionListener listener, boolean includeTasks) {
     this.listener = listener;
+    this.includeTasks = includeTasks;
   }
 
-  public void setDirectory(Directory result) {
-    items =
-        ImmutableList.<DirectoryListItemData>builder()
-            .addAll(
-                result.directories().stream()
-                    .map(DirectoryListItemData::directory)
-                    .collect(toImmutableList()))
-            .addAll(
-                result.tasks().stream().map(DirectoryListItemData::task).collect(toImmutableList()))
-            .build();
+  public void setDirectory(Directory directory) {
+    ImmutableList.Builder<DirectoryListItemData> items = ImmutableList.builder();
+    if (directory.parent().isPresent()) {
+      items.add(DirectoryListItemData.parent(directory.parent().get()));
+    }
+
+    items.addAll(
+        directory.directories().stream()
+            .map(DirectoryListItemData::directory)
+            .collect(toImmutableList()));
+
+    if (includeTasks) {
+      items.addAll(
+          directory.tasks().stream().map(DirectoryListItemData::task).collect(toImmutableList()));
+    }
+
+    this.items = items.build();
     notifyDataSetChanged();
   }
 
@@ -52,6 +61,11 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
         return new TaskViewHolder(
             listener,
             LayoutInflater.from(parent.getContext()).inflate(R.layout.item_task, parent, false));
+      case DirectoryListItemData.PARENT_VIEW_TYPE:
+        return new ParentDirectoryViewHolder(
+            listener,
+            LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_parent_directory, parent, false));
       case DirectoryListItemData.UNKNOWN_VIEW_TYPE:
       default:
         throw new IllegalArgumentException("Unknown view type: " + viewType);
@@ -71,6 +85,24 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
   @Override
   public int getItemViewType(int position) {
     return items.get(position).viewType;
+  }
+
+  private static final class ParentDirectoryViewHolder extends DirectoryListItemViewHolder {
+
+    private final TextView name;
+    private final View root;
+
+    public ParentDirectoryViewHolder(DirectoryItemActionListener listener, @NonNull View itemView) {
+      super(listener, itemView);
+      name = itemView.findViewById(R.id.directory_item_title);
+      root = itemView.findViewById(R.id.directory_item_click_target);
+    }
+
+    @Override
+    void bind(DirectoryListItemData data) {
+      name.setText(data.directory.get().name());
+      root.setOnClickListener(view -> listener.onNavigateToDirectory(data.directory.get()));
+    }
   }
 
   private static final class DirectoryViewHolder extends DirectoryListItemViewHolder {
@@ -144,6 +176,7 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
     private static final int UNKNOWN_VIEW_TYPE = 0;
     private static final int DIRECTORY_VIEW_TYPE = 1;
     private static final int TASK_VIEW_TYPE = 2;
+    private static final int PARENT_VIEW_TYPE = 3;
 
     private final int viewType;
     private final Optional<DirectoryReference> directory;
@@ -151,6 +184,10 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
 
     public static DirectoryListItemData task(Task task) {
       return new DirectoryListItemData(TASK_VIEW_TYPE, Optional.absent(), Optional.of(task));
+    }
+
+    public static DirectoryListItemData parent(DirectoryReference parent) {
+      return new DirectoryListItemData(PARENT_VIEW_TYPE, Optional.of(parent), Optional.absent());
     }
 
     public static DirectoryListItemData directory(DirectoryReference directory) {

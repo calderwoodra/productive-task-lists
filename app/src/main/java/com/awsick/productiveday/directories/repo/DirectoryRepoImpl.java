@@ -11,6 +11,7 @@ import com.awsick.productiveday.network.RequestStatus.Status;
 import com.awsick.productiveday.network.util.RequestStatusUtils;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import java.util.HashMap;
 import javax.inject.Inject;
@@ -50,6 +51,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
 
     private RequestStatus<ImmutableList<Task>> tasks = RequestStatus.initial();
     private RequestStatus<ImmutableList<DirectoryReference>> directories = RequestStatus.initial();
+    private RequestStatus<Optional<DirectoryReference>> parent;
 
     public DirectoryLiveData(
         DirectoryReferenceRepo directoryReferenceRepo,
@@ -87,16 +89,39 @@ final class DirectoryRepoImpl implements DirectoryRepo {
             this.directories = directories;
             onChanged();
           });
+
+      // Fetch the parent directory reference
+      addSource(
+          Transformations.switchMap(
+              reference,
+              directory -> {
+                if (directory.status != Status.SUCCESS) {
+                  return new MutableLiveData<>(RequestStatus.pending());
+                }
+
+                if (!directory.getResult().parent().isPresent()) {
+                  return new MutableLiveData<>(RequestStatus.success(Optional.absent()));
+                }
+
+                return Transformations.map(
+                    directoryReferenceRepo.getDirectory(directory.getResult().parent().get()),
+                    parent -> RequestStatusUtils.identity(parent, Optional::of));
+              }),
+          parent -> {
+            this.parent = (RequestStatus<Optional<DirectoryReference>>) parent;
+            onChanged();
+          });
     }
 
     private void onChanged() {
-      if (RequestStatusUtils.areAllSuccess(reference.getValue(), tasks, directories)) {
+      if (RequestStatusUtils.areAllSuccess(reference.getValue(), parent, tasks, directories)) {
         setValue(
             RequestStatus.success(
                 Directory.builder()
                     .setTasks(tasks.getResult())
                     .setDirectories(directories.getResult())
                     .setReference(reference.getValue().getResult())
+                    .setParent(parent.getResult())
                     .build()));
         return;
       }

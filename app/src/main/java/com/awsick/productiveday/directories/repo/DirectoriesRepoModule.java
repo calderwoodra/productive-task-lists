@@ -23,7 +23,7 @@ public final class DirectoriesRepoModule {
   @Provides
   @Singleton
   public static DirectoryRepo provideDirectoryRepo(
-      DirectoryReferenceRepo directoryReferenceRepo, TasksRepo tasksRepo, Executor executor) {
-    return new DirectoryRepoImpl(directoryReferenceRepo, tasksRepo, executor);
+      DirectoryReferenceRepo directoryReferenceRepo, TasksRepo tasksRepo) {
+    return new DirectoryRepoImpl(directoryReferenceRepo, tasksRepo);
   }
 }

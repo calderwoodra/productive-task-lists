@@ -40,7 +40,8 @@ public final class DirectoryBrowseFragment extends Fragment {
 
     RecyclerView rv = root.findViewById(R.id.directory_list);
     rv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
-    DirectoryListAdapter adapter = new DirectoryListAdapter(new DirectoryItemListener(viewModel));
+    DirectoryListAdapter adapter =
+        new DirectoryListAdapter(new DirectoryItemListener(viewModel), true);
     rv.setAdapter(adapter);
 
     OnBackPressedCallback callback =
