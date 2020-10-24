@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.tasks.models.Task;
 import com.google.common.base.Optional;
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
 public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
@@ -132,14 +133,9 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
       Task task = data.task.get();
       title.setText(task.title());
       notes.setText(task.notes());
-      done.setOnClickListener(
-          view -> {
-            listener.onCompleteTaskRequested(task);
-          });
-      clickTarget.setOnClickListener(
-          view -> {
-            listener.onEditTaskRequested(task);
-          });
+      notes.setVisibility(Strings.isNullOrEmpty(task.notes()) ? View.GONE : View.VISIBLE);
+      done.setOnClickListener(view -> listener.onCompleteTaskRequested(task));
+      clickTarget.setOnClickListener(view -> listener.onEditTaskRequested(task));
     }
   }
 

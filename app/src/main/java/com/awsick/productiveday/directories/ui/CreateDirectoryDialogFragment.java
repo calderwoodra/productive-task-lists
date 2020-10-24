@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.directories.models.DirectoryReference;
+import com.awsick.productiveday.directories.repo.DirectoryReferenceRepo;
 import com.awsick.productiveday.directories.repo.DirectoryRepo;
 import dagger.hilt.android.AndroidEntryPoint;
 import javax.inject.Inject;
@@ -19,6 +20,7 @@ import javax.inject.Inject;
 public final class CreateDirectoryDialogFragment extends DialogFragment {
 
   @Inject DirectoryRepo directoryRepo;
+  @Inject DirectoryReferenceRepo directoryReferenceRepo;
 
   private int currentDirectory;
   private DirectoryReference directoryToEdit;
@@ -55,9 +57,9 @@ public final class CreateDirectoryDialogFragment extends DialogFragment {
             update ? "Update" : "Create",
             (a, b) -> {
               if (update) {
-                directoryRepo.updateDirectory(directoryToEdit, et.getText().toString());
+                directoryReferenceRepo.updateDirectory(directoryToEdit, et.getText().toString());
               } else {
-                directoryRepo.createDirectory(et.getText().toString(), currentDirectory);
+                directoryReferenceRepo.createDirectory(et.getText().toString(), currentDirectory);
               }
             })
         .setNegativeButton("Cancel", (a, b) -> {})

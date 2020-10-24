@@ -15,8 +15,15 @@ public final class DirectoriesRepoModule {
 
   @Provides
   @Singleton
-  public static DirectoryRepo provideTasksRepo(
-      DirectoryDatabase database, TasksRepo tasksRepo, Executor executor) {
-    return new DirectoryRepoImpl(database, tasksRepo, executor);
+  public static DirectoryReferenceRepo provideDirectoryReferenceRepo(
+      DirectoryDatabase database, Executor executor) {
+    return new DirectoryReferenceRepoImpl(database, executor);
+  }
+
+  @Provides
+  @Singleton
+  public static DirectoryRepo provideDirectoryRepo(
+      DirectoryReferenceRepo directoryReferenceRepo, TasksRepo tasksRepo, Executor executor) {
+    return new DirectoryRepoImpl(directoryReferenceRepo, tasksRepo, executor);
   }
 }

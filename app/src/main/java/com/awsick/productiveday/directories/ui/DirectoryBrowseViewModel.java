@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import com.awsick.productiveday.common.utils.Assert;
 import com.awsick.productiveday.directories.models.Directory;
+import com.awsick.productiveday.directories.repo.DirectoryReferenceRepo;
 import com.awsick.productiveday.directories.repo.DirectoryRepo;
 import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.network.RequestStatus.Status;
@@ -16,7 +17,7 @@ import com.awsick.productiveday.tasks.repo.TasksRepo;
 public final class DirectoryBrowseViewModel extends ViewModel {
 
   private final MutableLiveData<Integer> currentUid =
-      new MutableLiveData<>(DirectoryRepo.ROOT_DIRECTORY_ID);
+      new MutableLiveData<>(DirectoryReferenceRepo.ROOT_DIRECTORY_ID);
 
   private final CurrentDirectoryLiveData currentDirectory;
   private final TasksRepo tasksRepo;
