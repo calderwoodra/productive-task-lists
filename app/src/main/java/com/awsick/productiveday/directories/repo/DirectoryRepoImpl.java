@@ -13,7 +13,6 @@ import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.google.common.collect.ImmutableList;
 import java.util.HashMap;
-import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -24,14 +23,11 @@ final class DirectoryRepoImpl implements DirectoryRepo {
   private final HashMap<Integer, DirectoryLiveData> directoryCache = new HashMap<>();
   private final DirectoryReferenceRepo directoryReferenceRepo;
   private final TasksRepo tasksRepo;
-  private final Executor executor;
 
   @Inject
-  DirectoryRepoImpl(
-      DirectoryReferenceRepo directoryReferenceRepo, TasksRepo tasksRepo, Executor executor) {
+  DirectoryRepoImpl(DirectoryReferenceRepo directoryReferenceRepo, TasksRepo tasksRepo) {
     this.directoryReferenceRepo = directoryReferenceRepo;
     this.tasksRepo = tasksRepo;
-    this.executor = executor;
   }
 
   @Override
@@ -45,14 +41,12 @@ final class DirectoryRepoImpl implements DirectoryRepo {
 
   private DirectoryLiveData fetchDirectory(int uid) {
     return new DirectoryLiveData(
-        directoryReferenceRepo, tasksRepo, directoryReferenceRepo.getDirectory(uid), executor);
+        directoryReferenceRepo, tasksRepo, directoryReferenceRepo.getDirectory(uid));
   }
 
   private static final class DirectoryLiveData extends MediatorLiveData<RequestStatus<Directory>> {
 
     private final LiveData<RequestStatus<DirectoryReference>> reference;
-    private final DirectoryReferenceRepo directoryReferenceRepo;
-    private final Executor executor;
 
     private RequestStatus<ImmutableList<Task>> tasks = RequestStatus.initial();
     private RequestStatus<ImmutableList<DirectoryReference>> directories = RequestStatus.initial();
@@ -60,11 +54,8 @@ final class DirectoryRepoImpl implements DirectoryRepo {
     public DirectoryLiveData(
         DirectoryReferenceRepo directoryReferenceRepo,
         TasksRepo tasksRepo,
-        LiveData<RequestStatus<DirectoryReference>> reference,
-        Executor executor) {
-      this.directoryReferenceRepo = directoryReferenceRepo;
+        LiveData<RequestStatus<DirectoryReference>> reference) {
       this.reference = reference;
-      this.executor = executor;
       setValue(RequestStatus.pending());
 
       // Fetch list of all tasks contained in reference
