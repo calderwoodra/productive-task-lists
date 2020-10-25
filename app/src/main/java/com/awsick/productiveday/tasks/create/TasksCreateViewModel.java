@@ -19,6 +19,8 @@ import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.Task.Type;
 import com.awsick.productiveday.tasks.models.TaskRepeatability;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public final class TasksCreateViewModel extends ViewModel {
 
@@ -85,6 +87,7 @@ public final class TasksCreateViewModel extends ViewModel {
     title.setValue(existingTask.title());
     notes.setValue(existingTask.notes());
     taskType.setValue(existingTask.type());
+    timeMillis.setValue(existingTask.deadlineMillis());
     directoryId.setValue(existingTask.directoryId());
   }
 
@@ -152,8 +155,31 @@ public final class TasksCreateViewModel extends ViewModel {
   }
 
   private static long midnightTonight() {
-    // TODO(allen): Calculate 11:59 PM tonight
-    return 0;
+    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+    calendar.set(Calendar.HOUR, 23);
+    calendar.set(Calendar.MINUTE, 59);
+    return calendar.toInstant().getEpochSecond() * 1000;
+  }
+
+  public Calendar getCalendar() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTimeInMillis(timeMillis.getValue());
+    return calendar;
+  }
+
+  public void setDate(int year, int month, int dayOfMonth) {
+    Calendar calendar = getCalendar();
+    calendar.set(Calendar.YEAR, year);
+    calendar.set(Calendar.MONTH, month);
+    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+    timeMillis.setValue(calendar.getTimeInMillis());
+  }
+
+  public void setTime(int hourOfDay, int minute) {
+    Calendar calendar = getCalendar();
+    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+    calendar.set(Calendar.MINUTE, minute);
+    timeMillis.setValue(calendar.getTimeInMillis());
   }
 
   public void saveTask(String title, String notes) {
@@ -163,8 +189,7 @@ public final class TasksCreateViewModel extends ViewModel {
         Task.builder()
             .setTitle(title)
             .setNotes(notes)
-            // TODO(allen): implement these
-            // .setDeadlineMillis(timeMillis.getValue())
+            .setDeadlineMillis(timeMillis.getValue())
             // .setRepeatability(repeatable.getValue())
             .setDirectoryId(directoryId.getValue())
             .setType(taskType.getValue());

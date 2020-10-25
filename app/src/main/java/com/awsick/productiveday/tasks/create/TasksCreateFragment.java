@@ -1,5 +1,7 @@
 package com.awsick.productiveday.tasks.create;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import com.awsick.productiveday.tasks.models.Task.Type;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 import dagger.hilt.android.AndroidEntryPoint;
+import java.util.Calendar;
 
 @AndroidEntryPoint
 public final class TasksCreateFragment extends Fragment {
@@ -102,10 +105,9 @@ public final class TasksCreateFragment extends Fragment {
             });
 
     setupChips(viewModel, root);
-    // TODO(allen): Setup click listener for date
-    // TODO(allen): Setup click listener for time
+    setupDate(viewModel, root);
+    setupTime(viewModel, root);
     // TODO(allen): Setup click listener for repeatability
-    // TODO(allen): Setup click listener for category
   }
 
   private void setupTitleAndNotes(
@@ -194,5 +196,34 @@ public final class TasksCreateFragment extends Fragment {
     string.observe(
         getViewLifecycleOwner(),
         text -> ((TextView) requireView().findViewById(viewId)).setText(text));
+  }
+
+  private void setupDate(TasksCreateViewModel viewModel, View root) {
+    Calendar calendar = viewModel.getCalendar();
+    root.findViewById(R.id.create_task_deadline_date)
+        .setOnClickListener(
+            view ->
+                new DatePickerDialog(
+                        requireContext(),
+                        (picker, year, month, dayOfMonth) ->
+                            viewModel.setDate(year, month, dayOfMonth),
+                        calendar.get(Calendar.YEAR),
+                        calendar.get(Calendar.MONTH),
+                        calendar.get(Calendar.DAY_OF_MONTH))
+                    .show());
+  }
+
+  private void setupTime(TasksCreateViewModel viewModel, View root) {
+    Calendar calendar = viewModel.getCalendar();
+    root.findViewById(R.id.create_task_deadline_time)
+        .setOnClickListener(
+            view ->
+                new TimePickerDialog(
+                        requireContext(),
+                        (view1, hourOfDay, minute) -> viewModel.setTime(hourOfDay, minute),
+                        calendar.get(Calendar.HOUR_OF_DAY),
+                        calendar.get(Calendar.MINUTE),
+                        false)
+                    .show());
   }
 }

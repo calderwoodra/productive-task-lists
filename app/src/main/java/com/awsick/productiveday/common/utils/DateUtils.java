@@ -7,7 +7,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 public final class DateUtils {
 
   // Different patterns to try and parse, based on whether the backend uses milliseconds or not.
-  public static final String HUMAN_TIME_FORMAT = "HH:mm aa";
-  public static final String HUMAN_DATE_FORMAT = "DDD, MMM dd, yyyy";
+  public static final String HUMAN_TIME_FORMAT = "hh:mm aa";
+  public static final String HUMAN_DATE_FORMAT = "EEE, MMM dd, yyyy";
   public static final String MS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS";
   public static final String NO_MS_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
@@ -40,30 +39,24 @@ public final class DateUtils {
     return parsedDate;
   }
 
-  /** Return a Date from a String parsed using GMT to match our server time. */
   private static Date convertStringToDateInternal(String timeString, String pattern) {
     try {
       SimpleDateFormat sdf = new SimpleDateFormat(pattern, Locale.getDefault());
-      sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
       return sdf.parse(timeString);
     } catch (ParseException e) {
       return null;
     }
   }
 
-  /** Return a String from a Date formatted using GMT to match our server time. */
   public static String convertDateToString(Date date, String format) {
     SimpleDateFormat sdf = new SimpleDateFormat(format, Locale.getDefault());
-    sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
     return sdf.format(date);
   }
 
-  /** Return a String from a datestring formatted using GMT to match our server time. */
   public static String convertDateStringFormat(
       String dateString, String inputFormat, String outputFormat) {
     SimpleDateFormat sdfIn = new SimpleDateFormat(inputFormat, Locale.getDefault());
     SimpleDateFormat sdfOut = new SimpleDateFormat(outputFormat, Locale.getDefault());
-    sdfOut.setTimeZone(TimeZone.getTimeZone("GMT"));
     Date date = null;
     try {
       date = sdfIn.parse(dateString);
@@ -90,7 +83,6 @@ public final class DateUtils {
 
   public static String getCurrentMonthYearString() {
     SimpleDateFormat fmtOut = new SimpleDateFormat("MMMM yyyy", Locale.US);
-    fmtOut.setTimeZone(TimeZone.getTimeZone("GMT"));
     Date now = new Date(getCurrentTimeMs());
     return fmtOut.format(now);
   }
