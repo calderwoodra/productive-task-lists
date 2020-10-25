@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.tasks.models.Task;
+import com.awsick.productiveday.tasks.models.ViewTask;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
@@ -26,7 +27,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
     this.listener = listener;
   }
 
-  void setTasks(ImmutableList<Task> tasks) {
+  void setTasks(ImmutableList<ViewTask> tasks) {
     ImmutableList<TaskListItemData> newTasks =
         tasks.stream().map(TaskListItemData::task).collect(toImmutableList());
     TaskDiffUtil callback = new TaskDiffUtil(this.tasks, newTasks);
@@ -81,9 +82,9 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
 
     private final int viewType;
     private final Optional<String> header;
-    private final Optional<Task> task;
+    private final Optional<ViewTask> task;
 
-    public static TaskListItemData task(Task task) {
+    public static TaskListItemData task(ViewTask task) {
       return new TaskListItemData(TASK_VIEW_TYPE, Optional.absent(), Optional.of(task));
     }
 
@@ -91,7 +92,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
       return new TaskListItemData(HEADER_VIEW_TYPE, Optional.of(header), Optional.absent());
     }
 
-    private TaskListItemData(int viewType, Optional<String> header, Optional<Task> task) {
+    private TaskListItemData(int viewType, Optional<String> header, Optional<ViewTask> task) {
       this.viewType = viewType;
       this.header = header;
       this.task = task;
@@ -118,6 +119,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
     private final View clickTarget;
     private final TextView title;
     private final TextView notes;
+    private final TextView directory;
     private final View done;
 
     public TaskViewHolder(TaskItemActionListener listener, @NonNull View itemView) {
@@ -125,17 +127,19 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
       this.listener = listener;
       title = itemView.findViewById(R.id.task_item_title);
       notes = itemView.findViewById(R.id.task_item_notes);
+      directory = itemView.findViewById(R.id.task_item_folder);
       done = itemView.findViewById(R.id.task_item_done);
       clickTarget = itemView.findViewById(R.id.task_item_click_target);
     }
 
     public void bind(TaskListItemData data) {
-      Task task = data.task.get();
+      Task task = data.task.get().task;
       title.setText(task.title());
       notes.setText(task.notes());
       notes.setVisibility(Strings.isNullOrEmpty(task.notes()) ? View.GONE : View.VISIBLE);
       done.setOnClickListener(view -> listener.onCompleteTaskRequested(task));
       clickTarget.setOnClickListener(view -> listener.onEditTaskRequested(task));
+      directory.setText(data.task.get().directory.name());
     }
   }
 
@@ -173,7 +177,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
         case TaskListItemData.HEADER_VIEW_TYPE:
           return oldTask.header.get().equals(newTask.header.get());
         case TaskListItemData.TASK_VIEW_TYPE:
-          return oldTask.task.get().uid() == newTask.task.get().uid();
+          return oldTask.task.get().task.uid() == newTask.task.get().task.uid();
         case TaskListItemData.UNKNOWN_VIEW_TYPE:
         default:
           throw new IllegalArgumentException("Unhandled view type: " + oldTask.viewType);
@@ -189,7 +193,8 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
         case TaskListItemData.HEADER_VIEW_TYPE:
           return false;
         case TaskListItemData.TASK_VIEW_TYPE:
-          return oldTask.task.get().equals(newTask.task.get());
+          return oldTask.task.get().task.equals(newTask.task.get().task)
+              && oldTask.task.get().directory.equals(newTask.task.get().directory);
         case TaskListItemData.UNKNOWN_VIEW_TYPE:
         default:
           throw new IllegalArgumentException("Unhandled view type: " + oldTask.viewType);

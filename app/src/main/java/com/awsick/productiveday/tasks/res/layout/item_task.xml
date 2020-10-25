@@ -5,8 +5,7 @@
   android:id="@+id/task_item_click_target"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  android:paddingTop="4dp"
-  android:paddingBottom="4dp"
+  android:clipToPadding="false"
   android:background="?attr/selectableItemBackground"
   android:minHeight="56dp">
 
@@ -17,8 +16,7 @@
     android:layout_height="wrap_content"
     android:src="@drawable/ic_baseline_radio_button_unchecked_24"
     android:tint="?attr/colorControlNormal"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toStartOf="@id/task_item_title"
+    android:clipToPadding="false"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />
 
@@ -28,13 +26,25 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginEnd="16dp"
-    android:layout_marginBottom="4dp"
     android:maxLines="1"
-    app:layout_constraintBottom_toTopOf="@id/task_item_notes"
-    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginBottom="2dp"
+    app:layout_constraintTop_toTopOf="@id/task_item_done"
+    app:layout_constraintBottom_toBottomOf="@id/task_item_done"
+    app:layout_constraintEnd_toStartOf="@id/task_item_folder"
     app:layout_constraintStart_toEndOf="@id/task_item_done"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:text="Purcahse groceries" />
+    tools:text="Purchase groceries" />
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/task_item_folder"
+    style="@style/AppTextCaption"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="16dp"
+    android:maxLines="1"
+    app:layout_constraintBaseline_toBaselineOf="@id/task_item_title"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@id/task_item_title"
+    tools:text="Home" />
 
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/task_item_notes"
@@ -42,11 +52,11 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:ellipsize="end"
-    android:maxLines="1"
+    android:maxLines="2"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="@id/task_item_title"
     app:layout_constraintStart_toStartOf="@id/task_item_title"
     app:layout_constraintTop_toBottomOf="@id/task_item_title"
-    tools:text="Head to whole foods to get some lettuce, tomatoes, broccoli, foo bar." />
+    tools:text="Head to whole foods to get some lettuce, tomatoes, broccoli, foo bar, baz." />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

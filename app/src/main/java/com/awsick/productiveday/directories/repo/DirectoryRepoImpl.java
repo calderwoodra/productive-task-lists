@@ -51,7 +51,7 @@ final class DirectoryRepoImpl implements DirectoryRepo {
 
     private RequestStatus<ImmutableList<Task>> tasks = RequestStatus.initial();
     private RequestStatus<ImmutableList<DirectoryReference>> directories = RequestStatus.initial();
-    private RequestStatus<Optional<DirectoryReference>> parent;
+    private RequestStatus<Optional<DirectoryReference>> parent = RequestStatus.initial();
 
     public DirectoryLiveData(
         DirectoryReferenceRepo directoryReferenceRepo,

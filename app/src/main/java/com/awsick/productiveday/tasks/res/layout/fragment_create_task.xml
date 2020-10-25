@@ -88,7 +88,7 @@
         android:background="@android:color/transparent"
         android:gravity="center_vertical"
         android:hint="Add details"
-        android:inputType="textCapSentences"
+        android:inputType="textCapSentences|textMultiLine"
         android:minHeight="48dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/icon_guideline"

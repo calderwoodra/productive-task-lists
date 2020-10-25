@@ -4,12 +4,20 @@ import androidx.lifecycle.LiveData;
 import com.awsick.productiveday.directories.models.DirectoryReference;
 import com.awsick.productiveday.directories.repo.room.DirectoryDatabase;
 import com.awsick.productiveday.network.RequestStatus;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 
 /** Repo for fetching directory data. */
 public interface DirectoryReferenceRepo {
 
   int ROOT_DIRECTORY_ID = DirectoryDatabase.ROOT_DIRECTORY_ID;
+
+  DirectoryReference ROOT =
+      DirectoryReference.builder()
+          .setUid(DirectoryReferenceRepo.ROOT_DIRECTORY_ID)
+          .setName("Home")
+          .setParent(Optional.absent())
+          .build();
 
   /** Returns a {@link DirectoryReference} with the Unique ID (@code uid}. */
   LiveData<RequestStatus<DirectoryReference>> getDirectory(int uid);

@@ -11,7 +11,6 @@ import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.network.util.RequestStatusLiveData;
 import com.awsick.productiveday.network.util.SimpleFutureCallback;
 import com.awsick.productiveday.network.util.SimpleFutures;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.Futures;
 import java.util.HashMap;
@@ -49,15 +48,7 @@ final class DirectoryReferenceRepoImpl implements DirectoryReferenceRepo {
             return;
           }
           Futures.addCallback(
-              directoryDatabase
-                  .directoryDao()
-                  .insert(
-                      DirectoryEntity.from(
-                          DirectoryReference.builder()
-                              .setParent(Optional.absent())
-                              .setName("Home")
-                              .setUid(ROOT_DIRECTORY_ID)
-                              .build())),
+              directoryDatabase.directoryDao().insert(DirectoryEntity.from(ROOT)),
               (SimpleFutureCallback<Long>) insertResult -> rootDirectoryReady.setValue(true),
               executor);
         },
@@ -96,8 +87,15 @@ final class DirectoryReferenceRepoImpl implements DirectoryReferenceRepo {
 
     SimpleFutures.addCallback(
         directoryDatabase.directoryDao().update(entity),
-        voidd -> refreshChildDirectories(directory.parent().get()),
+        voidd -> {
+          refreshDirectory(directory.uid());
+          refreshChildDirectories(directory.parent().get());
+        },
         executor);
+  }
+
+  private void refreshDirectory(int uid) {
+    fetchDirectory(directoryCache.get(uid), uid);
   }
 
   private RequestStatusLiveData<DirectoryReference> fetchDirectory(

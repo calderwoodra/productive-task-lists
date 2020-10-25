@@ -103,11 +103,13 @@ class TasksRepoImpl implements TasksRepo {
   }
 
   private void refreshDirectoryTasks(int directoryId) {
-    if (!directoryTasksMap.containsKey(directoryId)) {
-      return;
+    RequestStatusLiveData<ImmutableList<Task>> tasks;
+    if (directoryTasksMap.containsKey(directoryId)) {
+      tasks = directoryTasksMap.get(directoryId);
+    } else {
+      tasks = new RequestStatusLiveData<>();
     }
 
-    RequestStatusLiveData<ImmutableList<Task>> tasks = directoryTasksMap.get(directoryId);
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
         tasksDatabase.taskDao().getAllIncomplete(directoryId),
