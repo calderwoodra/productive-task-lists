@@ -3,7 +3,6 @@ package com.awsick.productiveday.tasks.create;
 import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
@@ -12,6 +11,7 @@ import com.awsick.productiveday.BuildConfig;
 import com.awsick.productiveday.common.utils.DateUtils;
 import com.awsick.productiveday.common.viewmodelutils.SingleLiveEvent;
 import com.awsick.productiveday.directories.models.Directory;
+import com.awsick.productiveday.directories.repo.DirectoryReferenceRepo;
 import com.awsick.productiveday.directories.repo.DirectoryRepo;
 import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.network.util.RequestStatusUtils;
@@ -30,9 +30,9 @@ public final class TasksCreateViewModel extends ViewModel {
 
   // Repos
   private final TasksRepo tasksRepo;
-  private final DirectoryRepo directoryRepo;
 
   // Basics
+  private final Task existingTask;
   private final int taskId;
   private final MutableLiveData<String> title =
       new MutableLiveData<>(BuildConfig.DEBUG ? "Test Title" : "");
@@ -45,8 +45,10 @@ public final class TasksCreateViewModel extends ViewModel {
   private final MutableLiveData<TaskRepeatability> repeatable = new MutableLiveData<>(null);
 
   // Directories
-  private final MutableLiveData<Integer> directoryId = new MutableLiveData<>(-1);
-  private final DirectoryNameLiveData directoryName;
+  private final MutableLiveData<Integer> directoryId =
+      new MutableLiveData<>(DirectoryReferenceRepo.ROOT_DIRECTORY_ID);
+  private final LiveData<RequestStatus<Directory>> directory;
+  private final LiveData<RequestStatus<String>> directoryName;
 
   // Single Consumables
   private final SingleLiveEvent<SaveEvents> saveEvents = new SingleLiveEvent<>();
@@ -55,30 +57,35 @@ public final class TasksCreateViewModel extends ViewModel {
   TasksCreateViewModel(
       TasksRepo tasksRepo, DirectoryRepo directoryRepo, @Assisted SavedStateHandle savedState) {
     this.tasksRepo = tasksRepo;
-    this.directoryRepo = directoryRepo;
-    directoryName = new DirectoryNameLiveData(directoryRepo, directoryId);
+    directory = Transformations.switchMap(directoryId, directoryRepo::getDirectory);
+    directoryName =
+        Transformations.map(
+            directory, status -> RequestStatusUtils.identity(status, d -> d.reference().name()));
 
     Integer taskId = savedState.get(TasksCreateFragment.TASK_ID_KEY);
     if (taskId == null || taskId == -1) {
+      existingTask = null;
       this.taskId = -1;
       return;
     }
 
-    Task task =
+    Task existingTask =
         tasksRepo.getIncompleteTasks().getValue().getResult().stream()
             .filter(t -> t.uid() == taskId)
             .findFirst()
             .orElse(null);
-    if (task == null) {
+    if (existingTask == null) {
+      this.existingTask = null;
       this.taskId = -1;
       return;
     }
 
+    this.existingTask = existingTask;
     this.taskId = taskId;
-    title.setValue(task.title());
-    notes.setValue(task.notes());
-    taskType.setValue(task.type());
-    directoryId.setValue(task.directoryId());
+    title.setValue(existingTask.title());
+    notes.setValue(existingTask.notes());
+    taskType.setValue(existingTask.type());
+    directoryId.setValue(existingTask.directoryId());
   }
 
   public LiveData<String> getTitle() {
@@ -108,8 +115,16 @@ public final class TasksCreateViewModel extends ViewModel {
         });
   }
 
+  public int getCurrentDirectory() {
+    return directoryId.getValue();
+  }
+
   public void setDirectoryId(int id) {
     directoryId.setValue(id);
+  }
+
+  public LiveData<RequestStatus<Directory>> getDirectory() {
+    return directory;
   }
 
   public LiveData<RequestStatus<String>> getDirectoryName() {
@@ -151,36 +166,14 @@ public final class TasksCreateViewModel extends ViewModel {
             // TODO(allen): implement these
             // .setDeadlineMillis(timeMillis.getValue())
             // .setRepeatability(repeatable.getValue())
-            // .setDirectoryId(-1)
+            .setDirectoryId(directoryId.getValue())
             .setType(taskType.getValue());
 
     if (taskId == -1) {
       tasksRepo.createTask(taskBuilder.build());
     } else {
-      tasksRepo.updateTask(taskBuilder.setUid(taskId).build());
+      tasksRepo.updateTask(existingTask, taskBuilder.setUid(taskId).build());
     }
     saveEvents.setValue(SaveEvents.SUCCESSFULLY_SAVED);
-  }
-
-  private static final class DirectoryNameLiveData extends MediatorLiveData<RequestStatus<String>> {
-
-    private LiveData<RequestStatus<Directory>> currentDirectory = null;
-
-    public DirectoryNameLiveData(DirectoryRepo directoryRepo, LiveData<Integer> uidLiveData) {
-      setValue(RequestStatus.initial());
-      addSource(
-          uidLiveData,
-          uid -> {
-            if (currentDirectory != null) {
-              removeSource(currentDirectory);
-            }
-            currentDirectory = directoryRepo.getDirectory(uid);
-            addSource(
-                currentDirectory,
-                directory -> {
-                  setValue(RequestStatusUtils.identity(directory, d -> d.reference().name()));
-                });
-          });
-    }
   }
 }

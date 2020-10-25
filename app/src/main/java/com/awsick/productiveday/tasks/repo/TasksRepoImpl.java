@@ -121,16 +121,19 @@ class TasksRepoImpl implements TasksRepo {
   }
 
   @Override
-  public void updateTask(Task task) {
+  public void updateTask(Task existingTask, Task newTask) {
     // TODO(allen): Consider adding the task optimistically
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
-        tasksDatabase.taskDao().update(TaskEntity.from(task)),
+        tasksDatabase.taskDao().update(TaskEntity.from(newTask)),
         new FutureCallback<Void>() {
           @Override
           public void onSuccess(Void voidd) {
             refreshTasks();
-            refreshDirectoryTasks(task.directoryId());
+            refreshDirectoryTasks(newTask.directoryId());
+            if (existingTask.directoryId() != newTask.directoryId()) {
+              refreshDirectoryTasks(existingTask.directoryId());
+            }
           }
 
           @Override

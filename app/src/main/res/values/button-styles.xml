@@ -12,7 +12,6 @@
 
   <!-- NOTE: Do not use this style, use one of it's descendants instead. -->
   <style name="AppButton" parent="@style/Widget.AppCompat.Button">
-    <item name="android:textAllCaps">false</item>
     <item name="android:fontFamily">sans-serif</item>
     <item name="fontFamily">sans-serif</item>
     <item name="android:textStyle">bold</item>
@@ -28,7 +27,6 @@
     has all the same variables set as AppButton style, we need to duplicate them here.
   -->
   <style name="AppButton.Flat" parent="@style/Widget.AppCompat.Button.Borderless">
-    <item name="android:textAllCaps">false</item>
     <item name="android:fontFamily">sans-serif-medium</item>
     <item name="fontFamily">sans-serif-medium</item>
     <item name="android:textSize">17sp</item>

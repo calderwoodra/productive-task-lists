@@ -23,7 +23,7 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
 
   private ImmutableList<DirectoryListItemData> items = ImmutableList.of();
 
-  DirectoryListAdapter(DirectoryItemActionListener listener, boolean includeTasks) {
+  public DirectoryListAdapter(DirectoryItemActionListener listener, boolean includeTasks) {
     this.listener = listener;
     this.includeTasks = includeTasks;
   }

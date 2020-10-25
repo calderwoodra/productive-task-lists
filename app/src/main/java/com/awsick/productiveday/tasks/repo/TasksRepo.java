@@ -15,7 +15,7 @@ public interface TasksRepo {
 
   void createTask(Task task);
 
-  void updateTask(Task task);
+  void updateTask(Task existingTask, Task newTask);
 
   void deleteTask(Task task);
 

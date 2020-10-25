@@ -11,9 +11,9 @@
   android:minHeight="56dp">
 
   <androidx.appcompat.widget.AppCompatImageView
-    style="@style/AppButton.Icon"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
+    android:padding="12dp"
     android:src="@drawable/ic_baseline_folder_24"
     android:tint="?attr/colorControlNormal"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -24,7 +24,7 @@
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/directory_item_title"
     style="@style/AppTextHeadline6"
-    android:layout_width="0dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="72dp"
     android:layout_marginEnd="16dp"

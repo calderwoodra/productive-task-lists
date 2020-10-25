@@ -5,10 +5,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.awsick.productiveday.network.RequestStatus;
 import java.util.Objects;
 
-public class RequestStatusLiveData<T> extends MutableLiveData<RequestStatus<T>> {
+public final class RequestStatusLiveData<T> extends MutableLiveData<RequestStatus<T>> {
 
   public RequestStatusLiveData() {
-    setValue(RequestStatus.initial());
+    super(RequestStatus.initial());
   }
 
   @Override

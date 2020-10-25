@@ -61,9 +61,7 @@ public final class TasksCreateFragment extends Fragment {
     observe(viewModel.getRepeatable(), R.id.create_task_repeat);
     TextView directoryName = root.findViewById(R.id.create_task_directory);
     directoryName.setOnClickListener(
-        view -> {
-          new SelectDirectoryDialogFragment().showNow(getChildFragmentManager(), null);
-        });
+        view -> new SelectDirectoryDialogFragment().showNow(getChildFragmentManager(), null));
     viewModel
         .getDirectoryName()
         .observe(
