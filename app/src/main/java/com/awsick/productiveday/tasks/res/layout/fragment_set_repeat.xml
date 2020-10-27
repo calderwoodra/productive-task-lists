@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:paddingBottom="100dp"
+  android:clipToPadding="false"
+  tools:context=".tasks.create.TaskCreateActivity">
+
+  <androidx.constraintlayout.widget.ConstraintLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/repeat_frequency_title"
+      style="@style/AppTextOverline"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/standard_vert_margin_med"
+      android:layout_marginStart="@dimen/standard_side_margin"
+      android:layout_marginEnd="@dimen/standard_side_margin"
+      android:text="Repeats every"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+      android:id="@+id/repeat_frequency_count"
+      style="@style/AppTextBody1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/standard_vert_margin_small"
+      android:background="@drawable/round_corners_8dp"
+      android:backgroundTint="#DEDEDE"
+      android:gravity="center"
+      android:imeOptions="actionDone"
+      android:inputType="number"
+      android:minHeight="48dp"
+      android:minWidth="56dp"
+      android:text="1"
+      app:layout_constraintStart_toStartOf="@id/repeat_frequency_title"
+      app:layout_constraintTop_toBottomOf="@id/repeat_frequency_title" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/repeat_frequency_period"
+      style="@style/AppTextBody1"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginStart="@dimen/standard_vert_margin_small"
+      android:paddingStart="16dp"
+      android:paddingEnd="8dp"
+      android:background="@drawable/round_corners_8dp"
+      android:backgroundTint="#DEDEDE"
+      android:drawableEnd="@drawable/ic_baseline_arrow_drop_down_24"
+      android:drawableTint="?attr/colorControlNormal"
+      android:gravity="center"
+      android:minHeight="48dp"
+      app:layout_constraintBaseline_toBaselineOf="@id/repeat_frequency_count"
+      app:layout_constraintStart_toEndOf="@id/repeat_frequency_count"
+      tools:text="week" />
+
+    <View
+      android:id="@+id/repeat_frequency_divider"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginTop="@dimen/standard_vert_margin_large"
+      android:background="#DEDEDE"
+      app:layout_constraintTop_toBottomOf="@id/repeat_frequency_period" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/repeat_weekly_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toBottomOf="@id/repeat_frequency_divider">
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_frequency_period_details"
+        style="@style/AppTextOverline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="@dimen/standard_side_margin"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        android:text="Repeats On"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_sunday"
+        style="@style/DayOfWeekButton"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:text="S"
+        app:layout_constraintStart_toStartOf="@id/repeat_frequency_period_details"
+        app:layout_constraintTop_toBottomOf="@id/repeat_frequency_period_details" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_monday"
+        style="@style/DayOfWeekButton"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="12dp"
+        android:text="M"
+        app:layout_constraintBaseline_toBaselineOf="@id/repeat_sunday"
+        app:layout_constraintStart_toEndOf="@id/repeat_sunday" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_tuesday"
+        style="@style/DayOfWeekButton"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="12dp"
+        android:text="T"
+        app:layout_constraintBaseline_toBaselineOf="@id/repeat_sunday"
+        app:layout_constraintStart_toEndOf="@id/repeat_monday" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_wednesday"
+        style="@style/DayOfWeekButton"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="12dp"
+        android:text="W"
+        app:layout_constraintBaseline_toBaselineOf="@id/repeat_tuesday"
+        app:layout_constraintStart_toEndOf="@id/repeat_tuesday" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_thursday"
+        style="@style/DayOfWeekButton"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="12dp"
+        android:text="T"
+        app:layout_constraintBaseline_toBaselineOf="@id/repeat_wednesday"
+        app:layout_constraintStart_toEndOf="@id/repeat_wednesday" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_friday"
+        style="@style/DayOfWeekButton"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="12dp"
+        android:text="F"
+        app:layout_constraintBaseline_toBaselineOf="@id/repeat_thursday"
+        app:layout_constraintStart_toEndOf="@id/repeat_thursday" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_saturday"
+        style="@style/DayOfWeekButton"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="12dp"
+        android:text="S"
+        app:layout_constraintBaseline_toBaselineOf="@id/repeat_friday"
+        app:layout_constraintStart_toEndOf="@id/repeat_friday" />
+
+      <View
+        android:id="@+id/repeat_weekly_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:background="#DEDEDE"
+        app:layout_constraintTop_toBottomOf="@id/repeat_sunday" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+      android:id="@+id/repeat_monthly_container"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintTop_toBottomOf="@id/repeat_weekly_container">
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_monthly_selector"
+        style="@style/AppTextBody1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="@dimen/standard_side_margin"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/round_corners_8dp"
+        android:backgroundTint="#DEDEDE"
+        android:drawableTint="?attr/colorControlNormal"
+        android:gravity="center"
+        android:minHeight="48dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Monthly on day 25" />
+
+      <View
+        android:id="@+id/repeat_monthly_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:background="#DEDEDE"
+        app:layout_constraintTop_toBottomOf="@id/repeat_monthly_selector" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/repeat_ends_title"
+      style="@style/AppTextOverline"
+      android:layout_width="0dp"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/standard_vert_margin_med"
+      android:layout_marginStart="@dimen/standard_side_margin"
+      android:layout_marginEnd="@dimen/standard_side_margin"
+      android:text="ends"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/repeat_monthly_container" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+      android:id="@+id/repeat_ends_never"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackground"
+      android:clickable="true"
+      android:focusable="true"
+      android:gravity="center_vertical"
+      android:minHeight="64dp"
+      android:orientation="horizontal"
+      app:layout_constraintTop_toBottomOf="@id/repeat_ends_title">
+
+      <androidx.appcompat.widget.AppCompatRadioButton
+        android:id="@+id/repeat_ends_never_rb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_side_margin"
+        android:checked="true"
+        android:clickable="false"
+        android:duplicateParentState="true"
+        android:focusable="false" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextBody1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:duplicateParentState="true"
+        android:focusable="false"
+        android:text="Never" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+      android:id="@+id/repeat_ends_never_divider"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginStart="72dp"
+      android:background="#DEDEDE"
+      app:layout_constraintTop_toBottomOf="@id/repeat_ends_never" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+      android:id="@+id/repeat_ends_on_date"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackground"
+      android:clickable="true"
+      android:focusable="true"
+      android:gravity="center_vertical"
+      android:minHeight="64dp"
+      android:orientation="horizontal"
+      app:layout_constraintTop_toBottomOf="@id/repeat_ends_never">
+
+      <androidx.appcompat.widget.AppCompatRadioButton
+        android:id="@+id/repeat_ends_on_date_rb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_side_margin"
+        android:clickable="false"
+        android:duplicateParentState="true"
+        android:focusable="false" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextBody1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:duplicateParentState="true"
+        android:focusable="false"
+        android:text="On" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_ends_on_date_selector"
+        style="@style/AppTextBody1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_vert_margin_small"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:background="@drawable/round_corners_8dp"
+        android:backgroundTint="#DEDEDE"
+        android:drawableTint="?attr/colorControlNormal"
+        android:duplicateParentState="true"
+        android:gravity="center"
+        android:minHeight="48dp"
+        tools:text="Nov 25, 2020" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+      android:id="@+id/repeat_ends_on_date_divider"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginStart="72dp"
+      android:background="#DEDEDE"
+      app:layout_constraintTop_toBottomOf="@id/repeat_ends_on_date" />
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+      android:id="@+id/repeat_ends_after_times"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="?attr/selectableItemBackground"
+      android:clickable="true"
+      android:focusable="true"
+      android:gravity="center_vertical"
+      android:minHeight="64dp"
+      android:orientation="horizontal"
+      app:layout_constraintTop_toBottomOf="@id/repeat_ends_on_date_divider">
+
+      <androidx.appcompat.widget.AppCompatRadioButton
+        android:id="@+id/repeat_ends_after_times_rb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_side_margin"
+        android:duplicateParentState="true"
+        android:focusable="false" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextBody1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:clickable="false"
+        android:duplicateParentState="true"
+        android:focusable="false"
+        android:text="After" />
+
+      <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/repeat_ends_after_times_input"
+        style="@style/AppTextBody1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/round_corners_8dp"
+        android:backgroundTint="#DEDEDE"
+        android:duplicateParentState="true"
+        android:gravity="center"
+        android:inputType="number"
+        android:minHeight="48dp"
+        android:minWidth="56dp"
+        tools:text="1" />
+
+      <androidx.appcompat.widget.AppCompatTextView
+        style="@style/AppTextBody1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:duplicateParentState="true"
+        android:focusable="false"
+        android:text="occurrence" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <View
+      android:id="@+id/repeat_ends_after_times_divider"
+      android:layout_width="match_parent"
+      android:layout_height="1dp"
+      android:layout_marginStart="72dp"
+      android:background="#DEDEDE"
+      app:layout_constraintTop_toBottomOf="@id/repeat_ends_after_times" />
+
+    <androidx.appcompat.widget.AppCompatButton
+      android:id="@+id/repeat_save_cta"
+      style="@style/AppButton.Dark"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/standard_vert_margin_med"
+      android:layout_marginEnd="@dimen/standard_side_margin"
+      android:text="Save"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintTop_toBottomOf="@id/repeat_ends_after_times" />
+  </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

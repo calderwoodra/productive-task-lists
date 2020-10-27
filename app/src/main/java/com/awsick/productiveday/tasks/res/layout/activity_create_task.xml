@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/main_content"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent" />
+  android:layout_height="match_parent"
+  tools:context=".tasks.create.TaskCreateActivity">
+
+  <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/app_bar"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:theme="@style/AppTheme.AppBarOverlay"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <androidx.appcompat.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?attr/actionBarSize"
+      android:background="?attr/colorPrimary"
+      app:navigationIcon="@drawable/ic_baseline_close_24"
+      app:popupTheme="@style/AppTheme.PopupOverlay"
+      app:title="Create a task" />
+
+  </com.google.android.material.appbar.AppBarLayout>
+
+  <androidx.fragment.app.FragmentContainerView
+    android:id="@+id/task_create_nav_container"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:name="androidx.navigation.fragment.NavHostFragment"
+    app:defaultNavHost="true"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/app_bar"
+    app:navGraph="@navigation/task_create_nav_graph" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,10 +11,10 @@ import android.widget.TextView;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.network.RequestStatus.Status;
 import com.awsick.productiveday.tasks.models.Task;
@@ -27,26 +27,16 @@ import java.util.Calendar;
 @AndroidEntryPoint
 public final class TasksCreateFragment extends Fragment {
 
-  static final String TASK_ID_KEY = "TASK_ID";
-
-  public static TasksCreateFragment create(int taskId) {
-    TasksCreateFragment fragment = new TasksCreateFragment();
-    Bundle args = new Bundle();
-    args.putInt(TASK_ID_KEY, taskId);
-    fragment.setArguments(args);
-    return fragment;
-  }
-
   @Override
   public View onCreateView(
       @NonNull LayoutInflater inflater,
       @Nullable ViewGroup container,
       @Nullable Bundle savedInstanceState) {
-    View root = inflater.inflate(R.layout.fragment_create_task, container, false);
-    Toolbar toolbar = root.findViewById(R.id.toolbar);
-    toolbar.setNavigationOnClickListener(view -> requireActivity().finish());
-    toolbar.setTitle(getArguments().getInt(TASK_ID_KEY, -1) == -1 ? "Create Task" : "Update Task");
-    return root;
+    setArguments(
+        requireActivity().getIntent().getExtras() == null
+            ? new Bundle()
+            : requireActivity().getIntent().getExtras());
+    return inflater.inflate(R.layout.fragment_create_task, container, false);
   }
 
   @Override
@@ -107,7 +97,7 @@ public final class TasksCreateFragment extends Fragment {
     setupChips(viewModel, root);
     setupDate(viewModel, root);
     setupTime(viewModel, root);
-    // TODO(allen): Setup click listener for repeatability
+    setupRepeat(viewModel, root);
   }
 
   private void setupTitleAndNotes(
@@ -225,5 +215,14 @@ public final class TasksCreateFragment extends Fragment {
                         calendar.get(Calendar.MINUTE),
                         false)
                     .show());
+  }
+
+  private void setupRepeat(TasksCreateViewModel viewModel, View root) {
+    TextView repeat = root.findViewById(R.id.create_task_repeat);
+    repeat.setOnClickListener(
+        view ->
+            Navigation.findNavController(root)
+                .navigate(R.id.action_tasksCreateFragment_to_taskRepeatFragment));
+    viewModel.getRepeatable().observe(getViewLifecycleOwner(), repeat::setText);
   }
 }

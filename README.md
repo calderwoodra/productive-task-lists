@@ -53,7 +53,7 @@ tasks and project setup.
 1. ~~add room database to save tasks~~
 2. ~~allow users to mark tasks complete~~
 3. ~~allow users to edit tasks~~
-4. allow users to set deadlines and reminders
+4. ~~allow users to set deadlines and reminders~~
 5. allow users to set repeatable reminders
 6. sort tasks based on deadline
 

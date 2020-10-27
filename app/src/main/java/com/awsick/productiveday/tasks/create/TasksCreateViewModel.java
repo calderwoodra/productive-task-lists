@@ -1,5 +1,7 @@
 package com.awsick.productiveday.tasks.create;
 
+import static com.awsick.productiveday.tasks.create.TaskCreateActivity.TASK_ID_KEY;
+
 import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
@@ -64,7 +66,7 @@ public final class TasksCreateViewModel extends ViewModel {
         Transformations.map(
             directory, status -> RequestStatusUtils.identity(status, d -> d.reference().name()));
 
-    Integer taskId = savedState.get(TasksCreateFragment.TASK_ID_KEY);
+    Integer taskId = savedState.get(TASK_ID_KEY);
     if (taskId == null || taskId == -1) {
       existingTask = null;
       this.taskId = -1;

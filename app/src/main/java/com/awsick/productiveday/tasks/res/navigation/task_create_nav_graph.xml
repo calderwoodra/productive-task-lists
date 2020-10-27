@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/task_create_nav_graph"
+  app:startDestination="@id/tasksCreateFragment">
+
+  <fragment
+    android:id="@+id/tasksCreateFragment"
+    android:name="com.awsick.productiveday.tasks.create.TasksCreateFragment"
+    android:label="Create Task"
+    tools:layout="@layout/fragment_create_task">
+    <action
+      android:id="@+id/action_tasksCreateFragment_to_taskRepeatFragment"
+      app:destination="@id/taskRepeatFragment" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/taskRepeatFragment"
+    android:name="com.awsick.productiveday.tasks.create.TaskRepeatFragment"
+    android:label="Task Periodicity"
+    tools:layout="@layout/fragment_set_repeat" />
+</navigation>

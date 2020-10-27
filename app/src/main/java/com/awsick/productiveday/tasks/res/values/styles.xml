@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <style name="DayOfWeekButton">
+    <item name="android:layout_width">36dp</item>
+    <item name="android:layout_height">36dp</item>
+    <item name="android:background">@drawable/circle_36dp</item>
+    <item name="android:gravity">center</item>
+    <item name="android:textColor">@color/selected_text_color_state_list</item>
+  </style>
+</resources>
