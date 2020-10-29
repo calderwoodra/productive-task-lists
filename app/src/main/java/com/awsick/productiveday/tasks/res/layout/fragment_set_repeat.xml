@@ -6,6 +6,7 @@
   android:layout_height="match_parent"
   android:paddingBottom="100dp"
   android:clipToPadding="false"
+  android:animateLayoutChanges="true"
   tools:context=".tasks.create.TaskCreateActivity">
 
   <androidx.constraintlayout.widget.ConstraintLayout
@@ -165,6 +166,19 @@
       app:layout_constraintTop_toBottomOf="@id/repeat_weekly_container">
 
       <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/repeat_frequency_period_details_title"
+        style="@style/AppTextOverline"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_vert_margin_med"
+        android:layout_marginStart="@dimen/standard_side_margin"
+        android:layout_marginEnd="@dimen/standard_side_margin"
+        android:text="Repeats On"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+      <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/repeat_monthly_selector"
         style="@style/AppTextBody1"
         android:layout_width="wrap_content"
@@ -179,7 +193,7 @@
         android:gravity="center"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/repeat_frequency_period_details_title"
         tools:text="Monthly on day 25" />
 
       <View

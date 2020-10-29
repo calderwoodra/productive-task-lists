@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.network.RequestStatus.Status;
+import com.awsick.productiveday.tasks.create.TasksCreateFragmentDirections.ActionSetRepeatability;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.Task.Type;
 import com.google.android.material.chip.ChipGroup;
@@ -220,9 +221,12 @@ public final class TasksCreateFragment extends Fragment {
   private void setupRepeat(TasksCreateViewModel viewModel, View root) {
     TextView repeat = root.findViewById(R.id.create_task_repeat);
     repeat.setOnClickListener(
-        view ->
-            Navigation.findNavController(root)
-                .navigate(R.id.action_tasksCreateFragment_to_taskRepeatFragment));
+        view -> {
+          ActionSetRepeatability directions =
+              TasksCreateFragmentDirections.actionSetRepeatability(
+                  viewModel.getCalendar().getTimeInMillis());
+          Navigation.findNavController(root).navigate(directions);
+        });
     viewModel.getRepeatable().observe(getViewLifecycleOwner(), repeat::setText);
   }
 }

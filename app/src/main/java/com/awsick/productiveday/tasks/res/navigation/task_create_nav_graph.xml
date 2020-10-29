@@ -11,7 +11,7 @@
     android:label="Create Task"
     tools:layout="@layout/fragment_create_task">
     <action
-      android:id="@+id/action_tasksCreateFragment_to_taskRepeatFragment"
+      android:id="@+id/action_setRepeatability"
       app:destination="@id/taskRepeatFragment" />
   </fragment>
 
@@ -19,5 +19,10 @@
     android:id="@+id/taskRepeatFragment"
     android:name="com.awsick.productiveday.tasks.create.TaskRepeatFragment"
     android:label="Task Periodicity"
-    tools:layout="@layout/fragment_set_repeat" />
+    tools:layout="@layout/fragment_set_repeat">
+    <argument
+      android:name="start_time"
+      app:nullable="false"
+      app:argType="long" />
+  </fragment>
 </navigation>

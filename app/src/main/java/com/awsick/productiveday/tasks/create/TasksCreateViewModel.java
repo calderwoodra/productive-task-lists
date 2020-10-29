@@ -158,7 +158,7 @@ public final class TasksCreateViewModel extends ViewModel {
 
   private static long midnightTonight() {
     Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-    calendar.set(Calendar.HOUR, 23);
+    calendar.set(Calendar.HOUR, 11);
     calendar.set(Calendar.MINUTE, 59);
     return calendar.toInstant().getEpochSecond() * 1000;
   }
@@ -191,7 +191,7 @@ public final class TasksCreateViewModel extends ViewModel {
         Task.builder()
             .setTitle(title)
             .setNotes(notes)
-            .setDeadlineMillis(timeMillis.getValue())
+            .setDeadlineMillis(taskType.getValue() == Type.UNSCHEDULED ? -1 : timeMillis.getValue())
             // .setRepeatability(repeatable.getValue())
             .setDirectoryId(directoryId.getValue())
             .setType(taskType.getValue());

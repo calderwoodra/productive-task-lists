@@ -1,9 +1,11 @@
 package com.awsick.productiveday.tasks.create;
 
+import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import com.awsick.productiveday.common.utils.DateUtils;
@@ -42,14 +44,15 @@ public final class TaskRepeatViewModel extends ViewModel {
   private final MutableLiveData<Calendar> endDate;
 
   @ViewModelInject
-  TaskRepeatViewModel() {
-    // TODO(allen): use the right date
+  TaskRepeatViewModel(@Assisted SavedStateHandle savedState) {
     Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(0);
-
+    calendar.setTimeInMillis(savedState.get("start_time"));
     weeklyFrequency = new MutableLiveData<>(new WeeklyFrequency(calendar));
     monthlyFrequency = new MutableLiveData<>(new MonthlyFrequency(calendar, Type.DAY_OF_THE_MONTH));
-    endDate = new MutableLiveData<>(calendar);
+
+    Calendar endDateCalendar = (Calendar) calendar.clone();
+    endDateCalendar.add(Calendar.MONTH, 1);
+    endDate = new MutableLiveData<>(endDateCalendar);
   }
 
   public LiveData<Integer> getFrequency() {

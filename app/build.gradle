@@ -55,8 +55,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.19.0'
 
     // Arch Components
-    implementation 'androidx.navigation:navigation-fragment:2.3.0'
-    implementation 'androidx.navigation:navigation-ui:2.3.0'
+    implementation 'androidx.navigation:navigation-fragment:2.3.1'
+    implementation 'androidx.navigation:navigation-ui:2.3.1'
 
     // Room Databases
     def room_version = "2.2.5"
@@ -92,3 +92,4 @@ dependencies {
 }
 
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: "androidx.navigation.safeargs"
