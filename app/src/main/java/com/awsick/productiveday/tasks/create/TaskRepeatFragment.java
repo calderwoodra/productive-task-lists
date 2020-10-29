@@ -17,14 +17,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.Navigation;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.common.textwatchers.TwoDigitNonZeroTextWatcher;
 import com.awsick.productiveday.common.uiutils.KeyboardUtils;
 import com.awsick.productiveday.common.uiutils.NoopTextWatcher;
 import com.awsick.productiveday.common.utils.StringUtils;
-import com.awsick.productiveday.tasks.create.TaskRepeatViewModel.EndType;
-import com.awsick.productiveday.tasks.create.TaskRepeatViewModel.FrequencyType;
 import com.awsick.productiveday.tasks.create.TaskRepeatViewModel.WeeklyFrequency.Dow;
+import com.awsick.productiveday.tasks.models.TaskRepeatability.EndType;
+import com.awsick.productiveday.tasks.models.TaskRepeatability.PeriodType;
 import com.google.common.base.Strings;
 import dagger.hilt.android.AndroidEntryPoint;
 import java.util.Calendar;
@@ -49,7 +50,16 @@ public final class TaskRepeatFragment extends Fragment {
     setupWeeklyFrequency(root, viewModel);
     setupMonthlyFrequency(root, viewModel);
     setupEnds(root, viewModel);
-    root.setOnClickListener(view -> viewModel.save());
+
+    // Save repeatability
+    TasksCreateViewModel createViewModel =
+        new ViewModelProvider(requireActivity()).get(TasksCreateViewModel.class);
+    root.findViewById(R.id.repeat_save_cta)
+        .setOnClickListener(
+            view -> {
+              createViewModel.setRepeatability(viewModel.getTaskRepeatability());
+              Navigation.findNavController(requireView()).popBackStack();
+            });
   }
 
   private void setupFrequency(View root, TaskRepeatViewModel viewModel) {
@@ -82,13 +92,13 @@ public final class TaskRepeatFragment extends Fragment {
     popup.setOnMenuItemClickListener(
         item -> {
           if (item.getItemId() == R.id.menu_frequency_daily) {
-            viewModel.setFrequencyType(FrequencyType.DAY);
+            viewModel.setPeriodType(PeriodType.DAILY);
           } else if (item.getItemId() == R.id.menu_frequency_weekly) {
-            viewModel.setFrequencyType(FrequencyType.WEEK);
+            viewModel.setPeriodType(PeriodType.WEEKLY);
           } else if (item.getItemId() == R.id.menu_frequency_monthly) {
-            viewModel.setFrequencyType(FrequencyType.MONTH);
+            viewModel.setPeriodType(PeriodType.MONTHLY);
           } else if (item.getItemId() == R.id.menu_frequency_yearly) {
-            viewModel.setFrequencyType(FrequencyType.YEAR);
+            viewModel.setPeriodType(PeriodType.YEARLY);
           } else {
             throw new IllegalStateException("Unhandled frequency");
           }
@@ -100,10 +110,10 @@ public final class TaskRepeatFragment extends Fragment {
   private void setupWeeklyFrequency(View root, TaskRepeatViewModel viewModel) {
     View container = root.findViewById(R.id.repeat_weekly_container);
     viewModel
-        .getFrequencyType()
+        .getPeriodType()
         .observe(
             getViewLifecycleOwner(),
-            type -> container.setVisibility(type == FrequencyType.WEEK ? View.VISIBLE : View.GONE));
+            type -> container.setVisibility(type == PeriodType.WEEKLY ? View.VISIBLE : View.GONE));
 
     View sun = getDow(root, R.id.repeat_sunday, viewModel, Dow.Su);
     View m = getDow(root, R.id.repeat_monday, viewModel, Dow.M);
@@ -136,11 +146,10 @@ public final class TaskRepeatFragment extends Fragment {
   private void setupMonthlyFrequency(View root, TaskRepeatViewModel viewModel) {
     View container = root.findViewById(R.id.repeat_monthly_container);
     viewModel
-        .getFrequencyType()
+        .getPeriodType()
         .observe(
             getViewLifecycleOwner(),
-            type ->
-                container.setVisibility(type == FrequencyType.MONTH ? View.VISIBLE : View.GONE));
+            type -> container.setVisibility(type == PeriodType.MONTHLY ? View.VISIBLE : View.GONE));
     TextView selection = root.findViewById(R.id.repeat_monthly_selector);
     viewModel
         .getMonthlyFrequency()
@@ -155,7 +164,7 @@ public final class TaskRepeatFragment extends Fragment {
     nTimes.setText(Integer.toString(viewModel.getEndAfterN().getValue()));
     endsAfterContainer.setOnClickListener(
         view -> {
-          viewModel.setEnds(EndType.AFTER_N_TIMES);
+          viewModel.setEnds(EndType.AFTER);
           nTimes.requestFocus();
           nTimes.setSelection(nTimes.getText().length());
           KeyboardUtils.openKeyboardFrom(nTimes);
@@ -191,7 +200,7 @@ public final class TaskRepeatFragment extends Fragment {
         view -> {
           nTimes.clearFocus();
           KeyboardUtils.hideKeyboardFrom(root);
-          viewModel.setEnds(EndType.ON_DATE);
+          viewModel.setEnds(EndType.ON);
           Calendar calendar = viewModel.getEndDateCalendar();
           new DatePickerDialog(
                   requireContext(),
@@ -211,8 +220,8 @@ public final class TaskRepeatFragment extends Fragment {
             getViewLifecycleOwner(),
             type -> {
               never.setChecked(type == EndType.NEVER);
-              endsOn.setChecked(type == EndType.ON_DATE);
-              endsAfter.setChecked(type == EndType.AFTER_N_TIMES);
+              endsOn.setChecked(type == EndType.ON);
+              endsAfter.setChecked(type == EndType.AFTER);
             });
   }
 }

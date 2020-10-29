@@ -10,6 +10,7 @@ import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import com.awsick.productiveday.BuildConfig;
+import com.awsick.productiveday.common.utils.Assert;
 import com.awsick.productiveday.common.utils.DateUtils;
 import com.awsick.productiveday.common.viewmodelutils.SingleLiveEvent;
 import com.awsick.productiveday.directories.models.Directory;
@@ -21,6 +22,7 @@ import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.Task.Type;
 import com.awsick.productiveday.tasks.models.TaskRepeatability;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
+import com.google.common.base.Optional;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -46,7 +48,8 @@ public final class TasksCreateViewModel extends ViewModel {
   // Scheduling
   private final MutableLiveData<Task.Type> taskType = new MutableLiveData<>(Type.UNSCHEDULED);
   private final MutableLiveData<Long> timeMillis = new MutableLiveData<>(midnightTonight());
-  private final MutableLiveData<TaskRepeatability> repeatable = new MutableLiveData<>(null);
+  private final MutableLiveData<Optional<TaskRepeatability>> repeatable =
+      new MutableLiveData<>(Optional.absent());
 
   // Directories
   private final MutableLiveData<Integer> directoryId =
@@ -113,11 +116,15 @@ public final class TasksCreateViewModel extends ViewModel {
     return Transformations.map(
         repeatable,
         repeat -> {
-          if (repeat == null) {
+          if (!repeat.isPresent()) {
             return "Does not repeat";
           }
-          return repeat.toString();
+          return repeat.get().toString();
         });
+  }
+
+  public LiveData<Boolean> showClearRepeatable() {
+    return Transformations.map(repeatable, Optional::isPresent);
   }
 
   public int getCurrentDirectory() {
@@ -192,7 +199,7 @@ public final class TasksCreateViewModel extends ViewModel {
             .setTitle(title)
             .setNotes(notes)
             .setDeadlineMillis(taskType.getValue() == Type.UNSCHEDULED ? -1 : timeMillis.getValue())
-            // .setRepeatability(repeatable.getValue())
+            .setRepeatability(repeatable.getValue().orNull())
             .setDirectoryId(directoryId.getValue())
             .setType(taskType.getValue());
 
@@ -202,5 +209,14 @@ public final class TasksCreateViewModel extends ViewModel {
       tasksRepo.updateTask(existingTask, taskBuilder.setUid(taskId).build());
     }
     saveEvents.setValue(SaveEvents.SUCCESSFULLY_SAVED);
+  }
+
+  public void setRepeatability(TaskRepeatability taskRepeatability) {
+    repeatable.setValue(Optional.of(taskRepeatability));
+  }
+
+  public void clearRepeat() {
+    Assert.checkArgument(repeatable.getValue().isPresent());
+    repeatable.setValue(Optional.absent());
   }
 }

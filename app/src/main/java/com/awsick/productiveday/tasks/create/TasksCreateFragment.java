@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import androidx.annotation.IdRes;
@@ -228,5 +229,13 @@ public final class TasksCreateFragment extends Fragment {
           Navigation.findNavController(root).navigate(directions);
         });
     viewModel.getRepeatable().observe(getViewLifecycleOwner(), repeat::setText);
+
+    Button clearRepeat = root.findViewById(R.id.create_task_clear_repeat);
+    viewModel
+        .showClearRepeatable()
+        .observe(
+            getViewLifecycleOwner(),
+            visible -> clearRepeat.setVisibility(visible ? View.VISIBLE : View.GONE));
+    clearRepeat.setOnClickListener(view -> viewModel.clearRepeat());
   }
 }

@@ -11,30 +11,22 @@ import androidx.lifecycle.ViewModel;
 import com.awsick.productiveday.common.utils.DateUtils;
 import com.awsick.productiveday.tasks.create.TaskRepeatViewModel.MonthlyFrequency.Type;
 import com.awsick.productiveday.tasks.create.TaskRepeatViewModel.WeeklyFrequency.Dow;
+import com.awsick.productiveday.tasks.models.TaskRepeatability;
+import com.awsick.productiveday.tasks.models.TaskRepeatability.EndType;
+import com.awsick.productiveday.tasks.models.TaskRepeatability.PeriodType;
+import com.awsick.productiveday.tasks.models.TaskRepeatability.Weekly;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.Calendar;
 
 public final class TaskRepeatViewModel extends ViewModel {
 
-  public enum FrequencyType {
-    DAY,
-    WEEK,
-    MONTH,
-    YEAR,
-  }
-
-  public enum EndType {
-    NEVER,
-    ON_DATE,
-    AFTER_N_TIMES,
-  }
-
+  private final long startTimeMillis;
   private final MutableLiveData<Integer> frequency = new MutableLiveData<>(1);
-  private final MutableLiveData<FrequencyType> frequencyType =
-      new MutableLiveData<>(FrequencyType.WEEK);
+  private final MutableLiveData<PeriodType> periodType = new MutableLiveData<>(PeriodType.WEEKLY);
   private final FrequencyStringLiveData frequencyString =
-      new FrequencyStringLiveData(frequency, frequencyType);
+      new FrequencyStringLiveData(frequency, periodType);
 
   private final MutableLiveData<WeeklyFrequency> weeklyFrequency;
   private final MutableLiveData<MonthlyFrequency> monthlyFrequency;
@@ -45,8 +37,10 @@ public final class TaskRepeatViewModel extends ViewModel {
 
   @ViewModelInject
   TaskRepeatViewModel(@Assisted SavedStateHandle savedState) {
+    startTimeMillis = savedState.get("start_time");
     Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(savedState.get("start_time"));
+    calendar.setTimeInMillis(startTimeMillis);
+
     weeklyFrequency = new MutableLiveData<>(new WeeklyFrequency(calendar));
     monthlyFrequency = new MutableLiveData<>(new MonthlyFrequency(calendar, Type.DAY_OF_THE_MONTH));
 
@@ -63,12 +57,12 @@ public final class TaskRepeatViewModel extends ViewModel {
     this.frequency.setValue(frequency);
   }
 
-  public LiveData<FrequencyType> getFrequencyType() {
-    return frequencyType;
+  public LiveData<PeriodType> getPeriodType() {
+    return periodType;
   }
 
-  public void setFrequencyType(FrequencyType type) {
-    frequencyType.setValue(type);
+  public void setPeriodType(PeriodType type) {
+    periodType.setValue(type);
   }
 
   public LiveData<String> getFrequencyTypeString() {
@@ -118,8 +112,36 @@ public final class TaskRepeatViewModel extends ViewModel {
     endAfterN.setValue(times);
   }
 
-  public void save() {
-    // TODO(allen): save data to room db
+  public TaskRepeatability getTaskRepeatability() {
+    TaskRepeatability.Builder builder = TaskRepeatability.builder();
+    builder.setFirstReminder(startTimeMillis);
+    builder.setPeriodType(periodType.getValue());
+    switch (periodType.getValue()) {
+      case WEEKLY:
+        builder.setWeekly(Optional.of(weeklyFrequency.getValue().toPojo()));
+        break;
+      case MONTHLY:
+        builder.setMonthly(Optional.of(monthlyFrequency.getValue().getDayOfMonth()));
+        break;
+      case DAILY:
+      case YEARLY:
+        // No-op
+        break;
+    }
+
+    builder.setEndType(endType.getValue());
+    switch (endType.getValue()) {
+      case NEVER:
+        // No-op
+        break;
+      case ON:
+        builder.setEndOnTimeMillis(Optional.of(endDate.getValue().getTimeInMillis()));
+        break;
+      case AFTER:
+        builder.setEndAfterNTimes(Optional.of(endAfterN.getValue()));
+        break;
+    }
+    return builder.build();
   }
 
   public static final class WeeklyFrequency {
@@ -149,6 +171,18 @@ public final class TaskRepeatViewModel extends ViewModel {
 
     public boolean get(Dow dow) {
       return this.dow[dow.ordinal()] == 1;
+    }
+
+    public Weekly toPojo() {
+      return TaskRepeatability.Weekly.builder()
+          .monday(get(Dow.M))
+          .tuesday(get(Dow.T))
+          .wednesday(get(Dow.W))
+          .thursday(get(Dow.R))
+          .friday(get(Dow.F))
+          .saturday(get(Dow.Sa))
+          .sunday(get(Dow.Su))
+          .build();
     }
   }
 
@@ -192,15 +226,19 @@ public final class TaskRepeatViewModel extends ViewModel {
           throw new IllegalStateException("Unhandled: " + type);
       }
     }
+
+    public Integer getDayOfMonth() {
+      return startDate.get(Calendar.DAY_OF_MONTH);
+    }
   }
 
   private static final class FrequencyStringLiveData extends MediatorLiveData<String> {
 
     private int frequency;
-    private FrequencyType type;
+    private PeriodType type;
 
     FrequencyStringLiveData(
-        MutableLiveData<Integer> frequency, MutableLiveData<FrequencyType> frequencyType) {
+        MutableLiveData<Integer> frequency, MutableLiveData<PeriodType> frequencyType) {
       this.frequency = frequency.getValue();
       type = frequencyType.getValue();
       onChanged();
@@ -223,16 +261,16 @@ public final class TaskRepeatViewModel extends ViewModel {
     private void onChanged() {
       String suffix = frequency == 1 ? "" : "s";
       switch (type) {
-        case DAY:
+        case DAILY:
           setValue("day" + suffix);
           break;
-        case WEEK:
+        case WEEKLY:
           setValue("week" + suffix);
           break;
-        case MONTH:
+        case MONTHLY:
           setValue("month" + suffix);
           break;
-        case YEAR:
+        case YEARLY:
           setValue("year" + suffix);
           break;
       }
