@@ -52,6 +52,7 @@ public final class TaskRepeatFragment extends Fragment {
     setupEnds(root, viewModel);
 
     // Save repeatability
+    // TODO(allen): If user has set repeatability before, update the views based on existing values
     TasksCreateViewModel createViewModel =
         new ViewModelProvider(requireActivity()).get(TasksCreateViewModel.class);
     root.findViewById(R.id.repeat_save_cta)
@@ -63,7 +64,6 @@ public final class TaskRepeatFragment extends Fragment {
   }
 
   private void setupFrequency(View root, TaskRepeatViewModel viewModel) {
-    // TODO(allen): Add a drop down to switch types
     EditText frequency = root.findViewById(R.id.repeat_frequency_count);
     TextWatcher update =
         new NoopTextWatcher() {
