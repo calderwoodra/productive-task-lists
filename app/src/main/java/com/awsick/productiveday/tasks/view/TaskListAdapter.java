@@ -9,15 +9,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.ViewTask;
+import com.awsick.productiveday.tasks.view.TaskListAdapter.TaskListItem;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 
-public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
+public final class TaskListAdapter extends RecyclerView.Adapter<TaskListItem> {
 
   private final TaskItemActionListener listener;
 
@@ -36,7 +36,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
   }
 
   @Override
-  public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+  public TaskListItem onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
     switch (viewType) {
       case TaskListItemData.HEADER_VIEW_TYPE:
         return new HeaderViewHolder(
@@ -53,15 +53,8 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
   }
 
   @Override
-  public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-    TaskListItemData data = tasks.get(position);
-    if (holder instanceof HeaderViewHolder) {
-      ((HeaderViewHolder) holder).bind(data);
-    } else if (holder instanceof TaskViewHolder) {
-      ((TaskViewHolder) holder).bind(data);
-    } else {
-      throw new IllegalArgumentException("Unknown view holder: " + holder.getClass());
-    }
+  public void onBindViewHolder(@NonNull TaskListItem holder, int position) {
+    holder.bind(tasks.get(position));
   }
 
   @Override
@@ -99,7 +92,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
   }
 
-  private static final class HeaderViewHolder extends RecyclerView.ViewHolder {
+  private static final class HeaderViewHolder extends TaskListItem {
 
     private final TextView header;
 
@@ -108,18 +101,20 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
       header = itemView.findViewById(R.id.task_header_header);
     }
 
+    @Override
     public void bind(TaskListItemData data) {
       header.setText(data.header.get());
     }
   }
 
-  private static final class TaskViewHolder extends RecyclerView.ViewHolder {
+  private static final class TaskViewHolder extends TaskListItem {
 
     private final TaskItemActionListener listener;
     private final View clickTarget;
     private final TextView title;
     private final TextView notes;
     private final TextView directory;
+    private final TextView nextDate;
     private final View done;
 
     public TaskViewHolder(TaskItemActionListener listener, @NonNull View itemView) {
@@ -128,10 +123,12 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
       title = itemView.findViewById(R.id.task_item_title);
       notes = itemView.findViewById(R.id.task_item_notes);
       directory = itemView.findViewById(R.id.task_item_folder);
+      nextDate = itemView.findViewById(R.id.task_item_deadline);
       done = itemView.findViewById(R.id.task_item_done);
       clickTarget = itemView.findViewById(R.id.task_item_click_target);
     }
 
+    @Override
     public void bind(TaskListItemData data) {
       Task task = data.task.get().task;
       title.setText(task.title());
@@ -140,6 +137,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
       done.setOnClickListener(view -> listener.onCompleteTaskRequested(task));
       clickTarget.setOnClickListener(view -> listener.onEditTaskRequested(task));
       directory.setText(data.task.get().directory.name());
+      nextDate.setText(data.task.get().task.deadlineDistance());
     }
   }
 
@@ -200,6 +198,15 @@ public final class TaskListAdapter extends RecyclerView.Adapter<ViewHolder> {
           throw new IllegalArgumentException("Unhandled view type: " + oldTask.viewType);
       }
     }
+  }
+
+  abstract static class TaskListItem extends RecyclerView.ViewHolder {
+
+    public TaskListItem(@NonNull View itemView) {
+      super(itemView);
+    }
+
+    abstract void bind(TaskListItemData data);
   }
 
   public interface TaskItemActionListener {
