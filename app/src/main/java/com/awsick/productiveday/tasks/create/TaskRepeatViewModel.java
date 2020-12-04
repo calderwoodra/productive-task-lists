@@ -3,12 +3,12 @@ package com.awsick.productiveday.tasks.create;
 import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 import com.awsick.productiveday.common.utils.DateUtils;
+import com.awsick.productiveday.common.viewmodelutils.MergerLiveData;
 import com.awsick.productiveday.tasks.create.TaskRepeatViewModel.MonthlyFrequency.Type;
 import com.awsick.productiveday.tasks.create.TaskRepeatViewModel.WeeklyFrequency.Dow;
 import com.awsick.productiveday.tasks.models.TaskRepeatability;
@@ -294,48 +294,32 @@ public final class TaskRepeatViewModel extends ViewModel {
     }
   }
 
-  private static final class FrequencyStringLiveData extends MediatorLiveData<String> {
+  private static final class FrequencyStringLiveData
+      extends MergerLiveData<String, Integer, PeriodType, Void> {
 
-    private int frequency;
-    private PeriodType type;
-
-    FrequencyStringLiveData(
-        MutableLiveData<Integer> frequency, MutableLiveData<PeriodType> frequencyType) {
-      this.frequency = frequency.getValue();
-      type = frequencyType.getValue();
-      onChanged();
-
-      addSource(
-          frequency,
-          f -> {
-            this.frequency = f;
-            onChanged();
-          });
-
-      addSource(
-          frequencyType,
-          t -> {
-            type = t;
-            onChanged();
-          });
+    FrequencyStringLiveData(LiveData<Integer> frequency, LiveData<PeriodType> frequencyType) {
+      super(frequency, frequencyType);
     }
 
-    private void onChanged() {
-      String suffix = frequency == 1 ? "" : "s";
-      switch (type) {
+    @Override
+    public String onChanged() {
+      String suffix = getSource1() == 1 ? "" : "s";
+      switch (getSource2()) {
         case DAILY:
-          setValue("day" + suffix);
-          break;
+          return "day" + suffix;
         case WEEKLY:
-          setValue("week" + suffix);
-          break;
+          return "week" + suffix;
         case MONTHLY:
-          setValue("month" + suffix);
-          break;
+          return "month" + suffix;
         case YEARLY:
-          setValue("year" + suffix);
-          break;
+          return "year" + suffix;
       }
+      throw new IllegalArgumentException("Unhandled type: " + getSource2());
+    }
+
+    @Override
+    public boolean areEqual(String val1, String val2) {
+      return val1.equals(val2);
     }
   }
 }
