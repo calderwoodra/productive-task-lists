@@ -46,15 +46,14 @@ public final class TaskRepeatFragment extends Fragment {
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
     TaskRepeatViewModel viewModel = new ViewModelProvider(this).get(TaskRepeatViewModel.class);
+    TasksCreateViewModel createViewModel =
+        new ViewModelProvider(requireActivity()).get(TasksCreateViewModel.class);
+    viewModel.initializeRepeatability(createViewModel.getTaskRepeatability());
+
     setupFrequency(root, viewModel);
     setupWeeklyFrequency(root, viewModel);
     setupMonthlyFrequency(root, viewModel);
     setupEnds(root, viewModel);
-
-    // Save repeatability
-    // TODO(allen): If user has set repeatability before, update the views based on existing values
-    TasksCreateViewModel createViewModel =
-        new ViewModelProvider(requireActivity()).get(TasksCreateViewModel.class);
     root.findViewById(R.id.repeat_save_cta)
         .setOnClickListener(
             view -> {

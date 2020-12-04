@@ -53,7 +53,7 @@ public final class TasksCreateFragment extends Fragment {
 
     observe(viewModel.getDate(), R.id.create_task_deadline_date);
     observe(viewModel.getTime(), R.id.create_task_deadline_time);
-    observe(viewModel.getRepeatable(), R.id.create_task_repeat);
+    observe(viewModel.getRepeatableString(), R.id.create_task_repeat);
     TextView directoryName = root.findViewById(R.id.create_task_directory);
     directoryName.setOnClickListener(
         view -> new SelectDirectoryDialogFragment().showNow(getChildFragmentManager(), null));
@@ -228,7 +228,7 @@ public final class TasksCreateFragment extends Fragment {
                   viewModel.getCalendar().getTimeInMillis());
           Navigation.findNavController(root).navigate(directions);
         });
-    viewModel.getRepeatable().observe(getViewLifecycleOwner(), repeat::setText);
+    viewModel.getRepeatableString().observe(getViewLifecycleOwner(), repeat::setText);
 
     Button clearRepeat = root.findViewById(R.id.create_task_clear_repeat);
     viewModel

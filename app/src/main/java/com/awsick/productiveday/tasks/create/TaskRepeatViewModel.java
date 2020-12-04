@@ -49,6 +49,33 @@ public final class TaskRepeatViewModel extends ViewModel {
     endDate = new MutableLiveData<>(endDateCalendar);
   }
 
+  public void initializeRepeatability(Optional<TaskRepeatability> taskRepeatability) {
+    if (taskRepeatability == null || !taskRepeatability.isPresent()) {
+      return;
+    }
+
+    TaskRepeatability repeatability = taskRepeatability.get();
+    frequency.setValue(repeatability.frequency());
+    periodType.setValue(repeatability.periodType());
+    switch (repeatability.periodType()) {
+      case WEEKLY:
+        weeklyFrequency.setValue(new WeeklyFrequency(repeatability.weekly().get()));
+        break;
+      case MONTHLY:
+        monthlyFrequency.setValue(new MonthlyFrequency(repeatability.monthly().get()));
+        break;
+      case DAILY:
+      case YEARLY:
+        break;
+    }
+
+    endType.setValue(repeatability.endType());
+    endAfterN.setValue(repeatability.endAfterNTimes().or(1));
+    if (repeatability.endOnTimeMillis().isPresent()) {
+      endDate.getValue().setTimeInMillis(repeatability.endOnTimeMillis().get());
+    }
+  }
+
   public LiveData<Integer> getFrequency() {
     return frequency;
   }
@@ -114,6 +141,7 @@ public final class TaskRepeatViewModel extends ViewModel {
 
   public TaskRepeatability getTaskRepeatability() {
     TaskRepeatability.Builder builder = TaskRepeatability.builder();
+    builder.setFrequency(frequency.getValue());
     builder.setFirstReminder(startTimeMillis);
     builder.setPeriodType(periodType.getValue());
     switch (periodType.getValue()) {
@@ -164,6 +192,31 @@ public final class TaskRepeatViewModel extends ViewModel {
       flip(Dow.values()[startDate.get(Calendar.DAY_OF_WEEK) - 1]);
     }
 
+    public WeeklyFrequency(TaskRepeatability.Weekly weekly) {
+      Arrays.fill(dow, -1);
+      if (weekly.monday()) {
+        flip(Dow.M);
+      }
+      if (weekly.tuesday()) {
+        flip(Dow.T);
+      }
+      if (weekly.wednesday()) {
+        flip(Dow.W);
+      }
+      if (weekly.thursday()) {
+        flip(Dow.R);
+      }
+      if (weekly.friday()) {
+        flip(Dow.F);
+      }
+      if (weekly.saturday()) {
+        flip(Dow.Sa);
+      }
+      if (weekly.sunday()) {
+        flip(Dow.Su);
+      }
+    }
+
     private void flip(Dow dow) {
       int position = dow.ordinal();
       this.dow[position] = -this.dow[position];
@@ -199,6 +252,14 @@ public final class TaskRepeatViewModel extends ViewModel {
 
     private final Calendar startDate;
     private final Type type;
+
+    public MonthlyFrequency(Integer integer) {
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTimeInMillis(System.currentTimeMillis());
+      calendar.set(Calendar.DAY_OF_MONTH, integer);
+      startDate = calendar;
+      type = Type.DAY_OF_THE_MONTH;
+    }
 
     public MonthlyFrequency(Calendar startDate, Type type) {
       this.startDate = (Calendar) startDate.clone();

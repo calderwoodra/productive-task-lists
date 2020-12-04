@@ -24,6 +24,8 @@ public abstract class TaskRepeatability {
 
   public abstract long firstReminder();
 
+  public abstract int frequency();
+
   public abstract PeriodType periodType();
 
   public abstract Optional<Weekly> weekly();
@@ -51,16 +53,32 @@ public abstract class TaskRepeatability {
     StringBuilder toString = new StringBuilder("Repeats");
     switch (periodType()) {
       case DAILY:
-        toString.append(" daily");
+        if (frequency() == 1) {
+          toString.append(" daily");
+        } else {
+          toString.append(" every " + frequency() + " days");
+        }
         break;
       case WEEKLY:
-        toString.append(" weekly on " + weekly().get().toString());
+        if (frequency() == 1) {
+          toString.append(" weekly on " + weekly().get().toString());
+        } else {
+          toString.append(" every " + frequency() + " weeks on " + weekly().get().toString());
+        }
         break;
       case MONTHLY:
-        toString.append(" monthly");
+        if (frequency() == 1) {
+          toString.append(" monthly");
+        } else {
+          toString.append(" every " + frequency() + " months");
+        }
         break;
       case YEARLY:
-        toString.append(" yearly");
+        if (frequency() == 1) {
+          toString.append(" yearly");
+        } else {
+          toString.append(" every " + frequency() + " years");
+        }
         break;
     }
 
@@ -90,6 +108,8 @@ public abstract class TaskRepeatability {
   public abstract static class Builder {
 
     public abstract Builder setFirstReminder(long firstReminder);
+
+    public abstract Builder setFrequency(int frequency);
 
     public abstract Builder setPeriodType(PeriodType periodType);
 

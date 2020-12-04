@@ -112,7 +112,11 @@ public final class TasksCreateViewModel extends ViewModel {
     return Transformations.map(timeMillis, DateUtils::humanReadableTime);
   }
 
-  public LiveData<String> getRepeatable() {
+  public Optional<TaskRepeatability> getTaskRepeatability() {
+    return repeatable.getValue();
+  }
+
+  public LiveData<String> getRepeatableString() {
     return Transformations.map(
         repeatable,
         repeat -> {

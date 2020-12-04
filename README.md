@@ -71,12 +71,12 @@ tasks and project setup.
 5. Add rate app dialog
 
 ### Stretch
--1. allow users to delete directories (move tasks to home or delete all tasks as well)
-0. allow users to move directories
-1. add empty rv state
-2. add tutorials
-3.0. add user login
-3.1. save tasks on the server
-4. implement sorting/prioritizing feature (directories, tasks, etc.)
-5. Implement data dashboard (tasks completed this week, this month, all time).
-6. Add demo gifs to README
+1. allow users to delete directories (move tasks to home or delete all tasks as well)
+2. allow users to move directories
+3. add empty rv state
+4. add tutorials
+5. add user login
+6. save tasks on the server
+7. implement sorting/prioritizing feature (directories, tasks, etc.)
+8. Implement data dashboard (tasks completed this week, this month, all time).
+9. Add demo gifs to README
