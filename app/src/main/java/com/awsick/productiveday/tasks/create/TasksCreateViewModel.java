@@ -94,6 +94,7 @@ public final class TasksCreateViewModel extends ViewModel {
     taskType.setValue(existingTask.type());
     timeMillis.setValue(existingTask.deadlineMillis());
     directoryId.setValue(existingTask.directoryId());
+    repeatable.setValue(Optional.fromNullable(existingTask.repeatability()));
   }
 
   public LiveData<String> getTitle() {

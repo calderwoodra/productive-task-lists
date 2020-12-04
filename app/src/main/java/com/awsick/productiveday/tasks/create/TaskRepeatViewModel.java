@@ -19,6 +19,7 @@ import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 public final class TaskRepeatViewModel extends ViewModel {
 
@@ -255,7 +256,7 @@ public final class TaskRepeatViewModel extends ViewModel {
 
     public MonthlyFrequency(Integer integer) {
       Calendar calendar = Calendar.getInstance();
-      calendar.setTimeInMillis(System.currentTimeMillis());
+      calendar.setTimeInMillis(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(30));
       calendar.set(Calendar.DAY_OF_MONTH, integer);
       startDate = calendar;
       type = Type.DAY_OF_THE_MONTH;
