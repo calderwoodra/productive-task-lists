@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModel;
 import com.awsick.productiveday.BuildConfig;
 import com.awsick.productiveday.common.utils.Assert;
 import com.awsick.productiveday.common.utils.DateUtils;
+import com.awsick.productiveday.common.viewmodelutils.MergerLiveData;
 import com.awsick.productiveday.common.viewmodelutils.SingleLiveEvent;
 import com.awsick.productiveday.directories.models.Directory;
 import com.awsick.productiveday.directories.repo.DirectoryReferenceRepo;
@@ -129,7 +130,7 @@ public final class TasksCreateViewModel extends ViewModel {
   }
 
   public LiveData<Boolean> showClearRepeatable() {
-    return Transformations.map(repeatable, Optional::isPresent);
+    return new ClearRepeatableVisible(repeatable, taskType);
   }
 
   public int getCurrentDirectory() {
@@ -205,7 +206,8 @@ public final class TasksCreateViewModel extends ViewModel {
             .setTitle(title)
             .setNotes(notes)
             .setDeadlineMillis(taskType.getValue() == Type.UNSCHEDULED ? -1 : timeMillis.getValue())
-            .setRepeatability(repeatable.getValue().orNull())
+            .setRepeatability(
+                taskType.getValue() == Type.REMINDER ? null : repeatable.getValue().orNull())
             .setDirectoryId(directoryId.getValue())
             .setType(taskType.getValue());
 
@@ -224,5 +226,24 @@ public final class TasksCreateViewModel extends ViewModel {
   public void clearRepeat() {
     Assert.checkArgument(repeatable.getValue().isPresent());
     repeatable.setValue(Optional.absent());
+  }
+
+  private static final class ClearRepeatableVisible
+      extends MergerLiveData<Boolean, Optional<TaskRepeatability>, Task.Type, Void> {
+
+    public ClearRepeatableVisible(
+        LiveData<Optional<TaskRepeatability>> source1, LiveData<Type> source2) {
+      super(source1, source2);
+    }
+
+    @Override
+    protected Boolean onChanged() {
+      return getSource1().isPresent() && getSource2().equals(Type.REMINDER);
+    }
+
+    @Override
+    public boolean areEqual(Boolean val1, Boolean val2) {
+      return val1 == val2;
+    }
   }
 }
