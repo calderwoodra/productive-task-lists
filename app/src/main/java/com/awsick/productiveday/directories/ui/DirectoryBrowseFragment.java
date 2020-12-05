@@ -17,6 +17,7 @@ import com.awsick.productiveday.directories.models.DirectoryReference;
 import com.awsick.productiveday.directories.ui.DirectoryListAdapter.DirectoryItemActionListener;
 import com.awsick.productiveday.main.MainParentContainer;
 import com.awsick.productiveday.network.RequestStatus.Status;
+import com.awsick.productiveday.tasks.create.TaskCreateActivity;
 import com.awsick.productiveday.tasks.models.Task;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -94,7 +95,7 @@ public final class DirectoryBrowseFragment extends Fragment {
 
     @Override
     public void onEditTaskRequested(Task task) {
-      // TODO(allen): handle this
+      startActivity(TaskCreateActivity.create(requireContext(), task));
     }
 
     @Override

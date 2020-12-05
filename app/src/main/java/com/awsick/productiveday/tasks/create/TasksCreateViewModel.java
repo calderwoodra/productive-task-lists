@@ -197,7 +197,6 @@ public final class TasksCreateViewModel extends ViewModel {
     timeMillis.setValue(calendar.getTimeInMillis());
   }
 
-  // TODO(allen): Save repeatability
   public void saveTask(String title, String notes) {
     this.title.setValue(title);
     this.notes.setValue(notes);

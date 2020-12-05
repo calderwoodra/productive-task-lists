@@ -64,7 +64,7 @@ public class TaskEntity {
         .setDeadlineMillis(deadlineMillis == null ? -1 : deadlineMillis)
         .setRepeatability(null)
         .setDirectoryId(directoryId)
-        .setRepeatability(repeatability.toRepeatability())
+        .setRepeatability(repeatability == null ? null : repeatability.toRepeatability())
         .build();
   }
 
@@ -101,7 +101,6 @@ public class TaskEntity {
         return null;
       }
 
-      // TODO(allen): Add the remaining attributes
       TaskRepeatabilityEntity entity = new TaskRepeatabilityEntity();
       entity.firstReminder = repeatability.firstReminder();
       entity.frequency = repeatability.frequency();
@@ -115,7 +114,6 @@ public class TaskEntity {
     }
 
     public TaskRepeatability toRepeatability() {
-      // TODO(allen): Convert the remaining attributes
       return TaskRepeatability.builder()
           .setFirstReminder(firstReminder)
           .setFrequency(frequency)
