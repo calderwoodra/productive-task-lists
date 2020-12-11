@@ -22,6 +22,12 @@ public abstract class TaskRepeatability {
     AFTER,
   }
 
+  /**
+   * The first time the user was/will be reminded about this task.
+   *
+   * <p>This value should never be updated. To know the next time the user will be notified, see
+   * {@link Task#deadlineMillis()}.
+   */
   public abstract long firstReminder();
 
   public abstract int frequency();
@@ -38,7 +44,15 @@ public abstract class TaskRepeatability {
 
   public abstract Optional<Integer> endAfterNTimes();
 
-  /** Required params: - {@link #firstReminder()} - {@link #periodType()} - {@link #endType()} */
+  /**
+   * Required params:
+   *
+   * <ul>
+   *   <li>{@link #firstReminder()}
+   *   <li>{@link #periodType()}
+   *   <li>{@link #endType()}
+   * </ul>
+   */
   public static TaskRepeatability.Builder builder() {
     return new AutoValue_TaskRepeatability.Builder()
         .setWeekly(Optional.absent())

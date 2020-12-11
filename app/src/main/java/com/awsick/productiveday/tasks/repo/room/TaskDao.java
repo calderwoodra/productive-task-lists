@@ -25,6 +25,18 @@ public interface TaskDao {
   @Query("SELECT * FROM taskentity WHERE directory IS :directoryId AND NOT completed")
   ListenableFuture<List<TaskEntity>> getAllIncomplete(int directoryId);
 
+  @Query("SELECT * FROM taskentity WHERE uid IS :id")
+  ListenableFuture<TaskEntity> getTask(int id);
+
+  /** Returns the list of tasks which the user needs to be notified about. */
+  @Query(
+      "SELECT * FROM taskentity WHERE "
+          + "NOT notified "
+          + "AND NOT completed "
+          + "AND deadline IS NOT NULL "
+          + "AND deadline <= :deadline")
+  ListenableFuture<List<TaskEntity>> getNotifications(long deadline);
+
   // UPDATE
   @Update
   ListenableFuture<Void> update(TaskEntity... tasks);
@@ -32,4 +44,14 @@ public interface TaskDao {
   // DELETE
   @Delete
   ListenableFuture<Void> delete(TaskEntity... tasks);
+
+  @Query(
+      "SELECT * FROM taskentity WHERE "
+          + "NOT notified "
+          + "AND NOT completed "
+          + "AND deadline IS NOT NULL "
+          + "AND deadline > :deadline "
+          + "ORDER BY deadline ASC "
+          + "LIMIT 1")
+  ListenableFuture<TaskEntity> getNextNotification(long deadline);
 }

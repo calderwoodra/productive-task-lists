@@ -40,6 +40,9 @@ public class TaskEntity {
   @ColumnInfo(name = "directory", defaultValue = "-1")
   public int directoryId;
 
+  @ColumnInfo(name = "notified", defaultValue = "false")
+  public boolean notified;
+
   @Nullable @Embedded public TaskRepeatabilityEntity repeatability;
 
   public static TaskEntity from(Task task) {
@@ -52,6 +55,7 @@ public class TaskEntity {
     entity.directoryId = task.directoryId();
     entity.completed = false;
     entity.repeatability = TaskRepeatabilityEntity.from(task.repeatability());
+    entity.notified = task.notified();
     return entity;
   }
 
@@ -64,6 +68,7 @@ public class TaskEntity {
         .setDeadlineMillis(deadlineMillis == null ? -1 : deadlineMillis)
         .setRepeatability(null)
         .setDirectoryId(directoryId)
+        .setNotified(notified)
         .setRepeatability(repeatability == null ? null : repeatability.toRepeatability())
         .build();
   }

@@ -49,8 +49,9 @@
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/task_item_deadline"
     style="@style/AppTextCaption"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:gravity="end"
     app:layout_constraintBaseline_toBaselineOf="@id/task_item_notes"
     app:layout_constraintEnd_toEndOf="@id/task_item_folder"
     app:layout_constraintStart_toStartOf="@id/task_item_folder"

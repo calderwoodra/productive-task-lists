@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
   package="com.awsick.productiveday">
 
+  <!-- WAKE_LOCK and RECEIVE_BOOT_COMPLETED are needed for AlarmManager and scheduling reminders -->
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+
   <application
-    android:name=".application.PdApplication"
     android:allowBackup="true"
     android:icon="@mipmap/ic_launcher"
     android:label="@string/app_name"
+    android:name=".application.PdApplication"
     android:roundIcon="@mipmap/ic_launcher_round"
     android:supportsRtl="true"
     android:theme="@style/AppTheme">
@@ -18,7 +23,6 @@
       android:theme="@style/AppTheme.NoActionBar">
       <intent-filter>
         <action android:name="android.intent.action.MAIN" />
-
         <category android:name="android.intent.category.LAUNCHER" />
       </intent-filter>
     </activity>
@@ -40,5 +44,40 @@
       android:name=".devoptions.DevOptionsFragmentHostActivity"
       android:screenOrientation="portrait"
       android:theme="@style/AppTheme.NoActionBar" />
+
+    <!-- Listen to our own alarms so we can show reminder notifications. -->
+    <receiver
+      android:enabled="true"
+      android:exported="false"
+      android:name=".tasks.scheduling.TaskReminderAlarmReceiver">
+      <intent-filter>
+        <!-- This string must match TaskReminderAlarmReceiver#REMINDER_ACTION -->
+        <action android:name="task_reminder_alarm_receiver" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Listen to boot completed broadcasts so we can reset our alarms. -->
+    <receiver
+      android:enabled="true"
+      android:exported="true"
+      android:name=".tasks.scheduling.OnBootReceiver"
+      android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+      <intent-filter>
+        <category android:name="android.intent.category.DEFAULT" />
+
+        <action android:name="android.intent.action.BOOT_COMPLETED" />
+        <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+        <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+        <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+        <action android:name="test_boot_completed" />
+      </intent-filter>
+    </receiver>
+
+    <!-- Remove WorkManager default initialization so hilt can handle initialization -->
+    <provider
+      android:authorities="${applicationId}.workmanager-init"
+      android:exported="false"
+      android:name="androidx.work.impl.WorkManagerInitializer"
+      tools:node="remove" />
   </application>
 </manifest>

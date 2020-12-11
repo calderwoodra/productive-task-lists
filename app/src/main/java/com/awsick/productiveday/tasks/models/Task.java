@@ -23,8 +23,13 @@ public abstract class Task {
 
   public abstract Type type();
 
+  /**
+   * The next time the user will been notified about this task. For tasks with repeatability, this
+   * value will change after each notification until the task should no longer repeat.
+   */
   public abstract long deadlineMillis();
 
+  /** @see Task.Builder#getDeadlineDistance(long) */
   public abstract String deadlineDistance();
 
   @Nullable
@@ -32,12 +37,19 @@ public abstract class Task {
 
   public abstract int directoryId();
 
+  /**
+   * Returns false if the user should be shown a notification when at or past {@link
+   * #deadlineMillis()}, otherwise true.
+   */
+  public abstract boolean notified();
+
   public static Task.Builder builder() {
     return new AutoValue_Task.Builder()
         .setUid(0)
         .setNotes("")
         .setRepeatability(null)
         .setDirectoryId(-1)
+        .setNotified(false)
         .setType(Type.UNSCHEDULED)
         .setDeadlineMillis(-1);
   }
@@ -62,6 +74,8 @@ public abstract class Task {
     public abstract Builder setRepeatability(@Nullable TaskRepeatability repeatability);
 
     public abstract Builder setDirectoryId(int directoryId);
+
+    public abstract Builder setNotified(boolean notified);
 
     public abstract Task create();
 

@@ -2,6 +2,7 @@ package com.awsick.productiveday.tasks.create;
 
 import static com.awsick.productiveday.tasks.create.TaskCreateActivity.TASK_ID_KEY;
 
+import android.content.Context;
 import androidx.hilt.Assisted;
 import androidx.hilt.lifecycle.ViewModelInject;
 import androidx.lifecycle.LiveData;
@@ -24,6 +25,7 @@ import com.awsick.productiveday.tasks.models.Task.Type;
 import com.awsick.productiveday.tasks.models.TaskRepeatability;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.google.common.base.Optional;
+import dagger.hilt.android.qualifiers.ApplicationContext;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -34,6 +36,8 @@ public final class TasksCreateViewModel extends ViewModel {
     FAILED_TO_SAVE,
     TITLE_MISSING,
   }
+
+  private final Context context;
 
   // Repos
   private final TasksRepo tasksRepo;
@@ -63,7 +67,11 @@ public final class TasksCreateViewModel extends ViewModel {
 
   @ViewModelInject
   TasksCreateViewModel(
-      TasksRepo tasksRepo, DirectoryRepo directoryRepo, @Assisted SavedStateHandle savedState) {
+      @ApplicationContext Context context,
+      TasksRepo tasksRepo,
+      DirectoryRepo directoryRepo,
+      @Assisted SavedStateHandle savedState) {
+    this.context = context;
     this.tasksRepo = tasksRepo;
     directory = Transformations.switchMap(directoryId, directoryRepo::getDirectory);
     directoryName =

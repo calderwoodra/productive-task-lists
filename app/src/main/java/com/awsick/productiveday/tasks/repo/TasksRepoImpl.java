@@ -2,7 +2,9 @@ package com.awsick.productiveday.tasks.repo;
 
 import static com.awsick.productiveday.common.utils.ImmutableUtils.toImmutableList;
 
+import android.content.Context;
 import androidx.lifecycle.LiveData;
+import com.awsick.productiveday.common.utils.Assert;
 import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.network.RequestStatus.Status;
 import com.awsick.productiveday.network.util.RequestStatusLiveData;
@@ -10,9 +12,13 @@ import com.awsick.productiveday.network.util.RequestStatusUtils;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.room.TaskDatabase;
 import com.awsick.productiveday.tasks.repo.room.TaskEntity;
+import com.awsick.productiveday.tasks.scheduling.TaskSchedulerWorker;
+import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
+import dagger.hilt.android.qualifiers.ApplicationContext;
 import java.util.HashMap;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
@@ -23,15 +29,17 @@ import org.jetbrains.annotations.NotNull;
 @Singleton
 class TasksRepoImpl implements TasksRepo {
 
-  private final TaskDatabase tasksDatabase;
+  private final Context context;
+  private final TaskDatabase taskDatabase;
   private final RequestStatusLiveData<ImmutableList<Task>> tasks = new RequestStatusLiveData<>();
   private final HashMap<Integer, RequestStatusLiveData<ImmutableList<Task>>> directoryTasksMap =
       new HashMap<>();
   private final Executor executor;
 
   @Inject
-  TasksRepoImpl(TaskDatabase taskDatabase, Executor executor) {
-    tasksDatabase = taskDatabase;
+  TasksRepoImpl(@ApplicationContext Context context, TaskDatabase taskDatabase, Executor executor) {
+    this.context = context;
+    this.taskDatabase = taskDatabase;
     this.executor = executor;
   }
 
@@ -52,7 +60,7 @@ class TasksRepoImpl implements TasksRepo {
     RequestStatusLiveData<ImmutableList<Task>> tasks = new RequestStatusLiveData<>();
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
-        tasksDatabase.taskDao().getAllIncomplete(directoryId),
+        taskDatabase.taskDao().getAllIncomplete(directoryId),
         RequestStatusUtils.futureCallback(
             tasks,
             result ->
@@ -69,12 +77,13 @@ class TasksRepoImpl implements TasksRepo {
     // TODO(allen): Consider adding the task optimistically
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
-        tasksDatabase.taskDao().insert(TaskEntity.from(task)),
+        taskDatabase.taskDao().insert(TaskEntity.from(task)),
         new FutureCallback<Long>() {
           @Override
           public void onSuccess(Long uid) {
             refreshTasks();
             refreshDirectoryTasks(task.directoryId());
+            TaskSchedulerWorker.updateNextReminder(context);
           }
 
           @Override
@@ -92,7 +101,7 @@ class TasksRepoImpl implements TasksRepo {
     }
 
     Futures.addCallback(
-        tasksDatabase.taskDao().getAllIncomplete(),
+        taskDatabase.taskDao().getAllIncomplete(),
         RequestStatusUtils.futureCallback(
             tasks,
             result ->
@@ -112,7 +121,7 @@ class TasksRepoImpl implements TasksRepo {
 
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
-        tasksDatabase.taskDao().getAllIncomplete(directoryId),
+        taskDatabase.taskDao().getAllIncomplete(directoryId),
         RequestStatusUtils.futureCallback(
             tasks,
             result ->
@@ -127,7 +136,7 @@ class TasksRepoImpl implements TasksRepo {
     // TODO(allen): Consider adding the task optimistically
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
-        tasksDatabase.taskDao().update(TaskEntity.from(newTask)),
+        taskDatabase.taskDao().update(TaskEntity.from(newTask)),
         new FutureCallback<Void>() {
           @Override
           public void onSuccess(Void voidd) {
@@ -136,6 +145,7 @@ class TasksRepoImpl implements TasksRepo {
             if (existingTask.directoryId() != newTask.directoryId()) {
               refreshDirectoryTasks(existingTask.directoryId());
             }
+            TaskSchedulerWorker.updateNextReminder(context);
           }
 
           @Override
@@ -175,7 +185,7 @@ class TasksRepoImpl implements TasksRepo {
     TaskEntity entity = TaskEntity.from(task);
     entity.completed = true;
     Futures.addCallback(
-        tasksDatabase.taskDao().update(entity),
+        taskDatabase.taskDao().update(entity),
         new FutureCallback<Void>() {
           @Override
           public void onSuccess(@NullableDecl Void result) {
@@ -189,5 +199,38 @@ class TasksRepoImpl implements TasksRepo {
           }
         },
         executor);
+  }
+
+  @Override
+  public ListenableFuture<ImmutableList<Task>> getTasksToBeNotified() {
+    Assert.isWorkerThread("Cannot perform disk I/O on the main thread");
+    return Futures.transform(
+        taskDatabase.taskDao().getNotifications(System.currentTimeMillis()),
+        tasks -> tasks.stream().map(TaskEntity::toTask).collect(toImmutableList()),
+        executor);
+  }
+
+  @Override
+  public ListenableFuture<Optional<Task>> getUpcomingTaskToBeNotified() {
+    return Futures.transform(
+        taskDatabase.taskDao().getNextNotification(System.currentTimeMillis()),
+        taskEntity -> taskEntity == null ? Optional.absent() : Optional.of(taskEntity.toTask()),
+        executor);
+  }
+
+  @Override
+  public ListenableFuture<Void> markTasksAsNotified(ImmutableList<Task> tasks) {
+    return taskDatabase
+        .taskDao()
+        .update(
+            tasks.stream()
+                .map(
+                    task -> {
+                      // TODO(allen): Check for repeatability
+                      TaskEntity entity = TaskEntity.from(task);
+                      entity.notified = true;
+                      return entity;
+                    })
+                .toArray(TaskEntity[]::new));
   }
 }
