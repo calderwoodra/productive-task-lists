@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion 29
@@ -94,6 +96,11 @@ dependencies {
     // Autovalue - Immutable POJOs with readable builders for less boilerplate
     annotationProcessor 'com.google.auto.value:auto-value:1.5.2'
     compileOnly 'com.jakewharton.auto.value:auto-value-annotations:1.5'
+
+    // Firebase
+    implementation platform('com.google.firebase:firebase-bom:26.1.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-crashlytics'
 }
 
 apply plugin: 'dagger.hilt.android.plugin'

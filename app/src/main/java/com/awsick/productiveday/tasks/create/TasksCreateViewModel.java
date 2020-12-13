@@ -101,7 +101,9 @@ public final class TasksCreateViewModel extends ViewModel {
     title.setValue(existingTask.title());
     notes.setValue(existingTask.notes());
     taskType.setValue(existingTask.type());
-    timeMillis.setValue(existingTask.deadlineMillis());
+    if (existingTask.deadlineMillis() != -1) {
+      timeMillis.setValue(existingTask.deadlineMillis());
+    }
     directoryId.setValue(existingTask.directoryId());
     repeatable.setValue(Optional.fromNullable(existingTask.repeatability()));
   }
@@ -202,6 +204,7 @@ public final class TasksCreateViewModel extends ViewModel {
     Calendar calendar = getCalendar();
     calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
     calendar.set(Calendar.MINUTE, minute);
+    calendar.set(Calendar.SECOND, 0);
     timeMillis.setValue(calendar.getTimeInMillis());
   }
 

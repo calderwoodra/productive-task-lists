@@ -2,9 +2,7 @@ package com.awsick.productiveday.tasks.repo;
 
 import static com.awsick.productiveday.common.utils.ImmutableUtils.toImmutableList;
 
-import android.content.Context;
 import androidx.lifecycle.LiveData;
-import com.awsick.productiveday.common.utils.Assert;
 import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.network.RequestStatus.Status;
 import com.awsick.productiveday.network.util.RequestStatusLiveData;
@@ -12,13 +10,12 @@ import com.awsick.productiveday.network.util.RequestStatusUtils;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.room.TaskDatabase;
 import com.awsick.productiveday.tasks.repo.room.TaskEntity;
-import com.awsick.productiveday.tasks.scheduling.TaskSchedulerWorker;
+import com.awsick.productiveday.tasks.scheduling.notifications.NotificationsRepo;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
-import dagger.hilt.android.qualifiers.ApplicationContext;
 import java.util.HashMap;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
@@ -29,17 +26,17 @@ import org.jetbrains.annotations.NotNull;
 @Singleton
 class TasksRepoImpl implements TasksRepo {
 
-  private final Context context;
   private final TaskDatabase taskDatabase;
+  private final NotificationsRepo notificationsRepo;
   private final RequestStatusLiveData<ImmutableList<Task>> tasks = new RequestStatusLiveData<>();
   private final HashMap<Integer, RequestStatusLiveData<ImmutableList<Task>>> directoryTasksMap =
       new HashMap<>();
   private final Executor executor;
 
   @Inject
-  TasksRepoImpl(@ApplicationContext Context context, TaskDatabase taskDatabase, Executor executor) {
-    this.context = context;
+  TasksRepoImpl(TaskDatabase taskDatabase, NotificationsRepo notificationsRepo, Executor executor) {
     this.taskDatabase = taskDatabase;
+    this.notificationsRepo = notificationsRepo;
     this.executor = executor;
   }
 
@@ -83,7 +80,7 @@ class TasksRepoImpl implements TasksRepo {
           public void onSuccess(Long uid) {
             refreshTasks();
             refreshDirectoryTasks(task.directoryId());
-            TaskSchedulerWorker.updateNextReminder(context);
+            notificationsRepo.notifyUser(TasksRepoImpl.this);
           }
 
           @Override
@@ -145,7 +142,7 @@ class TasksRepoImpl implements TasksRepo {
             if (existingTask.directoryId() != newTask.directoryId()) {
               refreshDirectoryTasks(existingTask.directoryId());
             }
-            TaskSchedulerWorker.updateNextReminder(context);
+            notificationsRepo.notifyUser(TasksRepoImpl.this);
           }
 
           @Override
@@ -203,7 +200,7 @@ class TasksRepoImpl implements TasksRepo {
 
   @Override
   public ListenableFuture<ImmutableList<Task>> getTasksToBeNotified() {
-    Assert.isWorkerThread("Cannot perform disk I/O on the main thread");
+    // Assert.isWorkerThread("Cannot perform disk I/O on the main thread");
     return Futures.transform(
         taskDatabase.taskDao().getNotifications(System.currentTimeMillis()),
         tasks -> tasks.stream().map(TaskEntity::toTask).collect(toImmutableList()),

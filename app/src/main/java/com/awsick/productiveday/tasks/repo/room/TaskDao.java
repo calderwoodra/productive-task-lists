@@ -19,10 +19,12 @@ public interface TaskDao {
   @Query("SELECT * FROM taskentity")
   ListenableFuture<List<TaskEntity>> getAll();
 
-  @Query("SELECT * FROM taskentity WHERE NOT completed")
+  @Query("SELECT * FROM taskentity WHERE NOT completed ORDER BY deadline ASC")
   ListenableFuture<List<TaskEntity>> getAllIncomplete();
 
-  @Query("SELECT * FROM taskentity WHERE directory IS :directoryId AND NOT completed")
+  @Query(
+      "SELECT * FROM taskentity WHERE directory IS :directoryId AND NOT completed ORDER BY"
+          + " deadline ASC")
   ListenableFuture<List<TaskEntity>> getAllIncomplete(int directoryId);
 
   @Query("SELECT * FROM taskentity WHERE uid IS :id")
