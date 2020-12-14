@@ -1,66 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <color name="colorPrimary">#008577</color>
-  <color name="colorPrimaryDark">#00574B</color>
-  <color name="colorAccent">#D81B60</color>
+  <color name="black_870">#DE000000</color>
+  <color name="black_600">#98000000</color>
+  <color name="black_380">#60000000</color>
 
-  <!--  <color name="black_900">#</color>-->
-  <!--  <color name="black_800">#</color>-->
-  <!--  <color name="black_700">#</color>-->
-  <!--  <color name="black_600">#</color>-->
-  <!--  <color name="black_500">#</color>-->
-  <!--  <color name="black_400">#</color>-->
-  <!--  <color name="black_300">#</color>-->
-  <!--  <color name="black_200">#</color>-->
-  <!--  <color name="black_100">#</color>-->
+  <!-- https://material.io/resources/color/#!/?view.left=0&view.right=1&primary.color=639bff&secondary.color=b9ffc0 -->
+  <color name="colorPrimary_800">#1c6dcb</color>
+  <color name="colorPrimary_500">#639bff</color>
+  <color name="colorPrimary_200">#9bcbff</color>
 
-  <!--  <color name="colorPrimary_900">#482609</color>-->
-  <!--  <color name="colorPrimary_800">#6E3A0D</color>-->
-  <!--  <color name="colorPrimary_700">#80440F</color>-->
-  <!--  <color name="colorPrimary_600">#924D11</color>-->
-  <!--  <color name="colorPrimary_500">#C96A18</color>-->
-  <!--  <color name="colorPrimary_400">#E78936</color>-->
-  <!--  <color name="colorPrimary_300">#EEA96D</color>-->
-  <!--  <color name="colorPrimary_200">#F4C9A4</color>-->
-  <!--  <color name="colorPrimary_100">#F9DFC8</color>-->
+  <color name="colorAccent_800">#87cc8f</color>
+  <color name="colorAccent_500">#b9ffc0</color>
+  <color name="colorAccent_200">#ecfff3</color>
 
-  <!--  <color name="colorAccent_900">#3D007A</color>-->
-  <!--  <color name="colorAccent_800">#</color>-->
-  <!--  <color name="colorAccent_700">#</color>-->
-  <!--  <color name="colorAccent_600">#</color>-->
-  <!--  <color name="colorAccent_500">#</color>-->
-  <!--  <color name="colorAccent_400">#</color>-->
-  <!--  <color name="colorAccent_300">#</color>-->
-  <!--  <color name="colorAccent_200">#</color>-->
-  <!--  <color name="colorAccent_100">#F5EBFF</color>-->
+  <color name="background">#DEFFFFFF</color>
+  <color name="surface">#FFFFFF</color>
 
-  <!--  <color name="green_900">#</color>-->
-  <!--  <color name="green_800">#</color>-->
-  <!--  <color name="green_700">#</color>-->
-  <!--  <color name="green_600">#</color>-->
-  <!--  <color name="green_500">#</color>-->
-  <!--  <color name="green_400">#</color>-->
-  <!--  <color name="green_300">#</color>-->
-  <!--  <color name="green_200">#</color>-->
-  <!--  <color name="green_100">#</color>-->
+  <color name="green_800">#07743B</color>
+  <color name="green_500">#0BC163</color>
+  <color name="green_200">#78F7B5</color>
 
-  <!--  <color name="yellow_900">#</color>-->
-  <!--  <color name="yellow_800">#</color>-->
-  <!--  <color name="yellow_700">#</color>-->
-  <!--  <color name="yellow_600">#</color>-->
-  <!--  <color name="yellow_500">#</color>-->
-  <!--  <color name="yellow_400">#</color>-->
-  <!--  <color name="yellow_300">#</color>-->
-  <!--  <color name="yellow_200">#</color>-->
-  <!--  <color name="yellow_100">#</color>-->
+  <color name="yellow_800">#CCA700</color>
+  <color name="yellow_500">#FFD61F</color>
+  <color name="yellow_200">#FFE985</color>
 
-  <!--  <color name="red_900">#</color>-->
-  <!--  <color name="red_800">#</color>-->
-  <!--  <color name="red_700">#</color>-->
-  <!--  <color name="red_600">#</color>-->
-  <!--  <color name="red_500">#</color>-->
-  <!--  <color name="red_400">#</color>-->
-  <!--  <color name="red_300">#</color>-->
-  <!--  <color name="red_200">#</color>-->
-  <!--  <color name="red_100">#</color>-->
+  <color name="error_800">#B00020</color>
+  <color name="error_500">#FF0A37</color>
+  <color name="error_200">#FF708A</color>
 </resources>

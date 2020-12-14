@@ -57,9 +57,9 @@
     <item name="android:elevation">4dp</item>
     <item name="android:background">@drawable/button_round_corners_8dp</item>
     <item name="background">@drawable/button_round_corners_8dp</item>
-    <item name="android:textColor">?android:attr/textColorPrimaryInverse</item>
-    <item name="android:backgroundTint">?android:attr/colorAccent</item>
-    <item name="backgroundTint">?attr/colorAccent</item>
+    <item name="android:textColor">?attr/colorOnSecondary</item>
+    <item name="android:backgroundTint">?attr/colorSecondary</item>
+    <item name="backgroundTint">?attr/colorSecondary</item>
   </style>
 
   <!-- Used for Image buttons (for example, settings icon, thumbs up/down, etc). -->
