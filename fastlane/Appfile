@@ -1,0 +1,2 @@
+json_key_file("~/Downloads/api-project-522076872883-f8d18a813505.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("com.awsick.productiveday") # e.g. com.krausefx.app

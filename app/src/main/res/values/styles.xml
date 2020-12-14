@@ -5,7 +5,7 @@
     <item name="colorPrimary">@color/colorPrimary_500</item>
     <item name="colorPrimaryDark">@color/colorPrimary_800</item>
     <item name="colorPrimaryVariant">@color/colorPrimary_800</item>
-    <item name="colorOnPrimary">@color/black_870</item>
+    <item name="colorOnPrimary">@android:color/white</item>
 
     <item name="colorSecondary">@color/colorAccent_500</item>
     <item name="colorSecondaryVariant">@color/colorAccent_800</item>

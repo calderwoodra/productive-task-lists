@@ -9,8 +9,12 @@ android {
         applicationId "com.awsick.productiveday"
         minSdkVersion 23
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
+        // Format for version code is as follows:
+        // {minSdk}{major}{minor}{patch}
+        versionCode 23000100
+        // Format for version name is as follows:
+        // {major}.{minor}.{patch}
+        versionName "0.1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -49,9 +53,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     // Standard Android
     implementation 'androidx.appcompat:appcompat:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.2.1'
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
 
     // Standard Testing
     testImplementation 'junit:junit:4.12'
@@ -61,8 +65,8 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.19.0'
 
     // Arch Components
-    implementation 'androidx.navigation:navigation-fragment:2.3.1'
-    implementation 'androidx.navigation:navigation-ui:2.3.1'
+    implementation 'androidx.navigation:navigation-fragment:2.3.2'
+    implementation 'androidx.navigation:navigation-ui:2.3.2'
 
     // Room Databases
     def room_version = "2.2.5"

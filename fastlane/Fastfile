@@ -1,0 +1,71 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  desc "Runs all the tests"
+  lane :test do
+    gradle(task: "test")
+  end
+
+  desc "Submit a new Beta Build to Crashlytics Beta"
+  lane :beta do
+    gradle(task: "clean assembleRelease")
+    crashlytics
+
+    # sh "your_script.sh"
+    # You can also use other beta testing services here
+  end
+
+  desc "Deploy a new version to the Google Play"
+  lane :deploy do
+    gradle(task: "clean assembleRelease")
+    upload_to_play_store
+  end
+
+  # To deploy to the playstore using fastlane, run:
+  # $ fastlane release_to_internal_track
+  #
+  # Make sure you have a .env.default file storing your environment variables in the same directory as this Fastfile.
+  # Required environmental variables include:
+  #   - KEYSTORE_PATH
+  #   - KEYSTORE_PASSWORD
+  #   - KEY_ALIAS
+  #   - KEY_PASSWORD
+  #   - FASTLANE_ANDROID_JSON_KEY_PATH
+  lane :release_to_internal_track do |options|
+    gradle(
+      task: "clean bundle",
+      build_type: "Release",
+      print_command: false,
+      properties: {
+        "android.injected.signing.store.file" => ENV["KEYSTORE_PATH"],
+        "android.injected.signing.store.password" => ENV["KEYSTORE_PASSWORD"],
+        "android.injected.signing.key.alias" => ENV["KEY_ALIAS"],
+        "android.injected.signing.key.password" => ENV["KEY_PASSWORD"],
+      }
+    )
+    upload_to_play_store(
+            track: 'internal',
+            skip_upload_screenshots: true,
+            skip_upload_apk: true,
+            json_key: ENV["FASTLANE_ANDROID_JSON_KEY_PATH"],
+            aab_paths: lane_context[SharedValues::GRADLE_ALL_AAB_OUTPUT_PATHS],
+            package_name: 'com.awsick.productiveday',
+            mapping: lane_context[SharedValues::GRADLE_MAPPING_TXT_OUTPUT_PATH]
+    )
+  end
+end

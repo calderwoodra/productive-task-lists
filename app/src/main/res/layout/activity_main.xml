@@ -45,6 +45,8 @@
     style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:itemIconTint="?attr/colorOnPrimary"
+    app:itemTextColor="?attr/colorOnPrimary"
     app:layout_constraintBottom_toBottomOf="parent"
     app:menu="@menu/menu_main_bottom_nav" />
 </androidx.constraintlayout.widget.ConstraintLayout>
