@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/directories_tab_nav_graph"
+  app:startDestination="@id/productivitySetupFragment">
+
+
+  <fragment
+    android:id="@+id/productivitySetupFragment"
+    android:name="com.awsick.productiveday.productivity.ProductivitySetupFragment"
+    android:label="ProductivitySetupFragment"
+    tools:layout="@layout/fragment_productivity_setup" />
+</navigation>

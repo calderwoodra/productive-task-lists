@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:id="@id/productivityHostFragment"
+    android:title="Productivity"
+    android:icon="@drawable/ic_baseline_today_24"/>
   <item android:id="@id/tasksHostFragment"
     android:title="Tasks"
     android:icon="@drawable/ic_baseline_format_list_numbered_24" />

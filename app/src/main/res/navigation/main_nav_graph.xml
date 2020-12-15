@@ -3,7 +3,17 @@
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/main_nav_graph"
-  app:startDestination="@id/tasksHostFragment">
+  app:startDestination="@id/productivityHostFragment">
+
+  <fragment
+    android:id="@+id/productivityHostFragment"
+    android:name="com.awsick.productiveday.productivity.ProductivityHostFragment"
+    android:label="ProductivityHostFragment"
+    tools:layout="@layout/fragment_productivity_setup">
+    <action
+      android:id="@+id/action_productivityHostFragment_to_tasksHostFragment"
+      app:destination="@id/tasksHostFragment" />
+  </fragment>
 
   <fragment
     android:id="@+id/tasksHostFragment"

@@ -43,7 +43,8 @@ android {
                 srcDirs 'src/main/res',
                         'src/main/java/com/awsick/productiveday/devoptions/res',
                         'src/main/java/com/awsick/productiveday/tasks/res',
-                        'src/main/java/com/awsick/productiveday/directories/res'
+                        'src/main/java/com/awsick/productiveday/directories/res',
+                        'src/main/java/com/awsick/productiveday/productivity/res'
             }
         }
     }

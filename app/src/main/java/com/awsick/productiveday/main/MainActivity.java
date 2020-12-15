@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.common.uiutils.FragmentUtils.FragmentUtilListener;
 import com.awsick.productiveday.directories.DirectoriesHostFragment;
+import com.awsick.productiveday.productivity.ProductivityHostFragment;
 import com.awsick.productiveday.tasks.TasksHostFragment;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -37,6 +38,9 @@ public class MainActivity extends AppCompatActivity implements FragmentUtilListe
         item -> {
 
           // list of all fragments
+          ProductivityHostFragment productivityFragment =
+              (ProductivityHostFragment)
+                  getSupportFragmentManager().findFragmentByTag("PRODUCTIVITY");
           TasksHostFragment taskFragment =
               (TasksHostFragment) getSupportFragmentManager().findFragmentByTag("TASKS");
           DirectoriesHostFragment directoryFragment =
@@ -55,6 +59,10 @@ public class MainActivity extends AppCompatActivity implements FragmentUtilListe
               transaction.detach(directoryFragment);
             }
 
+            if (productivityFragment != null) {
+              transaction.detach(productivityFragment);
+            }
+
             // handle directory fragment
           } else if (item.getItemId() == R.id.directoriesHostFragment) {
             if (directoryFragment == null) {
@@ -66,12 +74,31 @@ public class MainActivity extends AppCompatActivity implements FragmentUtilListe
             if (taskFragment != null) {
               transaction.detach(taskFragment);
             }
+
+            if (productivityFragment != null) {
+              transaction.detach(productivityFragment);
+            }
+
+          } else if (item.getItemId() == R.id.productivityHostFragment) {
+            if (productivityFragment == null) {
+              transaction.add(R.id.main_content, new ProductivityHostFragment(), "PRODUCTIVITY");
+            } else {
+              transaction.attach(productivityFragment);
+            }
+
+            if (taskFragment != null) {
+              transaction.detach(taskFragment);
+            }
+
+            if (directoryFragment != null) {
+              transaction.detach(directoryFragment);
+            }
           }
 
           transaction.commit();
           return true;
         });
-    bottomNavigationView.setSelectedItemId(R.id.tasksHostFragment);
+    bottomNavigationView.setSelectedItemId(R.id.productivityHostFragment);
   }
 
   @Nullable
