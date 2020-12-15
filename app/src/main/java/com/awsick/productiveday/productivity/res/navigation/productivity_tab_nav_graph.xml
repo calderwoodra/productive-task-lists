@@ -8,7 +8,7 @@
 
   <fragment
     android:id="@+id/productivitySetupFragment"
-    android:name="com.awsick.productiveday.productivity.ProductivitySetupFragment"
+    android:name="com.awsick.productiveday.productivity.setup.ProductivitySetupFragment"
     android:label="ProductivitySetupFragment"
     tools:layout="@layout/fragment_productivity_setup" />
 </navigation>

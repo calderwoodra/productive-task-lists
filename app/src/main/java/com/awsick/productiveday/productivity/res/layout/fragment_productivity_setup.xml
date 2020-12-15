@@ -47,6 +47,7 @@
     app:layout_constraintBottom_toBottomOf="parent">
 
     <androidx.appcompat.widget.AppCompatEditText
+      android:id="@+id/pd_setup_task_input"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginTop="12dp"
@@ -68,10 +69,10 @@
       style="@style/AppButton.Icon"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:layout_marginTop="6dp"
       android:layout_marginEnd="@dimen/standard_side_margin"
       android:src="@drawable/ic_baseline_send_24"
       android:tint="?attr/colorSecondary"
-      app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
   </androidx.constraintlayout.widget.ConstraintLayout>

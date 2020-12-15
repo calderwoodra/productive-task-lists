@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="wrap_content">
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/pd_setup_task_item_title"
+    style="@style/AppTextHeadline6"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginStart="@dimen/standard_side_margin"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toStartOf="@id/pd_setup_task_item_remove"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:text="Go to the grocery store" />
+
+  <androidx.appcompat.widget.AppCompatImageView
+    android:id="@+id/pd_setup_task_item_remove"
+    style="@style/AppButton.Icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/ic_baseline_close_24"
+    android:tint="?attr/colorOnBackground"
+    android:layout_marginEnd="@dimen/standard_side_margin"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
