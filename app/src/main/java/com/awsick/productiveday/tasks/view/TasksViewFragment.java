@@ -39,6 +39,7 @@ public final class TasksViewFragment extends Fragment {
   public void onViewCreated(@NonNull View root, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(root, savedInstanceState);
     MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
+    parent.setFabVisibility(true);
     parent.setFabOcl(view -> startActivity(TaskCreateActivity.create(requireContext())));
     parent.setToolbarTitle("Productive Task List");
 

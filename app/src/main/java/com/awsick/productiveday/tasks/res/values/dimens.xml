@@ -2,6 +2,8 @@
 <resources>
   <dimen name="guideline_standard_side_margin">8dp</dimen>
   <dimen name="standard_side_margin">16dp</dimen>
+  <dimen name="standard_side_margin_plus_4dp">20dp</dimen>
+  <dimen name="standard_side_margin_plus_8dp">24dp</dimen>
 
   <dimen name="standard_vert_margin_xs">4dp</dimen>
   <dimen name="standard_vert_margin_small">8dp</dimen>

@@ -129,5 +129,14 @@ public class MainActivity extends AppCompatActivity implements FragmentUtilListe
     public void setFabOcl(OnClickListener ocl) {
       fab.setOnClickListener(ocl);
     }
+
+    @Override
+    public void setFabVisibility(boolean visible) {
+      if (visible) {
+        fab.show();
+      } else {
+        fab.hide();
+      }
+    }
   }
 }
