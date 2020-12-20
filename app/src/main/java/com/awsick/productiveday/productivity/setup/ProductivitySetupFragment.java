@@ -17,6 +17,7 @@ import com.awsick.productiveday.common.uiutils.FragmentUtils;
 import com.awsick.productiveday.common.utils.DateUtils;
 import com.awsick.productiveday.main.MainParentContainer;
 import com.awsick.productiveday.productivity.setup.PdSetupTaskAdapter.TaskActions;
+import com.awsick.productiveday.tasks.create.TaskCreateActivity;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.Task.Type;
 import com.google.common.base.Strings;
@@ -106,7 +107,7 @@ public final class ProductivitySetupFragment extends Fragment {
     root.findViewById(R.id.task_input_complete).setVisibility(hide ? View.VISIBLE : View.INVISIBLE);
   }
 
-  private static final class TaskActionsImpl implements TaskActions {
+  private final class TaskActionsImpl implements TaskActions {
 
     private final PdSetupViewModel viewModel;
 
@@ -115,21 +116,18 @@ public final class ProductivitySetupFragment extends Fragment {
     }
 
     @Override
-    public void markTaskCompleted(Task task) {}
+    public void markTaskCompleted(Task task) {
+      viewModel.markTaskComplete(task);
+    }
 
     @Override
     public void editTask(Task task) {
-      // TODO(allen): Implement
+      startActivity(TaskCreateActivity.create(requireContext(), task));
     }
 
     @Override
     public void removeTask(Task task) {
       viewModel.removeTask(task);
-    }
-
-    @Override
-    public void moveTask(Task task, int start, int end) {
-      // TODO(allen): implement
     }
   }
 }

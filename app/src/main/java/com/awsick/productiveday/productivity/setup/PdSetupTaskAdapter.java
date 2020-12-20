@@ -206,9 +206,6 @@ public final class PdSetupTaskAdapter extends RecyclerView.Adapter<PdSetupTaskVi
 
     /** Remove a task from the list. */
     void removeTask(Task task);
-
-    /** Move a task from {@code start} to {@code end}. */
-    void moveTask(Task task, int start, int end);
   }
 
   private static final class TaskItemDiffCallback extends DiffUtil.Callback {

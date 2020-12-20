@@ -64,6 +64,10 @@ public final class PdSetupViewModel extends ViewModel {
         });
   }
 
+  public void markTaskComplete(Task task) {
+    tasksRepo.markTaskCompleted(task);
+  }
+
   private static final class TasksLiveData
       extends MergerLiveData<
           RequestStatus<ImmutableList<Task>>,
