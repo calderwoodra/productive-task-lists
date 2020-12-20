@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.productivity.setup.PdSetupTaskAdapter.PdSetupTaskViewHolder;
@@ -63,12 +64,12 @@ public final class PdSetupTaskAdapter extends RecyclerView.Adapter<PdSetupTaskVi
   public void setData(ImmutableList<Task> tasks) {
     ImmutableList<PdSetupTaskItemData> tempTasks =
         tasks.stream()
-            .filter(task -> task.uid() == -1)
+            .filter(task -> task.uid() == 0)
             .map(PdSetupTaskItemData::tempTask)
             .collect(toImmutableList());
     ImmutableList<PdSetupTaskItemData> existingTasks =
         tasks.stream()
-            .filter(task -> task.uid() != -1)
+            .filter(task -> task.uid() != 0)
             .map(PdSetupTaskItemData::existingTask)
             .collect(toImmutableList());
 
@@ -82,8 +83,11 @@ public final class PdSetupTaskAdapter extends RecyclerView.Adapter<PdSetupTaskVi
       dataBuilder.add(PdSetupTaskItemData.header("Existing Tasks"));
       dataBuilder.addAll(existingTasks);
     }
-    data = dataBuilder.build();
-    notifyDataSetChanged();
+    ImmutableList<PdSetupTaskItemData> newData = dataBuilder.build();
+    TaskItemDiffCallback diffCallback = new TaskItemDiffCallback(data, newData);
+    DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback);
+    data = newData;
+    diffResult.dispatchUpdatesTo(this);
   }
 
   private static final class PdSetupHeaderItem extends PdSetupTaskViewHolder {
@@ -205,5 +209,52 @@ public final class PdSetupTaskAdapter extends RecyclerView.Adapter<PdSetupTaskVi
 
     /** Move a task from {@code start} to {@code end}. */
     void moveTask(Task task, int start, int end);
+  }
+
+  private static final class TaskItemDiffCallback extends DiffUtil.Callback {
+
+    private final ImmutableList<PdSetupTaskItemData> oldData;
+    private final ImmutableList<PdSetupTaskItemData> newData;
+
+    private TaskItemDiffCallback(
+        ImmutableList<PdSetupTaskItemData> oldData, ImmutableList<PdSetupTaskItemData> newData) {
+      this.oldData = oldData;
+      this.newData = newData;
+    }
+
+    @Override
+    public int getOldListSize() {
+      return oldData.size();
+    }
+
+    @Override
+    public int getNewListSize() {
+      return newData.size();
+    }
+
+    @Override
+    public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+      PdSetupTaskItemData oldItem = oldData.get(oldItemPosition);
+      PdSetupTaskItemData newItem = newData.get(newItemPosition);
+      if (oldItem.getType() != newItem.getType()) {
+        return false;
+      }
+
+      switch (oldItem.getType()) {
+        case PdSetupTaskItemData.TYPE_HEADER:
+          return oldItem.getHeader().equals(newItem.getHeader());
+        case PdSetupTaskItemData.TYPE_EXISTING_TASK:
+          return oldItem.getTask().uid() == newItem.getTask().uid();
+        case PdSetupTaskItemData.TYPE_TEMP_TASK:
+          return oldItem.getTask().title().equals(oldItem.getTask().title());
+        default:
+          throw new IllegalArgumentException("Unhandled type: " + oldItem.getType());
+      }
+    }
+
+    @Override
+    public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+      return true;
+    }
   }
 }

@@ -42,8 +42,9 @@ public final class PdSetupViewModel extends ViewModel {
   }
 
   public void saveTasks() {
-    tasksRepo.createTasks(inputTasks.getValue());
+    ImmutableList<Task> tasks = inputTasks.getValue();
     inputTasks.setValue(ImmutableList.of());
+    tasksRepo.createTasks(tasks);
     // TODO(allen): set consumable
     // TODO(allen): launch screen to sort tasks
   }

@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.common.uiutils.FragmentUtils;
 import com.awsick.productiveday.common.utils.DateUtils;
@@ -46,6 +47,14 @@ public final class ProductivitySetupFragment extends Fragment {
 
     TaskActionsImpl taskActions = new TaskActionsImpl(viewModel);
     PdSetupTaskAdapter adapter = new PdSetupTaskAdapter(taskActions);
+    adapter.registerAdapterDataObserver(
+        new AdapterDataObserver() {
+          @Override
+          public void onItemRangeInserted(int positionStart, int itemCount) {
+            super.onItemRangeInserted(positionStart, itemCount);
+            rv.smoothScrollToPosition(0);
+          }
+        });
     rv.setAdapter(adapter);
     viewModel
         .getTasks()
@@ -62,8 +71,8 @@ public final class ProductivitySetupFragment extends Fragment {
                 case SUCCESS:
                   adapter.setData(tasks.getResult());
                   hideEmptyState(!tasks.getResult().isEmpty(), root);
-                  hideSaveButton(
-                      tasks.getResult().stream().anyMatch(task -> task.uid() == -1), root);
+                  showSaveButton(
+                      tasks.getResult().stream().anyMatch(task -> task.uid() == 0), root);
                   break;
               }
             });
@@ -93,8 +102,8 @@ public final class ProductivitySetupFragment extends Fragment {
     root.findViewById(R.id.pd_setup_body).setVisibility(hide ? View.GONE : View.VISIBLE);
   }
 
-  private static void hideSaveButton(boolean hide, View root) {
-    root.findViewById(R.id.task_input_complete).setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
+  private static void showSaveButton(boolean hide, View root) {
+    root.findViewById(R.id.task_input_complete).setVisibility(hide ? View.VISIBLE : View.INVISIBLE);
   }
 
   private static final class TaskActionsImpl implements TaskActions {

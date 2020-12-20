@@ -9,7 +9,7 @@
     style="@style/AppTextHeadline6"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="72dp"
+    android:layout_marginStart="56dp"
     android:paddingTop="4dp"
     android:gravity="center_vertical"
     android:minHeight="48dp"
@@ -18,7 +18,7 @@
   <View
     android:layout_width="match_parent"
     android:layout_height="1dp"
-    android:layout_marginStart="72dp"
+    android:layout_marginStart="56dp"
     android:background="#DEDEDE"
     android:layout_gravity="bottom" />
 </FrameLayout>

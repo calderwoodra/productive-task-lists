@@ -45,7 +45,7 @@ public abstract class Task {
 
   public static Task.Builder builder() {
     return new AutoValue_Task.Builder()
-        .setUid(-1)
+        .setUid(0)
         .setNotes("")
         .setRepeatability(null)
         .setDirectoryId(-1)
