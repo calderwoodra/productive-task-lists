@@ -27,7 +27,7 @@ import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.google.common.base.Optional;
 import dagger.hilt.android.qualifiers.ApplicationContext;
 import java.util.Calendar;
-import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 public final class TasksCreateViewModel extends ViewModel {
 
@@ -180,10 +180,8 @@ public final class TasksCreateViewModel extends ViewModel {
   }
 
   private static long midnightTonight() {
-    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-    calendar.set(Calendar.HOUR, 11);
-    calendar.set(Calendar.MINUTE, 59);
-    return calendar.toInstant().getEpochSecond() * 1000;
+    // 11:59 PM
+    return DateUtils.midnightTonightMillis() - TimeUnit.MINUTES.toMillis(1);
   }
 
   public Calendar getCalendar() {

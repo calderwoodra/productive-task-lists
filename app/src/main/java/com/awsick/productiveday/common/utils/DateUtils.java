@@ -5,8 +5,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -104,6 +106,13 @@ public final class DateUtils {
   public static String getCenturiesDifferenceFromNow(Date date) {
     long days = getDaysDifferenceFromNow(date);
     return new BigDecimal(days).divide(new BigDecimal(365 * 100), 6, RoundingMode.UP).toString();
+  }
+
+  public static long midnightTonightMillis() {
+    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+    calendar.set(Calendar.HOUR, 12);
+    calendar.set(Calendar.MINUTE, 0);
+    return calendar.toInstant().getEpochSecond() * 1000;
   }
 
   private DateUtils() {}

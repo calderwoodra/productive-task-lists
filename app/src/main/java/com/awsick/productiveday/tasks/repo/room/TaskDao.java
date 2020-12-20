@@ -15,6 +15,9 @@ public interface TaskDao {
   @Insert
   ListenableFuture<Long> insert(TaskEntity task);
 
+  @Insert
+  ListenableFuture<List<Long>> insert(TaskEntity... task);
+
   // READ
   @Query("SELECT * FROM taskentity")
   ListenableFuture<List<TaskEntity>> getAll();

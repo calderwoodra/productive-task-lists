@@ -55,6 +55,7 @@ public final class DirectoryBrowseFragment extends Fragment {
     requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
 
     MainParentContainer parent = FragmentUtils.getParentUnsafe(this, MainParentContainer.class);
+    parent.setFabVisibility(true);
     viewModel
         .getCurrentDirectory()
         .observe(

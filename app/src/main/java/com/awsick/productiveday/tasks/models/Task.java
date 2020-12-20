@@ -45,7 +45,7 @@ public abstract class Task {
 
   public static Task.Builder builder() {
     return new AutoValue_Task.Builder()
-        .setUid(0)
+        .setUid(-1)
         .setNotes("")
         .setRepeatability(null)
         .setDirectoryId(-1)
@@ -92,23 +92,31 @@ public abstract class Task {
         return "";
       }
 
-      long now = DateUtils.getCurrentTimeMs();
-      int daysRemaining = -1;
-      while (deadline > now) {
-        deadline -= TimeUnit.DAYS.toMillis(1);
-        daysRemaining++;
-      }
-
-      switch (daysRemaining) {
-        case -1:
-          return "past";
-        case 0:
-          return "today";
-        case 1:
-          return "tmw";
-        default:
-          return daysRemaining + "d";
+      int daysRemaining = getDaysFromToday(deadline);
+      if (daysRemaining < 0) {
+        return "past";
+      } else if (daysRemaining == 0) {
+        return "today";
+      } else if (daysRemaining == 1) {
+        return "tmw";
+      } else {
+        return daysRemaining + "d";
       }
     }
+  }
+
+  /**
+   * Returns number of days from the deadline.
+   *
+   * <p>(-inf, -1] is a missed deadline 0 is a deadline of today [1, +inf) is a future deadline
+   */
+  public int getDaysFromToday() {
+    return getDaysFromToday(deadlineMillis());
+  }
+
+  private static int getDaysFromToday(long deadline) {
+    Assert.checkArgument(deadline != -1, "Task does not have a deadline");
+    long eod = DateUtils.midnightTonightMillis();
+    return (int) Math.floor((deadline - eod) / TimeUnit.DAYS.toMillis(1));
   }
 }

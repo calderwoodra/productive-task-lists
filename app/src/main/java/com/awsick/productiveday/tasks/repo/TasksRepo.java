@@ -17,6 +17,8 @@ public interface TasksRepo {
 
   void createTask(Task task);
 
+  void createTasks(ImmutableList<Task> tasks);
+
   void updateTask(Task existingTask, Task newTask);
 
   void deleteTask(Task task);

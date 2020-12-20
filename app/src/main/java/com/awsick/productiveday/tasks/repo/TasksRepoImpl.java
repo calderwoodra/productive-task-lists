@@ -2,6 +2,7 @@ package com.awsick.productiveday.tasks.repo;
 
 import static com.awsick.productiveday.common.utils.ImmutableUtils.toImmutableList;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import com.awsick.productiveday.network.RequestStatus;
 import com.awsick.productiveday.network.RequestStatus.Status;
@@ -17,7 +18,10 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
@@ -85,6 +89,34 @@ class TasksRepoImpl implements TasksRepo {
 
           @Override
           public void onFailure(@NotNull Throwable throwable) {
+            // TODO(allen): Push a "failed to save" event to the front-end
+            refreshTasks();
+          }
+        },
+        executor);
+  }
+
+  @Override
+  public void createTasks(ImmutableList<Task> tasks) {
+    this.tasks.setValue(RequestStatus.pending());
+    Futures.addCallback(
+        taskDatabase
+            .taskDao()
+            .insert(tasks.stream().map(TaskEntity::from).toArray(TaskEntity[]::new)),
+        new FutureCallback<List<Long>>() {
+          @Override
+          public void onSuccess(@NullableDecl List<Long> result) {
+            refreshTasks();
+            Set<Integer> directoryIds =
+                tasks.stream().map(Task::directoryId).collect(Collectors.toSet());
+            for (int directory : directoryIds) {
+              refreshDirectoryTasks(directory);
+            }
+            notificationsRepo.notifyUser(TasksRepoImpl.this);
+          }
+
+          @Override
+          public void onFailure(@NonNull Throwable throwable) {
             // TODO(allen): Push a "failed to save" event to the front-end
             refreshTasks();
           }

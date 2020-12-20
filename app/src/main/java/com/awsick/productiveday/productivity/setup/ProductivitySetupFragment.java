@@ -13,7 +13,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.common.uiutils.FragmentUtils;
+import com.awsick.productiveday.common.utils.DateUtils;
 import com.awsick.productiveday.main.MainParentContainer;
+import com.awsick.productiveday.productivity.setup.PdSetupTaskAdapter.TaskActions;
+import com.awsick.productiveday.tasks.models.Task;
+import com.awsick.productiveday.tasks.models.Task.Type;
 import com.google.common.base.Strings;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -40,24 +44,83 @@ public final class ProductivitySetupFragment extends Fragment {
     RecyclerView rv = root.findViewById(R.id.pd_setup_tasks);
     rv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
 
-    PdSetupTaskAdapter adapter = new PdSetupTaskAdapter();
+    TaskActionsImpl taskActions = new TaskActionsImpl(viewModel);
+    PdSetupTaskAdapter adapter = new PdSetupTaskAdapter(taskActions);
     rv.setAdapter(adapter);
-    viewModel.getTasks().observe(getViewLifecycleOwner(), adapter::setData);
-
-    // TODO(allen): Consider removing title + blurb
-    // TODO(allen): Consider adjust pan vs adjust resize
-    // TODO(allen): update edit text hint along with task list
-    // TODO(allen): What comes after inputting all tasks
+    viewModel
+        .getTasks()
+        .observe(
+            getViewLifecycleOwner(),
+            tasks -> {
+              switch (tasks.status) {
+                case INITIAL:
+                case PENDING:
+                  break;
+                case FAILED:
+                  // TODO(allen): Show an error
+                  break;
+                case SUCCESS:
+                  adapter.setData(tasks.getResult());
+                  hideEmptyState(!tasks.getResult().isEmpty(), root);
+                  hideSaveButton(
+                      tasks.getResult().stream().anyMatch(task -> task.uid() == -1), root);
+                  break;
+              }
+            });
 
     EditText taskInput = root.findViewById(R.id.pd_setup_task_input);
+    viewModel.getEditTextHint().observe(getViewLifecycleOwner(), taskInput::setHint);
     root.findViewById(R.id.pd_setup_create_task)
         .setOnClickListener(
             view -> {
               String input = taskInput.getText().toString();
               if (!Strings.isNullOrEmpty(input)) {
-                viewModel.addTask(input);
+                viewModel.addTask(
+                    Task.builder()
+                        .setTitle(input)
+                        .setType(Type.DEADLINE)
+                        .setDeadlineMillis(DateUtils.midnightTonightMillis())
+                        .build());
                 taskInput.setText("");
               }
             });
+
+    root.findViewById(R.id.task_input_complete).setOnClickListener(view -> viewModel.saveTasks());
+  }
+
+  private static void hideEmptyState(boolean hide, View root) {
+    root.findViewById(R.id.pd_setup_title).setVisibility(hide ? View.GONE : View.VISIBLE);
+    root.findViewById(R.id.pd_setup_body).setVisibility(hide ? View.GONE : View.VISIBLE);
+  }
+
+  private static void hideSaveButton(boolean hide, View root) {
+    root.findViewById(R.id.task_input_complete).setVisibility(hide ? View.INVISIBLE : View.VISIBLE);
+  }
+
+  private static final class TaskActionsImpl implements TaskActions {
+
+    private final PdSetupViewModel viewModel;
+
+    private TaskActionsImpl(PdSetupViewModel viewModel) {
+      this.viewModel = viewModel;
+    }
+
+    @Override
+    public void markTaskCompleted(Task task) {}
+
+    @Override
+    public void editTask(Task task) {
+      // TODO(allen): Implement
+    }
+
+    @Override
+    public void removeTask(Task task) {
+      viewModel.removeTask(task);
+    }
+
+    @Override
+    public void moveTask(Task task, int start, int end) {
+      // TODO(allen): implement
+    }
   }
 }

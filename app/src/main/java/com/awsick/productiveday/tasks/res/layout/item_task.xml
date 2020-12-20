@@ -58,6 +58,21 @@
     app:layout_constraintTop_toBottomOf="@id/task_item_folder"
     tools:text="1d" />
 
+  <!-- This view is only used for temporary tasks that haven't been saved yet. -->
+  <androidx.appcompat.widget.AppCompatImageView
+    android:id="@+id/pd_setup_task_item_remove"
+    style="@style/AppButton.Icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/standard_side_margin"
+    android:src="@drawable/ic_baseline_close_24"
+    android:tint="?attr/colorOnBackground"
+    android:visibility="gone"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    tools:visibility="visible" />
+
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/task_item_notes"
     style="@style/AppTextSubtitle1"
