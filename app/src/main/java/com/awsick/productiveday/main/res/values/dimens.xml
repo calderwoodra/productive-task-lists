@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <dimen name="fab_elevation">8dp</dimen>
+  <dimen name="fab_expanded_elevation">12dp</dimen>
+  <dimen name="expanded_fab_1_y">55dp</dimen>
+  <dimen name="expanded_fab_2_y">105dp</dimen>
+</resources>

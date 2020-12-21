@@ -44,7 +44,7 @@ android {
                         'src/main/java/com/awsick/productiveday/devoptions/res',
                         'src/main/java/com/awsick/productiveday/tasks/res',
                         'src/main/java/com/awsick/productiveday/directories/res',
-                        'src/main/java/com/awsick/productiveday/productivity/res'
+                        'src/main/java/com/awsick/productiveday/productivity/res', 'src/main/java/com/awsick/productiveday/main/res'
             }
         }
     }
@@ -52,7 +52,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    // Standard Android
+    // -- Android Maintained Libraries --
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'com.google.android.material:material:1.2.1'
@@ -86,26 +86,29 @@ dependencies {
     implementation "com.google.dagger:hilt-android:2.29.1-alpha"
     annotationProcessor "com.google.dagger:hilt-compiler:2.29.1-alpha"
 
-    // Retrofit deps
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
-    implementation "com.squareup.okhttp3:okhttp:4.9.0"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
-    implementation 'com.google.code.gson:gson:2.8.6'
-
-    // Google Tools
+    // -- Google Tools --
+    // Guava - the behemoth
     implementation "com.google.guava:guava:29.0-android"
     implementation 'com.google.googlejavaformat:google-java-format:1.8'
-
     // Autovalue - Immutable POJOs with readable builders for less boilerplate
     annotationProcessor 'com.google.auto.value:auto-value:1.5.2'
     compileOnly 'com.jakewharton.auto.value:auto-value-annotations:1.5'
+    // GSON - Converting JSON to POJOs
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     // Firebase
     implementation platform('com.google.firebase:firebase-bom:26.1.1')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.google.firebase:firebase-crashlytics'
+
+
+    // -- Third Party Libraries --
+    // Retrofit -- For executing network calls
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation "com.squareup.okhttp3:okhttp:4.9.0"
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
 }
 
 apply plugin: 'dagger.hilt.android.plugin'

@@ -1,7 +1,11 @@
 package com.awsick.productiveday.main;
 
+import android.animation.ValueAnimator.AnimatorUpdateListener;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewPropertyAnimator;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,7 +33,13 @@ public class MainActivity extends AppCompatActivity implements FragmentUtilListe
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_main);
     setUpNavigation();
-    parent = new MainParent(findViewById(R.id.toolbar), findViewById(R.id.fab));
+    parent =
+        new MainParent(
+            findViewById(R.id.toolbar),
+            findViewById(R.id.fab),
+            findViewById(R.id.fab_option_1),
+            findViewById(R.id.fab_option_2),
+            findViewById(R.id.expandable_fab_background));
   }
 
   public void setUpNavigation() {
@@ -114,10 +124,40 @@ public class MainActivity extends AppCompatActivity implements FragmentUtilListe
 
     private final Toolbar toolbar;
     private final FloatingActionButton fab;
+    private final FloatingActionButton fabOption1;
+    private final FloatingActionButton fabOption2;
+    private final View background;
 
-    private MainParent(Toolbar toolbar, FloatingActionButton fab) {
+    private final float fabElevation;
+    private final float expandedFabElevation;
+    private final float fab1y;
+    private final float fab2y;
+
+    private boolean isFabExpanded = false;
+
+    private MainParent(
+        Toolbar toolbar,
+        FloatingActionButton fab,
+        FloatingActionButton fabOption1,
+        FloatingActionButton fabOption2,
+        View background) {
       this.toolbar = toolbar;
       this.fab = fab;
+      this.fabOption1 = fabOption1;
+      this.fabOption2 = fabOption2;
+      this.background = background;
+
+      background.setOnClickListener(
+          view -> {
+            isFabExpanded = false;
+            animateCollapseFab();
+          });
+
+      Resources resources = fab.getContext().getResources();
+      fabElevation = resources.getDimension(R.dimen.fab_elevation);
+      expandedFabElevation = resources.getDimension(R.dimen.fab_expanded_elevation);
+      fab1y = -resources.getDimension(R.dimen.expanded_fab_1_y);
+      fab2y = -resources.getDimension(R.dimen.expanded_fab_2_y);
     }
 
     @Override
@@ -131,12 +171,73 @@ public class MainActivity extends AppCompatActivity implements FragmentUtilListe
     }
 
     @Override
+    public void setupExpandableFab(FabOptions options1, FabOptions options2) {
+      fab.setOnClickListener(
+          view1 -> {
+            if (isFabExpanded) {
+              isFabExpanded = false;
+              animateCollapseFab();
+            } else {
+              isFabExpanded = true;
+              animateExpandFab();
+            }
+          });
+
+      fabOption1.setImageResource(options1.icon);
+      fabOption1.setOnClickListener(
+          view3 -> {
+            isFabExpanded = false;
+            animateCollapseFab();
+            options1.onClickListener.onClick(view3);
+          });
+
+      fabOption2.setImageResource(options2.icon);
+      fabOption2.setOnClickListener(
+          view4 -> {
+            isFabExpanded = false;
+            animateCollapseFab();
+            options2.onClickListener.onClick(view4);
+          });
+    }
+
+    @Override
     public void setFabVisibility(boolean visible) {
       if (visible) {
         fab.show();
       } else {
         fab.hide();
       }
+    }
+
+    private void animateExpandFab() {
+      fab.setCompatElevation(expandedFabElevation);
+      fab.animate().rotation(45);
+      fabOption1.setVisibility(View.VISIBLE);
+      fabOption1.animate().translationY(fab1y);
+      fabOption2.setVisibility(View.VISIBLE);
+      fabOption2.animate().translationY(fab2y);
+      background.setAlpha(0);
+      background.setVisibility(View.VISIBLE);
+      background.animate().alpha(100);
+    }
+
+    private void animateCollapseFab() {
+      fab.animate().rotation(0);
+      cleanUpAnimation(fabOption1, fabOption1.animate().translationY(0));
+      cleanUpAnimation(fabOption2, fabOption2.animate().translationY(0));
+      cleanUpAnimation(background, background.animate().alpha(0));
+    }
+
+    private void cleanUpAnimation(View view, ViewPropertyAnimator animator) {
+      AnimatorUpdateListener listener =
+          animation -> {
+            if (animation.getAnimatedFraction() >= 0.95) {
+              view.setVisibility(View.GONE);
+              animator.setUpdateListener(null);
+              fab.setElevation(fabElevation);
+            }
+          };
+      animator.setUpdateListener(listener);
     }
   }
 }
