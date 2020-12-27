@@ -19,6 +19,12 @@ public class TaskEntity {
   @PrimaryKey(autoGenerate = true)
   public int uid;
 
+  @ColumnInfo(name = "created_millis")
+  long createdMillis;
+
+  @ColumnInfo(name = "updated_millis")
+  long updatedMillis;
+
   @ColumnInfo(name = "title")
   public String title;
 

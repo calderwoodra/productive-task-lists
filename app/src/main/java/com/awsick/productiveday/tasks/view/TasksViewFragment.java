@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.common.uiutils.FragmentUtils;
 import com.awsick.productiveday.main.MainParentContainer;
@@ -48,6 +49,14 @@ public final class TasksViewFragment extends Fragment {
     RecyclerView rv = root.findViewById(R.id.task_list);
     rv.setLayoutManager(new LinearLayoutManager(requireContext(), RecyclerView.VERTICAL, false));
     TaskListAdapter adapter = new TaskListAdapter(new TaskActionListener(tasksRepo));
+    adapter.registerAdapterDataObserver(
+        new AdapterDataObserver() {
+          @Override
+          public void onItemRangeInserted(int positionStart, int itemCount) {
+            super.onItemRangeInserted(positionStart, itemCount);
+            rv.smoothScrollToPosition(0);
+          }
+        });
     rv.setAdapter(adapter);
     viewModel
         .getTasks()

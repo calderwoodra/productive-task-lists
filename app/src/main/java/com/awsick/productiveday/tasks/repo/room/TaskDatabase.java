@@ -6,7 +6,7 @@ import androidx.room.TypeConverters;
 
 @Database(
     entities = {TaskEntity.class},
-    version = 6)
+    version = 7)
 @TypeConverters(TaskDatabaseConverters.class)
 public abstract class TaskDatabase extends RoomDatabase {
 

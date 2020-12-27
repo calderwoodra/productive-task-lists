@@ -1,7 +1,14 @@
 package com.awsick.productiveday.network.util;
 
+import androidx.annotation.NonNull;
+import com.awsick.productiveday.application.PdApplication;
+import com.awsick.productiveday.firebase.crashlytics.Crashlytics;
 import com.awsick.productiveday.network.RequestStatus;
 import com.google.common.util.concurrent.FutureCallback;
+import dagger.hilt.EntryPoint;
+import dagger.hilt.EntryPoints;
+import dagger.hilt.InstallIn;
+import dagger.hilt.android.components.ApplicationComponent;
 import java.util.function.Consumer;
 import org.checkerframework.checker.nullness.compatqual.NullableDecl;
 
@@ -55,10 +62,20 @@ public class RequestStatusUtils<T> {
       }
 
       @Override
-      public void onFailure(Throwable throwable) {
+      public void onFailure(@NonNull Throwable throwable) {
+        EntryPoints.get(PdApplication.getContext(), CrashlyticsEntryPoint.class)
+            .getCrashlytics()
+            .logException(throwable);
         liveData.setValue(RequestStatus.error(throwable));
       }
     };
+  }
+
+  @EntryPoint
+  @InstallIn(ApplicationComponent.class)
+  public interface CrashlyticsEntryPoint {
+
+    Crashlytics getCrashlytics();
   }
 
   private RequestStatusUtils() {}
