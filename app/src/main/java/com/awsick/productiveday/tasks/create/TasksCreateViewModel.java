@@ -215,7 +215,7 @@ public final class TasksCreateViewModel extends ViewModel {
             .setNotes(notes)
             .setDeadlineMillis(taskType.getValue() == Type.UNSCHEDULED ? -1 : timeMillis.getValue())
             .setRepeatability(
-                taskType.getValue() == Type.REMINDER ? null : repeatable.getValue().orNull())
+                taskType.getValue() == Type.REMINDER ? repeatable.getValue().orNull() : null)
             .setDirectoryId(directoryId.getValue())
             .setType(taskType.getValue());
 

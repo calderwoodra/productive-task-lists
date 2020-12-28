@@ -17,8 +17,11 @@ public abstract class TaskRepeatability {
   }
 
   public enum EndType {
+    /** Never stop reminding. */
     NEVER,
+    /** Stop reminding after a date. {@link #endOnTimeMillis()}. */
     ON,
+    /** Stop reminding after N occurrences. {@link #endAfterNTimes()}. */
     AFTER,
   }
 
@@ -32,6 +35,7 @@ public abstract class TaskRepeatability {
 
   public abstract int frequency();
 
+  /** How often the reminder should repeat (monthly, daily, etc.). */
   public abstract PeriodType periodType();
 
   public abstract Optional<Weekly> weekly();

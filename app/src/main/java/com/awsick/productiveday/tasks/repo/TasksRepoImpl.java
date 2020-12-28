@@ -11,6 +11,7 @@ import com.awsick.productiveday.network.util.RequestStatusUtils;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.room.TaskDatabase;
 import com.awsick.productiveday.tasks.repo.room.TaskEntity;
+import com.awsick.productiveday.tasks.scheduling.SchedulingUtils;
 import com.awsick.productiveday.tasks.scheduling.notifications.NotificationsRepo;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
@@ -193,32 +194,27 @@ class TasksRepoImpl implements TasksRepo {
 
   @Override
   public void markTaskCompleted(Task task) {
-    // Update task list to exclude compelted task
-    tasks.setValue(
-        RequestStatus.success(
-            tasks.getValue().getResult().stream()
-                .filter(t -> t.uid() != task.uid())
-                .collect(toImmutableList())));
-
-    // Update directory list too, if it exists
-    if (directoryTasksMap.containsKey(task.directoryId())) {
-      RequestStatusLiveData<ImmutableList<Task>> directoryTasks =
-          directoryTasksMap.get(task.directoryId());
-      directoryTasks.setValue(
-          RequestStatus.success(
-              directoryTasks.getValue().getResult().stream()
-                  .filter(t -> t.uid() != task.uid())
-                  .collect(toImmutableList())));
-    }
+    tasks.setValue(RequestStatus.pending());
 
     TaskEntity entity = TaskEntity.from(task);
-    entity.completed = true;
+    Optional<Long> nextDeadline = SchedulingUtils.getNextDeadline(task);
+    if (!nextDeadline.isPresent()) {
+      entity.completed = true;
+    } else {
+      entity.deadlineMillis = nextDeadline.get();
+      entity.notified = false;
+    }
+
+    ListenableFuture<Void> updateTask = taskDatabase.taskDao().update(entity);
+
     Futures.addCallback(
-        taskDatabase.taskDao().update(entity),
+        updateTask,
         new FutureCallback<Void>() {
           @Override
           public void onSuccess(@NullableDecl Void result) {
-            // No-op
+            refreshTasks();
+            refreshDirectoryTasks(task.directoryId());
+            notificationsRepo.notifyUser(TasksRepoImpl.this);
           }
 
           @Override
@@ -255,7 +251,6 @@ class TasksRepoImpl implements TasksRepo {
             tasks.stream()
                 .map(
                     task -> {
-                      // TODO(allen): Check for repeatability
                       TaskEntity entity = TaskEntity.from(task);
                       entity.notified = true;
                       return entity;

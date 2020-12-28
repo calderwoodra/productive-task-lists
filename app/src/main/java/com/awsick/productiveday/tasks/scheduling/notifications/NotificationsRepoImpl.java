@@ -11,6 +11,7 @@ import androidx.core.app.NotificationManagerCompat;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.common.notifications.NotificationConstants;
 import com.awsick.productiveday.common.utils.Assert;
+import com.awsick.productiveday.firebase.crashlytics.Crashlytics;
 import com.awsick.productiveday.tasks.create.TaskCreateActivity;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.Task.Type;
@@ -32,11 +33,14 @@ final class NotificationsRepoImpl implements NotificationsRepo {
 
   private final Context context;
   private final Executor executor;
+  private final Crashlytics crashlytics;
 
   @Inject
-  NotificationsRepoImpl(@ApplicationContext Context context, Executor executor) {
+  NotificationsRepoImpl(
+      @ApplicationContext Context context, Executor executor, Crashlytics crashlytics) {
     this.context = context;
     this.executor = executor;
+    this.crashlytics = crashlytics;
   }
 
   @Override
@@ -53,8 +57,8 @@ final class NotificationsRepoImpl implements NotificationsRepo {
 
           @Override
           public void onFailure(@NotNull Throwable throwable) {
+            crashlytics.logException("Failed to schedule next reminder", throwable);
             // TODO(allen): Consider scheduling this to try again later
-            // TODO(allen): log an error
           }
         },
         executor);
@@ -90,7 +94,7 @@ final class NotificationsRepoImpl implements NotificationsRepo {
           @Override
           public void onFailure(@NotNull Throwable throwable) {
             // TODO(allen): Consider scheduling this to try again later
-            // TODO(allen): log an error
+
           }
         },
         executor);

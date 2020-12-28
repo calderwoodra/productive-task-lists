@@ -1,6 +1,7 @@
 package com.awsick.productiveday.tasks.scheduling.notifications;
 
 import android.content.Context;
+import com.awsick.productiveday.firebase.crashlytics.Crashlytics;
 import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
@@ -16,7 +17,7 @@ public final class NotificationsModule {
   @Provides
   @Singleton
   public NotificationsRepo provideTaskDatabase(
-      @ApplicationContext Context appContext, Executor executor) {
-    return new NotificationsRepoImpl(appContext, executor);
+      @ApplicationContext Context appContext, Executor executor, Crashlytics crashlytics) {
+    return new NotificationsRepoImpl(appContext, executor, crashlytics);
   }
 }
