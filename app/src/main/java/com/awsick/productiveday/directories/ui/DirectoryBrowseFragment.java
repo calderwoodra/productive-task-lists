@@ -70,9 +70,9 @@ public final class DirectoryBrowseFragment extends Fragment {
               parent.setupExpandableFab(
                   new FabOptions(
                       R.drawable.ic_baseline_notes_24,
-                      fab1 -> {
-                        // TODO(allen): create task in directory
-                      }),
+                      fab1 ->
+                          startActivity(
+                              TaskCreateActivity.create(requireContext(), directory.getResult()))),
                   new FabOptions(
                       R.drawable.ic_baseline_folder_24,
                       fab2 -> {

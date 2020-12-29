@@ -1,5 +1,6 @@
 package com.awsick.productiveday.tasks.create;
 
+import static com.awsick.productiveday.tasks.create.TaskCreateActivity.DIRECTORY_ID_KEY;
 import static com.awsick.productiveday.tasks.create.TaskCreateActivity.TASK_ID_KEY;
 
 import android.content.Context;
@@ -80,6 +81,12 @@ public final class TasksCreateViewModel extends ViewModel {
     this.clock = clock;
     this.tasksRepo = tasksRepo;
     timeMillis = new MutableLiveData<>(midnightTonight(clock));
+
+    Integer passedDirectory = savedState.get(DIRECTORY_ID_KEY);
+    if (passedDirectory != null) {
+      directoryId.setValue(passedDirectory);
+    }
+
     directory = Transformations.switchMap(directoryId, directoryRepo::getDirectory);
     directoryName =
         Transformations.map(

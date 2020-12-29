@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.fragment.NavHostFragment;
 import com.awsick.productiveday.R;
+import com.awsick.productiveday.directories.models.Directory;
 import com.awsick.productiveday.tasks.models.Task;
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -15,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint;
 public final class TaskCreateActivity extends AppCompatActivity {
 
   static final String TASK_ID_KEY = "TASK_ID";
+  static final String DIRECTORY_ID_KEY = "DIRECTORY_ID";
 
   public static Intent create(Context context) {
     return new Intent(context, TaskCreateActivity.class);
@@ -23,6 +25,12 @@ public final class TaskCreateActivity extends AppCompatActivity {
   public static Intent create(Context context, Task task) {
     Intent intent = new Intent(context, TaskCreateActivity.class);
     intent.putExtra(TASK_ID_KEY, task.uid());
+    return intent;
+  }
+
+  public static Intent create(Context context, Directory directory) {
+    Intent intent = new Intent(context, TaskCreateActivity.class);
+    intent.putExtra(DIRECTORY_ID_KEY, directory.reference().uid());
     return intent;
   }
 
