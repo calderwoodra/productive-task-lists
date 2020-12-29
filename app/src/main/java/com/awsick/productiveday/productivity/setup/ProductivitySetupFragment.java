@@ -91,6 +91,7 @@ public final class ProductivitySetupFragment extends Fragment {
               if (!Strings.isNullOrEmpty(input)) {
                 viewModel.addTask(
                     Task.builder()
+                        .setClock(clock)
                         .setTitle(input)
                         .setType(Type.DEADLINE)
                         .setDeadlineMillis(DateUtils.midnightTonightMillis(clock))

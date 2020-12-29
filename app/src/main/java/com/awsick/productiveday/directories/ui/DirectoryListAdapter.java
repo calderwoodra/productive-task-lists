@@ -41,11 +41,27 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
 
     if (includeTasks) {
       items.addAll(
-          directory.tasks().stream().map(DirectoryListItemData::task).collect(toImmutableList()));
+          directory.tasks().stream()
+              .map(DirectoryListItemData::task)
+              .sorted(DirectoryListAdapter::compareDeadlines)
+              .collect(toImmutableList()));
     }
 
     this.items = items.build();
     notifyDataSetChanged();
+  }
+
+  private static int compareDeadlines(DirectoryListItemData data1, DirectoryListItemData data2) {
+    long d1 = data1.task.get().deadlineMillis();
+    long d2 = data2.task.get().deadlineMillis();
+
+    if (d1 == -1) {
+      d1 = Long.MAX_VALUE;
+    }
+    if (d2 == -1) {
+      d2 = Long.MAX_VALUE;
+    }
+    return Long.compare(d1, d2);
   }
 
   @NonNull
@@ -132,6 +148,7 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
 
     private final TextView title;
     private final TextView subtitle;
+    private final TextView nextDate;
     private final View root;
     private final View done;
 
@@ -139,6 +156,7 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
       super(listener, itemView);
       title = itemView.findViewById(R.id.task_item_title);
       subtitle = itemView.findViewById(R.id.task_item_notes);
+      nextDate = itemView.findViewById(R.id.task_item_deadline);
       root = itemView.findViewById(R.id.task_item_click_target);
       done = itemView.findViewById(R.id.task_item_done);
     }
@@ -147,14 +165,9 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
     void bind(DirectoryListItemData data) {
       title.setText(data.task.get().title());
       subtitle.setText(data.task.get().notes());
-      root.setOnClickListener(
-          view -> {
-            listener.onEditTaskRequested(data.task.get());
-          });
-      done.setOnClickListener(
-          view -> {
-            listener.onCompleteTaskRequested(data.task.get());
-          });
+      nextDate.setText(data.task.get().deadlineDistance());
+      root.setOnClickListener(view -> listener.onEditTaskRequested(data.task.get()));
+      done.setOnClickListener(view -> listener.onCompleteTaskRequested(data.task.get()));
     }
   }
 

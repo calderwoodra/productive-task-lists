@@ -219,6 +219,7 @@ public final class TasksCreateViewModel extends ViewModel {
     this.notes.setValue(notes);
     Task.Builder taskBuilder =
         Task.builder()
+            .setClock(clock)
             .setTitle(title)
             .setNotes(notes)
             .setDeadlineMillis(taskType.getValue() == Type.UNSCHEDULED ? -1 : timeMillis.getValue())
