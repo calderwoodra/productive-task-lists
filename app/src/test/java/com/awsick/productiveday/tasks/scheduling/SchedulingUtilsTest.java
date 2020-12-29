@@ -10,8 +10,8 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability.PeriodType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.Weekly;
 import com.google.common.base.Optional;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import org.junit.Test;
 
 public final class SchedulingUtilsTest {
@@ -709,14 +709,16 @@ public final class SchedulingUtilsTest {
   // endregion
 
   private static long getTimeInMillis(int yearSince1970, int month, int day) {
-    LocalDateTime localDateTime = LocalDateTime.of(yearSince1970, month, day, 0, 0, 0);
-    return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    return ZonedDateTime.of(yearSince1970, month, day, 0, 0, 0, 0, ZoneId.systemDefault())
+        .toInstant()
+        .toEpochMilli();
   }
 
   private static long getTimeInMillis(int yearSince1970, int month, int day, DayOfWeek dayOfWeek) {
-    LocalDateTime localDateTime = LocalDateTime.of(yearSince1970, month, day, 0, 0, 0);
-    assertThat(localDateTime.getDayOfWeek()).isEqualTo(dayOfWeek);
-    return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+    ZonedDateTime zdt =
+        ZonedDateTime.of(yearSince1970, month, day, 0, 0, 0, 0, ZoneId.systemDefault());
+    assertThat(zdt.getDayOfWeek()).isEqualTo(dayOfWeek);
+    return zdt.toInstant().toEpochMilli();
   }
 
   private static Task getTaskAtNextDeadline(Task task) {

@@ -7,10 +7,9 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability.Weekly;
 import com.google.common.base.Optional;
 import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -59,12 +58,9 @@ public final class SchedulingUtils {
       case WEEKLY:
         return computeWeekly(lastDeadline, repeatability);
       case MONTHLY:
-        LocalDateTime first =
-            Instant.ofEpochMilli(repeatability.firstReminder())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        LocalDateTime latest =
-            Instant.ofEpochMilli(lastDeadline).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        ZonedDateTime first =
+            Instant.ofEpochMilli(repeatability.firstReminder()).atZone(ZoneId.systemDefault());
+        ZonedDateTime latest = Instant.ofEpochMilli(lastDeadline).atZone(ZoneId.systemDefault());
 
         int months =
             Math.toIntExact(
@@ -72,18 +68,11 @@ public final class SchedulingUtils {
                     YearMonth.of(first.getYear(), first.getMonth()),
                     YearMonth.of(latest.getYear(), latest.getMonth())));
 
-        return first
-            .plusMonths(months + repeatability.frequency())
-            .atZone(ZoneOffset.systemDefault())
-            .toInstant()
-            .toEpochMilli();
+        return first.plusMonths(months + repeatability.frequency()).toInstant().toEpochMilli();
       case YEARLY:
-        LocalDateTime firstYear =
-            Instant.ofEpochMilli(repeatability.firstReminder())
-                .atZone(ZoneId.systemDefault())
-                .toLocalDateTime();
-        LocalDateTime lastYear =
-            Instant.ofEpochMilli(lastDeadline).atZone(ZoneId.systemDefault()).toLocalDateTime();
+        ZonedDateTime firstYear =
+            Instant.ofEpochMilli(repeatability.firstReminder()).atZone(ZoneId.systemDefault());
+        ZonedDateTime lastYear = Instant.ofEpochMilli(lastDeadline).atZone(ZoneId.systemDefault());
 
         int years =
             Math.toIntExact(
@@ -91,11 +80,7 @@ public final class SchedulingUtils {
                     YearMonth.of(firstYear.getYear(), firstYear.getMonth()),
                     YearMonth.of(lastYear.getYear(), lastYear.getMonth())));
 
-        return firstYear
-            .plusYears(years + repeatability.frequency())
-            .atZone(ZoneOffset.systemDefault())
-            .toInstant()
-            .toEpochMilli();
+        return firstYear.plusYears(years + repeatability.frequency()).toInstant().toEpochMilli();
       default:
         throw new IllegalArgumentException("Unhandled period type: " + repeatability.periodType());
     }
@@ -126,9 +111,8 @@ public final class SchedulingUtils {
       daysOfWeek.add(DayOfWeek.SATURDAY);
     }
 
-    LocalDateTime ldt =
-        Instant.ofEpochMilli(deadline).atZone(ZoneId.systemDefault()).toLocalDateTime();
-    int position = daysOfWeek.indexOf(ldt.getDayOfWeek());
+    ZonedDateTime zdt = Instant.ofEpochMilli(deadline).atZone(ZoneId.systemDefault());
+    int position = daysOfWeek.indexOf(zdt.getDayOfWeek());
 
     // If we're at the end of the week, skip forward `frequency` weeks then roll back the date until
     // calendar dow matches first dow in repeatability (this covers reminders that only repeat on
@@ -139,21 +123,21 @@ public final class SchedulingUtils {
     // Example, today is Tuesday, next reminder is Monday (skipping 2 weeks)
     // Example, today is Tuesday, next reminder is Tuesday (skipping 2 weeks)
     if (position == daysOfWeek.size() - 1) {
-      ldt = ldt.plusWeeks(repeatability.frequency());
-      while (ldt.getDayOfWeek() != daysOfWeek.get(0)) {
-        ldt = ldt.minusDays(1);
+      zdt = zdt.plusWeeks(repeatability.frequency());
+      while (zdt.getDayOfWeek() != daysOfWeek.get(0)) {
+        zdt = zdt.minusDays(1);
       }
-      return ldt.atZone(ZoneOffset.systemDefault()).toInstant().toEpochMilli();
+      return zdt.toInstant().toEpochMilli();
     }
 
     // There's another reminder this week, so skip forward a few days until days of week match
     //
     // Example, today is Tuesday, next reminder is Wednesday
     position++;
-    while (ldt.getDayOfWeek() != daysOfWeek.get(position)) {
-      ldt = ldt.plusDays(1);
+    while (zdt.getDayOfWeek() != daysOfWeek.get(position)) {
+      zdt = zdt.plusDays(1);
     }
-    return ldt.atZone(ZoneOffset.systemDefault()).toInstant().toEpochMilli();
+    return zdt.toInstant().toEpochMilli();
   }
 
   private SchedulingUtils() {}

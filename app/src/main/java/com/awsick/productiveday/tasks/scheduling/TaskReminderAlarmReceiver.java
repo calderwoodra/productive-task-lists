@@ -10,7 +10,6 @@ import com.awsick.productiveday.common.utils.Assert;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.awsick.productiveday.tasks.scheduling.notifications.NotificationsRepo;
 import dagger.hilt.android.AndroidEntryPoint;
-import java.util.Calendar;
 import javax.inject.Inject;
 
 /**
@@ -30,8 +29,6 @@ public class TaskReminderAlarmReceiver extends BroadcastReceiver {
 
   public static void schedule(Context context, long taskDeadlineMillis) {
     Log.i(TAG, "Scheduling next reminder");
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(taskDeadlineMillis);
     // Build the intent that will trigger this broadcast receiver
     Intent alarmIntent = new Intent(context, TaskReminderAlarmReceiver.class);
     alarmIntent.setAction(REMINDER_ACTION);

@@ -5,10 +5,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -109,10 +108,13 @@ public final class DateUtils {
   }
 
   public static long midnightTonightMillis() {
-    Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-    calendar.set(Calendar.HOUR, 12);
-    calendar.set(Calendar.MINUTE, 0);
-    return calendar.toInstant().getEpochSecond() * 1000;
+    return ZonedDateTime.now()
+        .withHour(23)
+        .withMinute(59)
+        .withSecond(0)
+        .plusMinutes(1)
+        .toInstant()
+        .toEpochMilli();
   }
 
   private DateUtils() {}

@@ -16,10 +16,10 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability.EndType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.PeriodType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.Weekly;
 import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableList;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 public final class TaskRepeatViewModel extends ViewModel {
 
@@ -34,20 +34,17 @@ public final class TaskRepeatViewModel extends ViewModel {
 
   private final MutableLiveData<EndType> endType = new MutableLiveData<>(EndType.NEVER);
   private final MutableLiveData<Integer> endAfterN = new MutableLiveData<>(1);
-  private final MutableLiveData<Calendar> endDate;
+  private final MutableLiveData<ZonedDateTime> endDate;
 
   @ViewModelInject
   TaskRepeatViewModel(@Assisted SavedStateHandle savedState) {
     startTimeMillis = savedState.get("start_time");
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(startTimeMillis);
+    ZonedDateTime zdt =
+        ZonedDateTime.from(Instant.ofEpochMilli(startTimeMillis).atZone(ZoneId.systemDefault()));
 
-    weeklyFrequency = new MutableLiveData<>(new WeeklyFrequency(calendar));
-    monthlyFrequency = new MutableLiveData<>(new MonthlyFrequency(calendar, Type.DAY_OF_THE_MONTH));
-
-    Calendar endDateCalendar = (Calendar) calendar.clone();
-    endDateCalendar.add(Calendar.MONTH, 1);
-    endDate = new MutableLiveData<>(endDateCalendar);
+    weeklyFrequency = new MutableLiveData<>(new WeeklyFrequency(zdt));
+    monthlyFrequency = new MutableLiveData<>(new MonthlyFrequency(zdt, Type.DAY_OF_THE_MONTH));
+    endDate = new MutableLiveData<>(zdt.plusMonths(1));
   }
 
   public void initializeRepeatability(Optional<TaskRepeatability> taskRepeatability) {
@@ -73,7 +70,10 @@ public final class TaskRepeatViewModel extends ViewModel {
     endType.setValue(repeatability.endType());
     endAfterN.setValue(repeatability.endAfterNTimes().or(1));
     if (repeatability.endOnTimeMillis().isPresent()) {
-      endDate.getValue().setTimeInMillis(repeatability.endOnTimeMillis().get());
+      endDate.setValue(
+          ZonedDateTime.from(
+              Instant.ofEpochMilli(repeatability.endOnTimeMillis().get())
+                  .atZone(ZoneId.systemDefault())));
     }
   }
 
@@ -119,17 +119,16 @@ public final class TaskRepeatViewModel extends ViewModel {
   }
 
   public LiveData<String> getEndDate() {
-    return Transformations.map(endDate, c -> DateUtils.humanReadableDate(c.getTimeInMillis()));
+    return Transformations.map(
+        endDate, c -> DateUtils.humanReadableDate(c.toInstant().toEpochMilli()));
   }
 
-  public Calendar getEndDateCalendar() {
-    return (Calendar) endDate.getValue().clone();
+  public ZonedDateTime getEndDateZonedDateTime() {
+    return endDate.getValue();
   }
 
   public void setEndsOnDate(int year, int month, int dayOfMonth) {
-    Calendar calendar = endDate.getValue();
-    calendar.set(year, month, dayOfMonth);
-    endDate.setValue(calendar);
+    endDate.setValue(endDate.getValue().withYear(year).withMonth(month).withDayOfMonth(dayOfMonth));
   }
 
   public LiveData<Integer> getEndAfterN() {
@@ -164,7 +163,7 @@ public final class TaskRepeatViewModel extends ViewModel {
         // No-op
         break;
       case ON:
-        builder.setEndOnTimeMillis(Optional.of(endDate.getValue().getTimeInMillis()));
+        builder.setEndOnTimeMillis(Optional.of(endDate.getValue().toInstant().toEpochMilli()));
         break;
       case AFTER:
         builder.setEndAfterNTimes(Optional.of(endAfterN.getValue()));
@@ -176,21 +175,21 @@ public final class TaskRepeatViewModel extends ViewModel {
   public static final class WeeklyFrequency {
 
     public enum Dow {
-      Su,
       M,
       T,
       W,
       R,
       F,
       Sa,
+      Su,
     }
 
-    // S,M,T,W,R,F,S
+    // M,T,W,R,F,Sa,Su
     private final int[] dow = new int[7];
 
-    public WeeklyFrequency(Calendar startDate) {
+    public WeeklyFrequency(ZonedDateTime startDate) {
       Arrays.fill(dow, -1);
-      flip(Dow.values()[startDate.get(Calendar.DAY_OF_WEEK) - 1]);
+      flip(Dow.values()[startDate.getDayOfWeek().getValue() - 1]);
     }
 
     public WeeklyFrequency(TaskRepeatability.Weekly weekly) {
@@ -251,29 +250,24 @@ public final class TaskRepeatViewModel extends ViewModel {
       NTH_DOW_OF_THE_MONTH,
     }
 
-    private final Calendar startDate;
+    private final ZonedDateTime startDate;
     private final Type type;
 
-    public MonthlyFrequency(Integer integer) {
-      Calendar calendar = Calendar.getInstance();
-      calendar.setTimeInMillis(System.currentTimeMillis() - TimeUnit.DAYS.toMillis(30));
-      calendar.set(Calendar.DAY_OF_MONTH, integer);
-      startDate = calendar;
+    public MonthlyFrequency(Integer dayOfMonth) {
+      startDate =
+          ZonedDateTime.from(Instant.now().atZone(ZoneId.systemDefault()))
+              .minusDays(30)
+              .withDayOfMonth(dayOfMonth);
       type = Type.DAY_OF_THE_MONTH;
     }
 
-    public MonthlyFrequency(Calendar startDate, Type type) {
-      this.startDate = (Calendar) startDate.clone();
+    public MonthlyFrequency(ZonedDateTime startDate, Type type) {
+      this.startDate = startDate;
       this.type = type;
     }
 
-    public static ImmutableList<Type> getTypes(Calendar startDate) {
-      // TODO(allen): Add support for more types
-      return ImmutableList.of(Type.DAY_OF_THE_MONTH);
-    }
-
     public String getText() {
-      int day = startDate.get(Calendar.DAY_OF_MONTH);
+      int day = startDate.getDayOfMonth();
       String suffix =
           day == 11 || day == 12 || day == 13
               ? "th"
@@ -290,7 +284,7 @@ public final class TaskRepeatViewModel extends ViewModel {
     }
 
     public Integer getDayOfMonth() {
-      return startDate.get(Calendar.DAY_OF_MONTH);
+      return startDate.getDayOfMonth();
     }
   }
 

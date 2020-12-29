@@ -2,9 +2,10 @@ package com.awsick.productiveday.tasks.models;
 
 import androidx.annotation.Nullable;
 import com.awsick.productiveday.common.utils.Assert;
-import com.awsick.productiveday.common.utils.DateUtils;
 import com.google.auto.value.AutoValue;
-import java.util.concurrent.TimeUnit;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 
 @AutoValue
 public abstract class Task {
@@ -116,7 +117,9 @@ public abstract class Task {
 
   private static int getDaysFromToday(long deadline) {
     Assert.checkArgument(deadline != -1, "Task does not have a deadline");
-    long eod = DateUtils.midnightTonightMillis();
-    return (int) Math.floor((deadline - eod) / TimeUnit.DAYS.toMillis(1));
+    return Math.toIntExact(
+        ChronoUnit.DAYS.between(
+            Instant.now().atZone(ZoneId.systemDefault()),
+            Instant.ofEpochMilli(deadline).atZone(ZoneId.systemDefault())));
   }
 }

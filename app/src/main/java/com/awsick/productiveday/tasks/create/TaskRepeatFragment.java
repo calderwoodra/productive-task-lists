@@ -28,7 +28,7 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability.EndType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.PeriodType;
 import com.google.common.base.Strings;
 import dagger.hilt.android.AndroidEntryPoint;
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 
 @AndroidEntryPoint
 public final class TaskRepeatFragment extends Fragment {
@@ -200,14 +200,14 @@ public final class TaskRepeatFragment extends Fragment {
           nTimes.clearFocus();
           KeyboardUtils.hideKeyboardFrom(root);
           viewModel.setEnds(EndType.ON);
-          Calendar calendar = viewModel.getEndDateCalendar();
+          ZonedDateTime zdt = viewModel.getEndDateZonedDateTime();
           new DatePickerDialog(
                   requireContext(),
                   (picker, year, month, dayOfMonth) ->
                       viewModel.setEndsOnDate(year, month, dayOfMonth),
-                  calendar.get(Calendar.YEAR),
-                  calendar.get(Calendar.MONTH),
-                  calendar.get(Calendar.DAY_OF_MONTH))
+                  zdt.getYear(),
+                  zdt.getMonthValue() - 1,
+                  zdt.getDayOfMonth())
               .show();
         });
     TextView date = endsOnContainer.findViewById(R.id.repeat_ends_on_date_selector);

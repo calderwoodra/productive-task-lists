@@ -26,7 +26,9 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.google.common.base.Optional;
 import dagger.hilt.android.qualifiers.ApplicationContext;
-import java.util.Calendar;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.concurrent.TimeUnit;
 
 public final class TasksCreateViewModel extends ViewModel {
@@ -184,26 +186,27 @@ public final class TasksCreateViewModel extends ViewModel {
     return DateUtils.midnightTonightMillis() - TimeUnit.MINUTES.toMillis(1);
   }
 
-  public Calendar getCalendar() {
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTimeInMillis(timeMillis.getValue());
-    return calendar;
+  public ZonedDateTime getZoneDateTime() {
+    return Instant.ofEpochMilli(timeMillis.getValue()).atZone(ZoneId.systemDefault());
+  }
+
+  public long getStartTimeMillis() {
+    return timeMillis.getValue();
   }
 
   public void setDate(int year, int month, int dayOfMonth) {
-    Calendar calendar = getCalendar();
-    calendar.set(Calendar.YEAR, year);
-    calendar.set(Calendar.MONTH, month);
-    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-    timeMillis.setValue(calendar.getTimeInMillis());
+    timeMillis.setValue(
+        getZoneDateTime()
+            .withYear(year)
+            .withMonth(month)
+            .withDayOfMonth(dayOfMonth)
+            .toInstant()
+            .toEpochMilli());
   }
 
   public void setTime(int hourOfDay, int minute) {
-    Calendar calendar = getCalendar();
-    calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-    calendar.set(Calendar.MINUTE, minute);
-    calendar.set(Calendar.SECOND, 0);
-    timeMillis.setValue(calendar.getTimeInMillis());
+    timeMillis.setValue(
+        getZoneDateTime().withHour(hourOfDay).withMinute(minute).toInstant().toEpochMilli());
   }
 
   public void saveTask(String title, String notes) {

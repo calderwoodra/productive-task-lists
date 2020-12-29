@@ -4,7 +4,9 @@ import androidx.annotation.NonNull;
 import com.awsick.productiveday.common.utils.Assert;
 import com.google.auto.value.AutoValue;
 import com.google.common.base.Optional;
-import java.util.Calendar;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 
 @AutoValue
 public abstract class TaskRepeatability {
@@ -104,13 +106,9 @@ public abstract class TaskRepeatability {
       case NEVER:
         break;
       case ON:
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(endOnTimeMillis().get());
-        toString
-            .append("; until ")
-            .append(calendar.get(Calendar.MONTH) + 1)
-            .append("/")
-            .append(calendar.get(Calendar.DAY_OF_MONTH));
+        ZonedDateTime zdt =
+            Instant.ofEpochMilli(endOnTimeMillis().get()).atZone(ZoneId.systemDefault());
+        toString.append("; until ").append(zdt.getMonth()).append("/").append(zdt.getDayOfMonth());
         break;
       case AFTER:
         toString

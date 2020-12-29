@@ -24,7 +24,7 @@ import com.awsick.productiveday.tasks.models.Task.Type;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 import dagger.hilt.android.AndroidEntryPoint;
-import java.util.Calendar;
+import java.time.ZonedDateTime;
 
 @AndroidEntryPoint
 public final class TasksCreateFragment extends Fragment {
@@ -191,7 +191,7 @@ public final class TasksCreateFragment extends Fragment {
   }
 
   private void setupDate(TasksCreateViewModel viewModel, View root) {
-    Calendar calendar = viewModel.getCalendar();
+    ZonedDateTime zdt = viewModel.getZoneDateTime();
     root.findViewById(R.id.create_task_deadline_date)
         .setOnClickListener(
             view ->
@@ -199,22 +199,22 @@ public final class TasksCreateFragment extends Fragment {
                         requireContext(),
                         (picker, year, month, dayOfMonth) ->
                             viewModel.setDate(year, month, dayOfMonth),
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH))
+                        zdt.getYear(),
+                        zdt.getMonthValue() - 1,
+                        zdt.getDayOfMonth())
                     .show());
   }
 
   private void setupTime(TasksCreateViewModel viewModel, View root) {
-    Calendar calendar = viewModel.getCalendar();
+    ZonedDateTime zdt = viewModel.getZoneDateTime();
     root.findViewById(R.id.create_task_deadline_time)
         .setOnClickListener(
             view ->
                 new TimePickerDialog(
                         requireContext(),
                         (view1, hourOfDay, minute) -> viewModel.setTime(hourOfDay, minute),
-                        calendar.get(Calendar.HOUR_OF_DAY),
-                        calendar.get(Calendar.MINUTE),
+                        zdt.getHour(),
+                        zdt.getMinute(),
                         false)
                     .show());
   }
@@ -224,8 +224,7 @@ public final class TasksCreateFragment extends Fragment {
     repeat.setOnClickListener(
         view -> {
           ActionSetRepeatability directions =
-              TasksCreateFragmentDirections.actionSetRepeatability(
-                  viewModel.getCalendar().getTimeInMillis());
+              TasksCreateFragmentDirections.actionSetRepeatability(viewModel.getStartTimeMillis());
           Navigation.findNavController(root).navigate(directions);
         });
     viewModel.getRepeatableString().observe(getViewLifecycleOwner(), repeat::setText);
