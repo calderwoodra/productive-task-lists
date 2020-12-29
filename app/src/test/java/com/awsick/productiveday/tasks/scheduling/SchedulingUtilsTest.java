@@ -9,12 +9,16 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability.EndType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.PeriodType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.Weekly;
 import com.google.common.base.Optional;
+import java.time.Clock;
 import java.time.DayOfWeek;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import org.junit.Test;
 
 public final class SchedulingUtilsTest {
+
+  private static final Clock CLOCK = Clock.fixed(Instant.ofEpochMilli(0), ZoneId.systemDefault());
 
   // region Daily Reminders
   @Test
@@ -22,6 +26,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 1);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -45,6 +50,7 @@ public final class SchedulingUtilsTest {
     int frequency = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -67,6 +73,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 31);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -89,6 +96,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 12, 31);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -112,6 +120,7 @@ public final class SchedulingUtilsTest {
     int occurrences = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -139,6 +148,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 1);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -169,6 +179,7 @@ public final class SchedulingUtilsTest {
 
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -193,6 +204,7 @@ public final class SchedulingUtilsTest {
     int frequency = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -216,6 +228,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 3, DayOfWeek.MONDAY);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -239,6 +252,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 5, DayOfWeek.WEDNESDAY);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -262,6 +276,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 31, DayOfWeek.MONDAY);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -285,6 +300,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 12, 31, DayOfWeek.SUNDAY);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -309,6 +325,7 @@ public final class SchedulingUtilsTest {
     int occurrences = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -337,6 +354,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 3, DayOfWeek.MONDAY);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -367,6 +385,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 1);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -391,6 +410,7 @@ public final class SchedulingUtilsTest {
     int frequency = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -414,6 +434,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 30);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -438,6 +459,7 @@ public final class SchedulingUtilsTest {
     int frequency = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -461,6 +483,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 1);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -485,6 +508,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 12, 31);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -509,6 +533,7 @@ public final class SchedulingUtilsTest {
     int occurrences = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -537,6 +562,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 1);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -567,6 +593,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 1);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -590,6 +617,7 @@ public final class SchedulingUtilsTest {
     int frequency = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -612,6 +640,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 2, 29);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -635,6 +664,7 @@ public final class SchedulingUtilsTest {
     int frequency = 4;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -658,6 +688,7 @@ public final class SchedulingUtilsTest {
     int occurrences = 2;
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -685,6 +716,7 @@ public final class SchedulingUtilsTest {
     long deadline = getTimeInMillis(0, 1, 1);
     Task task =
         Task.builder()
+            .setClock(CLOCK)
             .setTitle("title")
             .setType(Type.REMINDER)
             .setDeadlineMillis(deadline)
@@ -723,6 +755,7 @@ public final class SchedulingUtilsTest {
 
   private static Task getTaskAtNextDeadline(Task task) {
     return Task.builder()
+        .setClock(CLOCK)
         .setTitle(task.title())
         .setType(task.type())
         // Set the updated deadline

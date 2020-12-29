@@ -108,7 +108,11 @@ public abstract class TaskRepeatability {
       case ON:
         ZonedDateTime zdt =
             Instant.ofEpochMilli(endOnTimeMillis().get()).atZone(ZoneId.systemDefault());
-        toString.append("; until ").append(zdt.getMonth()).append("/").append(zdt.getDayOfMonth());
+        toString
+            .append("; until ")
+            .append(zdt.getMonthValue())
+            .append("/")
+            .append(zdt.getDayOfMonth());
         break;
       case AFTER:
         toString

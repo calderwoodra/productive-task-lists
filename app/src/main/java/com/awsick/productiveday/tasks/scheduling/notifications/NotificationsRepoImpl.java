@@ -23,6 +23,7 @@ import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import dagger.hilt.android.qualifiers.ApplicationContext;
+import java.time.Clock;
 import java.util.concurrent.Executor;
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,13 +32,18 @@ import org.jetbrains.annotations.NotNull;
 @Singleton
 final class NotificationsRepoImpl implements NotificationsRepo {
 
+  private final Clock clock;
   private final Context context;
   private final Executor executor;
   private final Crashlytics crashlytics;
 
   @Inject
   NotificationsRepoImpl(
-      @ApplicationContext Context context, Executor executor, Crashlytics crashlytics) {
+      Clock clock,
+      @ApplicationContext Context context,
+      Executor executor,
+      Crashlytics crashlytics) {
+    this.clock = clock;
     this.context = context;
     this.executor = executor;
     this.crashlytics = crashlytics;
@@ -73,7 +79,7 @@ final class NotificationsRepoImpl implements NotificationsRepo {
     Assert.checkState(task.deadlineMillis() != -1, "Cannot schedule task with no deadline");
 
     // Task deadline has already passed, notify the user immediately
-    if (task.deadlineMillis() < System.currentTimeMillis()) {
+    if (task.deadlineMillis() < clock.millis()) {
       notifyUser(tasksRepo, ImmutableList.of(task));
       return;
     }

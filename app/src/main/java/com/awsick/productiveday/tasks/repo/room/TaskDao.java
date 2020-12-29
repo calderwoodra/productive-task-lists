@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.time.Clock;
 import java.util.List;
 
 @Dao
@@ -15,8 +16,8 @@ public abstract class TaskDao {
   @Insert
   abstract ListenableFuture<Long> insertImpl(TaskEntity task);
 
-  public ListenableFuture<Long> insert(TaskEntity task) {
-    long now = System.currentTimeMillis();
+  public ListenableFuture<Long> insert(Clock clock, TaskEntity task) {
+    long now = clock.millis();
     task.createdMillis = now;
     task.updatedMillis = now;
     return insertImpl(task);
@@ -25,8 +26,8 @@ public abstract class TaskDao {
   @Insert
   abstract ListenableFuture<List<Long>> insertImpl(TaskEntity... tasks);
 
-  public ListenableFuture<List<Long>> insert(TaskEntity... tasks) {
-    long now = System.currentTimeMillis();
+  public ListenableFuture<List<Long>> insert(Clock clock, TaskEntity... tasks) {
+    long now = clock.millis();
     for (TaskEntity task : tasks) {
       task.createdMillis = now;
       task.updatedMillis = now;
@@ -62,8 +63,8 @@ public abstract class TaskDao {
   @Update
   abstract ListenableFuture<Void> updateImpl(TaskEntity... tasks);
 
-  public ListenableFuture<Void> update(TaskEntity... tasks) {
-    long now = System.currentTimeMillis();
+  public ListenableFuture<Void> update(Clock clock, TaskEntity... tasks) {
+    long now = clock.millis();
     for (TaskEntity task : tasks) {
       task.updatedMillis = now;
     }

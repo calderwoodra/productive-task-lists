@@ -7,6 +7,7 @@ import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ApplicationComponent;
 import dagger.hilt.android.qualifiers.ApplicationContext;
+import java.time.Clock;
 import java.util.concurrent.Executor;
 import javax.inject.Singleton;
 
@@ -17,7 +18,10 @@ public final class NotificationsModule {
   @Provides
   @Singleton
   public NotificationsRepo provideTaskDatabase(
-      @ApplicationContext Context appContext, Executor executor, Crashlytics crashlytics) {
-    return new NotificationsRepoImpl(appContext, executor, crashlytics);
+      Clock clock,
+      @ApplicationContext Context appContext,
+      Executor executor,
+      Crashlytics crashlytics) {
+    return new NotificationsRepoImpl(clock, appContext, executor, crashlytics);
   }
 }

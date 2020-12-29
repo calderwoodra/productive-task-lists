@@ -18,6 +18,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
+import java.time.Clock;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -36,12 +37,18 @@ class TasksRepoImpl implements TasksRepo {
   private final RequestStatusLiveData<ImmutableList<Task>> tasks = new RequestStatusLiveData<>();
   private final HashMap<Integer, RequestStatusLiveData<ImmutableList<Task>>> directoryTasksMap =
       new HashMap<>();
+  private final Clock clock;
   private final Executor executor;
 
   @Inject
-  TasksRepoImpl(TaskDatabase taskDatabase, NotificationsRepo notificationsRepo, Executor executor) {
+  TasksRepoImpl(
+      TaskDatabase taskDatabase,
+      NotificationsRepo notificationsRepo,
+      Clock clock,
+      Executor executor) {
     this.taskDatabase = taskDatabase;
     this.notificationsRepo = notificationsRepo;
+    this.clock = clock;
     this.executor = executor;
   }
 
@@ -68,7 +75,9 @@ class TasksRepoImpl implements TasksRepo {
             result ->
                 tasks.setValue(
                     RequestStatus.success(
-                        result.stream().map(TaskEntity::toTask).collect(toImmutableList())))),
+                        result.stream()
+                            .map(entity -> entity.toTask(clock))
+                            .collect(toImmutableList())))),
         executor);
     directoryTasksMap.put(directoryId, tasks);
     return tasks;
@@ -79,7 +88,7 @@ class TasksRepoImpl implements TasksRepo {
     // TODO(allen): Consider adding the task optimistically
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
-        taskDatabase.taskDao().insert(TaskEntity.from(task)),
+        taskDatabase.taskDao().insert(clock, TaskEntity.from(task)),
         new FutureCallback<Long>() {
           @Override
           public void onSuccess(Long uid) {
@@ -103,7 +112,7 @@ class TasksRepoImpl implements TasksRepo {
     Futures.addCallback(
         taskDatabase
             .taskDao()
-            .insert(tasks.stream().map(TaskEntity::from).toArray(TaskEntity[]::new)),
+            .insert(clock, tasks.stream().map(TaskEntity::from).toArray(TaskEntity[]::new)),
         new FutureCallback<List<Long>>() {
           @Override
           public void onSuccess(@NullableDecl List<Long> result) {
@@ -137,7 +146,9 @@ class TasksRepoImpl implements TasksRepo {
             result ->
                 tasks.setValue(
                     RequestStatus.success(
-                        result.stream().map(TaskEntity::toTask).collect(toImmutableList())))),
+                        result.stream()
+                            .map(entity -> entity.toTask(clock))
+                            .collect(toImmutableList())))),
         executor);
   }
 
@@ -157,7 +168,9 @@ class TasksRepoImpl implements TasksRepo {
             result ->
                 tasks.setValue(
                     RequestStatus.success(
-                        result.stream().map(TaskEntity::toTask).collect(toImmutableList())))),
+                        result.stream()
+                            .map(entity -> entity.toTask(clock))
+                            .collect(toImmutableList())))),
         executor);
   }
 
@@ -166,7 +179,7 @@ class TasksRepoImpl implements TasksRepo {
     // TODO(allen): Consider adding the task optimistically
     tasks.setValue(RequestStatus.pending());
     Futures.addCallback(
-        taskDatabase.taskDao().update(TaskEntity.from(newTask)),
+        taskDatabase.taskDao().update(clock, TaskEntity.from(newTask)),
         new FutureCallback<Void>() {
           @Override
           public void onSuccess(Void voidd) {
@@ -205,7 +218,7 @@ class TasksRepoImpl implements TasksRepo {
       entity.notified = false;
     }
 
-    ListenableFuture<Void> updateTask = taskDatabase.taskDao().update(entity);
+    ListenableFuture<Void> updateTask = taskDatabase.taskDao().update(clock, entity);
 
     Futures.addCallback(
         updateTask,
@@ -230,16 +243,17 @@ class TasksRepoImpl implements TasksRepo {
   public ListenableFuture<ImmutableList<Task>> getTasksToBeNotified() {
     // Assert.isWorkerThread("Cannot perform disk I/O on the main thread");
     return Futures.transform(
-        taskDatabase.taskDao().getNotifications(System.currentTimeMillis()),
-        tasks -> tasks.stream().map(TaskEntity::toTask).collect(toImmutableList()),
+        taskDatabase.taskDao().getNotifications(clock.millis()),
+        tasks -> tasks.stream().map(entity -> entity.toTask(clock)).collect(toImmutableList()),
         executor);
   }
 
   @Override
   public ListenableFuture<Optional<Task>> getUpcomingTaskToBeNotified() {
     return Futures.transform(
-        taskDatabase.taskDao().getNextNotification(System.currentTimeMillis()),
-        taskEntity -> taskEntity == null ? Optional.absent() : Optional.of(taskEntity.toTask()),
+        taskDatabase.taskDao().getNextNotification(clock.millis()),
+        taskEntity ->
+            taskEntity == null ? Optional.absent() : Optional.of(taskEntity.toTask(clock)),
         executor);
   }
 
@@ -248,6 +262,7 @@ class TasksRepoImpl implements TasksRepo {
     return taskDatabase
         .taskDao()
         .update(
+            clock,
             tasks.stream()
                 .map(
                     task -> {

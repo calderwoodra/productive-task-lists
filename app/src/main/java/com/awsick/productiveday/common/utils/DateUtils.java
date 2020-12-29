@@ -1,14 +1,12 @@
 package com.awsick.productiveday.common.utils;
 
 import com.google.common.base.Optional;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Clock;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Generalized utilities for handling dates. It's not encouraged to add any utilities that are
@@ -54,22 +52,6 @@ public final class DateUtils {
     return sdf.format(date);
   }
 
-  public static String convertDateStringFormat(
-      String dateString, String inputFormat, String outputFormat) {
-    SimpleDateFormat sdfIn = new SimpleDateFormat(inputFormat, Locale.getDefault());
-    SimpleDateFormat sdfOut = new SimpleDateFormat(outputFormat, Locale.getDefault());
-    Date date = null;
-    try {
-      date = sdfIn.parse(dateString);
-    } catch (ParseException ignored) {
-    }
-    return sdfOut.format(date);
-  }
-
-  public static String getCurrentHumanReadableDateString() {
-    return humanReadableDate(getCurrentTimeMs());
-  }
-
   public static String humanReadableTime(long millis) {
     return convertDateToString(new Date(millis), HUMAN_TIME_FORMAT);
   }
@@ -78,37 +60,8 @@ public final class DateUtils {
     return convertDateToString(new Date(millis), HUMAN_DATE_FORMAT);
   }
 
-  public static String getCurrentDateString() {
-    return convertDateToString(new Date(getCurrentTimeMs()), MS_DATE_FORMAT);
-  }
-
-  public static String getCurrentMonthYearString() {
-    SimpleDateFormat fmtOut = new SimpleDateFormat("MMMM yyyy", Locale.US);
-    Date now = new Date(getCurrentTimeMs());
-    return fmtOut.format(now);
-  }
-
-  public static long getCurrentTimeMs() {
-    return System.currentTimeMillis();
-  }
-
-  public static long getDaysDifferenceFromNow(Date date) {
-    long diff = Math.abs((new Date()).getTime() - date.getTime());
-    return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
-  }
-
-  public static int getHoursDifferenceFromNow(Date date) {
-    long diff = Math.abs((new Date()).getTime() - date.getTime());
-    return (int) TimeUnit.MILLISECONDS.toHours(diff);
-  }
-
-  public static String getCenturiesDifferenceFromNow(Date date) {
-    long days = getDaysDifferenceFromNow(date);
-    return new BigDecimal(days).divide(new BigDecimal(365 * 100), 6, RoundingMode.UP).toString();
-  }
-
-  public static long midnightTonightMillis() {
-    return ZonedDateTime.now()
+  public static long midnightTonightMillis(Clock clock) {
+    return ZonedDateTime.now(clock)
         .withHour(23)
         .withMinute(59)
         .withSecond(0)

@@ -12,6 +12,7 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability.PeriodType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.Weekly;
 import com.google.common.base.Optional;
 import com.google.common.base.Strings;
+import java.time.Clock;
 
 @Entity
 public class TaskEntity {
@@ -65,7 +66,7 @@ public class TaskEntity {
     return entity;
   }
 
-  public Task toTask() {
+  public Task toTask(Clock clock) {
     return Task.builder()
         .setUid(uid)
         .setTitle(title)
@@ -76,6 +77,7 @@ public class TaskEntity {
         .setDirectoryId(directoryId)
         .setNotified(notified)
         .setRepeatability(repeatability == null ? null : repeatability.toRepeatability())
+        .setClock(clock)
         .build();
   }
 

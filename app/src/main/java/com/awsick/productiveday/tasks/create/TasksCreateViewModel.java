@@ -26,6 +26,7 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.google.common.base.Optional;
 import dagger.hilt.android.qualifiers.ApplicationContext;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -40,6 +41,7 @@ public final class TasksCreateViewModel extends ViewModel {
   }
 
   private final Context context;
+  private final Clock clock;
 
   // Repos
   private final TasksRepo tasksRepo;
@@ -54,7 +56,7 @@ public final class TasksCreateViewModel extends ViewModel {
 
   // Scheduling
   private final MutableLiveData<Task.Type> taskType = new MutableLiveData<>(Type.UNSCHEDULED);
-  private final MutableLiveData<Long> timeMillis = new MutableLiveData<>(midnightTonight());
+  private final MutableLiveData<Long> timeMillis;
   private final MutableLiveData<Optional<TaskRepeatability>> repeatable =
       new MutableLiveData<>(Optional.absent());
 
@@ -70,11 +72,14 @@ public final class TasksCreateViewModel extends ViewModel {
   @ViewModelInject
   TasksCreateViewModel(
       @ApplicationContext Context context,
+      Clock clock,
       TasksRepo tasksRepo,
       DirectoryRepo directoryRepo,
       @Assisted SavedStateHandle savedState) {
     this.context = context;
+    this.clock = clock;
     this.tasksRepo = tasksRepo;
+    timeMillis = new MutableLiveData<>(midnightTonight(clock));
     directory = Transformations.switchMap(directoryId, directoryRepo::getDirectory);
     directoryName =
         Transformations.map(
@@ -181,9 +186,9 @@ public final class TasksCreateViewModel extends ViewModel {
     return taskType;
   }
 
-  private static long midnightTonight() {
+  private static long midnightTonight(Clock clock) {
     // 11:59 PM
-    return DateUtils.midnightTonightMillis() - TimeUnit.MINUTES.toMillis(1);
+    return DateUtils.midnightTonightMillis(clock) - TimeUnit.MINUTES.toMillis(1);
   }
 
   public ZonedDateTime getZoneDateTime() {
@@ -198,7 +203,7 @@ public final class TasksCreateViewModel extends ViewModel {
     timeMillis.setValue(
         getZoneDateTime()
             .withYear(year)
-            .withMonth(month)
+            .withMonth(month + 1)
             .withDayOfMonth(dayOfMonth)
             .toInstant()
             .toEpochMilli());

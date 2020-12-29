@@ -3,6 +3,7 @@ package com.awsick.productiveday.tasks.models;
 import androidx.annotation.Nullable;
 import com.awsick.productiveday.common.utils.Assert;
 import com.google.auto.value.AutoValue;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
@@ -30,13 +31,15 @@ public abstract class Task {
    */
   public abstract long deadlineMillis();
 
-  /** @see Task.Builder#getDeadlineDistance(long) */
+  /** @see Task.Builder#getDeadlineDistance(Clock, long) */
   public abstract String deadlineDistance();
 
   @Nullable
   public abstract TaskRepeatability repeatability();
 
   public abstract int directoryId();
+
+  public abstract Clock clock();
 
   /**
    * Returns false if the user should be shown a notification when at or past {@link
@@ -78,22 +81,26 @@ public abstract class Task {
 
     public abstract Builder setNotified(boolean notified);
 
+    public abstract Builder setClock(Clock clock);
+
+    abstract Clock clock();
+
     public abstract Task create();
 
     public Task build() {
-      setDeadlineDistance(getDeadlineDistance(deadlineMillis()));
+      setDeadlineDistance(getDeadlineDistance(clock(), deadlineMillis()));
       Task task = create();
       // FREE tasks should not have a deadline set. DEADLINE/REMINDER tasks should have a deadline.
       Assert.checkArgument((task.deadlineMillis() == -1) == (task.type() == Type.UNSCHEDULED));
       return task;
     }
 
-    private static String getDeadlineDistance(long deadline) {
+    private static String getDeadlineDistance(Clock clock, long deadline) {
       if (deadline == -1) {
         return "";
       }
 
-      int daysRemaining = getDaysFromToday(deadline);
+      int daysRemaining = getDaysFromToday(clock, deadline);
       if (daysRemaining < 0) {
         return "past";
       } else if (daysRemaining == 0) {
@@ -112,14 +119,13 @@ public abstract class Task {
    * <p>(-inf, -1] is a missed deadline 0 is a deadline of today [1, +inf) is a future deadline
    */
   public int getDaysFromToday() {
-    return getDaysFromToday(deadlineMillis());
+    return getDaysFromToday(clock(), deadlineMillis());
   }
 
-  private static int getDaysFromToday(long deadline) {
+  private static int getDaysFromToday(Clock clock, long deadline) {
     Assert.checkArgument(deadline != -1, "Task does not have a deadline");
     return Math.toIntExact(
         ChronoUnit.DAYS.between(
-            Instant.now().atZone(ZoneId.systemDefault()),
-            Instant.ofEpochMilli(deadline).atZone(ZoneId.systemDefault())));
+            clock.instant(), Instant.ofEpochMilli(deadline).atZone(ZoneId.systemDefault())));
   }
 }

@@ -8,6 +8,7 @@ import dagger.Module;
 import dagger.Provides;
 import dagger.hilt.InstallIn;
 import dagger.hilt.android.components.ApplicationComponent;
+import java.time.Clock;
 import java.util.concurrent.Executor;
 import javax.inject.Singleton;
 import org.jetbrains.annotations.NotNull;
@@ -19,8 +20,11 @@ public final class TasksRepoModule {
   @Provides
   @Singleton
   public static TasksRepo provideTasksRepo(
-      TaskDatabase taskDatabase, NotificationsRepo notificationsRepo, Executor executor) {
-    return new TasksRepoImpl(taskDatabase, notificationsRepo, executor);
+      Clock clock,
+      TaskDatabase taskDatabase,
+      NotificationsRepo notificationsRepo,
+      Executor executor) {
+    return new TasksRepoImpl(taskDatabase, notificationsRepo, clock, executor);
   }
 
   @Provides

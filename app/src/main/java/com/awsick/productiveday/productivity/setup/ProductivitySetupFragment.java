@@ -22,9 +22,13 @@ import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.models.Task.Type;
 import com.google.common.base.Strings;
 import dagger.hilt.android.AndroidEntryPoint;
+import java.time.Clock;
+import javax.inject.Inject;
 
 @AndroidEntryPoint
 public final class ProductivitySetupFragment extends Fragment {
+
+  @Inject Clock clock;
 
   @Nullable
   @Override
@@ -89,7 +93,7 @@ public final class ProductivitySetupFragment extends Fragment {
                     Task.builder()
                         .setTitle(input)
                         .setType(Type.DEADLINE)
-                        .setDeadlineMillis(DateUtils.midnightTonightMillis())
+                        .setDeadlineMillis(DateUtils.midnightTonightMillis(clock))
                         .build());
                 taskInput.setText("");
               }

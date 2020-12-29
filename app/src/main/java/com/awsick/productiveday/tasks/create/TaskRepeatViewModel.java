@@ -16,6 +16,7 @@ import com.awsick.productiveday.tasks.models.TaskRepeatability.EndType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.PeriodType;
 import com.awsick.productiveday.tasks.models.TaskRepeatability.Weekly;
 import com.google.common.base.Optional;
+import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -23,6 +24,7 @@ import java.util.Arrays;
 
 public final class TaskRepeatViewModel extends ViewModel {
 
+  private final Clock clock;
   private final long startTimeMillis;
   private final MutableLiveData<Integer> frequency = new MutableLiveData<>(1);
   private final MutableLiveData<PeriodType> periodType = new MutableLiveData<>(PeriodType.WEEKLY);
@@ -37,7 +39,8 @@ public final class TaskRepeatViewModel extends ViewModel {
   private final MutableLiveData<ZonedDateTime> endDate;
 
   @ViewModelInject
-  TaskRepeatViewModel(@Assisted SavedStateHandle savedState) {
+  TaskRepeatViewModel(Clock clock, @Assisted SavedStateHandle savedState) {
+    this.clock = clock;
     startTimeMillis = savedState.get("start_time");
     ZonedDateTime zdt =
         ZonedDateTime.from(Instant.ofEpochMilli(startTimeMillis).atZone(ZoneId.systemDefault()));
@@ -60,7 +63,7 @@ public final class TaskRepeatViewModel extends ViewModel {
         weeklyFrequency.setValue(new WeeklyFrequency(repeatability.weekly().get()));
         break;
       case MONTHLY:
-        monthlyFrequency.setValue(new MonthlyFrequency(repeatability.monthly().get()));
+        monthlyFrequency.setValue(new MonthlyFrequency(clock, repeatability.monthly().get()));
         break;
       case DAILY:
       case YEARLY:
@@ -128,7 +131,8 @@ public final class TaskRepeatViewModel extends ViewModel {
   }
 
   public void setEndsOnDate(int year, int month, int dayOfMonth) {
-    endDate.setValue(endDate.getValue().withYear(year).withMonth(month).withDayOfMonth(dayOfMonth));
+    endDate.setValue(
+        endDate.getValue().withYear(year).withMonth(month + 1).withDayOfMonth(dayOfMonth));
   }
 
   public LiveData<Integer> getEndAfterN() {
@@ -253,11 +257,8 @@ public final class TaskRepeatViewModel extends ViewModel {
     private final ZonedDateTime startDate;
     private final Type type;
 
-    public MonthlyFrequency(Integer dayOfMonth) {
-      startDate =
-          ZonedDateTime.from(Instant.now().atZone(ZoneId.systemDefault()))
-              .minusDays(30)
-              .withDayOfMonth(dayOfMonth);
+    public MonthlyFrequency(Clock clock, Integer dayOfMonth) {
+      startDate = ZonedDateTime.from(clock.instant()).minusDays(30).withDayOfMonth(dayOfMonth);
       type = Type.DAY_OF_THE_MONTH;
     }
 
