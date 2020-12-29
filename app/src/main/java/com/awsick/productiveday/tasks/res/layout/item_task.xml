@@ -26,26 +26,32 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginBottom="2dp"
-    android:layout_marginEnd="16dp"
     android:ellipsize="end"
     android:maxLines="1"
     app:layout_constraintBottom_toBottomOf="@id/task_item_done"
-    app:layout_constraintEnd_toStartOf="@id/task_item_folder"
+    app:layout_constraintEnd_toStartOf="@id/annotation_guideline"
     app:layout_constraintStart_toEndOf="@id/task_item_done"
     app:layout_constraintTop_toTopOf="@id/task_item_done"
     tools:text="Purchase groceries" />
 
+  <androidx.constraintlayout.widget.Guideline
+    android:id="@+id/annotation_guideline"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_constraintGuide_end="64dp" />
+
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/task_item_folder"
     style="@style/AppTextCaption"
-    android:layout_width="wrap_content"
+    android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginEnd="16dp"
-    android:minWidth="32dp"
+    android:gravity="end"
     android:maxLines="1"
     app:layout_constraintBaseline_toBaselineOf="@id/task_item_title"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toEndOf="@id/task_item_title"
+    app:layout_constraintStart_toStartOf="@id/annotation_guideline"
     tools:text="Home" />
 
   <androidx.appcompat.widget.AppCompatTextView
@@ -53,11 +59,11 @@
     style="@style/AppTextCaption"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginEnd="16dp"
     android:gravity="end"
     app:layout_constraintBaseline_toBaselineOf="@id/task_item_notes"
-    app:layout_constraintEnd_toEndOf="@id/task_item_folder"
-    app:layout_constraintStart_toStartOf="@id/task_item_folder"
-    app:layout_constraintTop_toBottomOf="@id/task_item_folder"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="@id/annotation_guideline"
     tools:text="1d" />
 
   <!-- This view is only used for temporary tasks that haven't been saved yet. -->
@@ -71,9 +77,8 @@
     android:tint="?attr/colorOnBackground"
     android:visibility="gone"
     app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:visibility="visible" />
+    app:layout_constraintStart_toStartOf="@id/annotation_guideline"
+    app:layout_constraintTop_toTopOf="parent" />
 
   <androidx.appcompat.widget.AppCompatTextView
     android:id="@+id/task_item_notes"

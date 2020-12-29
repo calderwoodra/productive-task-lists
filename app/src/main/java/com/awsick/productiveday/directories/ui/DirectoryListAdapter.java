@@ -7,6 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.recyclerview.widget.RecyclerView;
 import com.awsick.productiveday.R;
 import com.awsick.productiveday.directories.models.Directory;
@@ -159,6 +161,15 @@ public final class DirectoryListAdapter extends RecyclerView.Adapter<DirectoryLi
       nextDate = itemView.findViewById(R.id.task_item_deadline);
       root = itemView.findViewById(R.id.task_item_click_target);
       done = itemView.findViewById(R.id.task_item_done);
+      itemView.findViewById(R.id.task_item_folder).setVisibility(View.GONE);
+
+      // Move next date up to align with the title
+      ConstraintLayout constraintLayout = (ConstraintLayout) itemView;
+      ConstraintSet constraintSet = new ConstraintSet();
+      constraintSet.clone(constraintLayout);
+      constraintSet.connect(
+          nextDate.getId(), ConstraintSet.BASELINE, title.getId(), ConstraintSet.BASELINE);
+      constraintSet.applyTo(constraintLayout);
     }
 
     @Override
