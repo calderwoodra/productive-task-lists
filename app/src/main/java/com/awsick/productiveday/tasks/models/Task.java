@@ -47,14 +47,20 @@ public abstract class Task {
    */
   public abstract boolean notified();
 
+  public abstract boolean completed();
+
+  public abstract long lastUpdated();
+
   public static Task.Builder builder() {
     return new AutoValue_Task.Builder()
         .setUid(0)
         .setNotes("")
         .setRepeatability(null)
+        .setCompleted(false)
         .setDirectoryId(-1)
         .setNotified(false)
         .setType(Type.UNSCHEDULED)
+        .setLastUpdated(0)
         .setDeadlineMillis(-1);
   }
 
@@ -80,6 +86,10 @@ public abstract class Task {
     public abstract Builder setDirectoryId(int directoryId);
 
     public abstract Builder setNotified(boolean notified);
+
+    public abstract Builder setCompleted(boolean completed);
+
+    public abstract Builder setLastUpdated(long lastUpdated);
 
     public abstract Builder setClock(Clock clock);
 

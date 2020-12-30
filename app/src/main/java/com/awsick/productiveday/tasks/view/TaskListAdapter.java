@@ -2,6 +2,7 @@ package com.awsick.productiveday.tasks.view;
 
 import static com.awsick.productiveday.common.utils.ImmutableUtils.toImmutableList;
 
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -132,9 +133,15 @@ public final class TaskListAdapter extends RecyclerView.Adapter<TaskListItem> {
     public void bind(TaskListItemData data) {
       Task task = data.task.get().task;
       title.setText(task.title());
+      if (task.completed()) {
+        title.setPaintFlags(title.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+        done.setOnClickListener(view -> listener.onUncompleteTaskRequested(task));
+      } else {
+        title.setPaintFlags(title.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+        done.setOnClickListener(view -> listener.onCompleteTaskRequested(task));
+      }
       notes.setText(task.notes());
       notes.setVisibility(Strings.isNullOrEmpty(task.notes()) ? View.GONE : View.VISIBLE);
-      done.setOnClickListener(view -> listener.onCompleteTaskRequested(task));
       clickTarget.setOnClickListener(view -> listener.onEditTaskRequested(task));
       directory.setText(data.task.get().directory.name());
       nextDate.setText(data.task.get().task.deadlineDistance());
@@ -214,5 +221,7 @@ public final class TaskListAdapter extends RecyclerView.Adapter<TaskListItem> {
     void onCompleteTaskRequested(Task task);
 
     void onEditTaskRequested(Task task);
+
+    void onUncompleteTaskRequested(Task task);
   }
 }

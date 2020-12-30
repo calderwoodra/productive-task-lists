@@ -9,6 +9,9 @@ import com.google.common.util.concurrent.ListenableFuture;
 
 public interface TasksRepo {
 
+  /** Returns all tasks (complete, incomplete, etc.). */
+  LiveData<RequestStatus<ImmutableList<Task>>> getAllTasks();
+
   /** Returns all the incomplete tasks. */
   LiveData<RequestStatus<ImmutableList<Task>>> getIncompleteTasks();
 
@@ -24,6 +27,8 @@ public interface TasksRepo {
   void deleteTask(Task task);
 
   void markTaskCompleted(Task task);
+
+  void markTaskIncomplete(Task task);
 
   ListenableFuture<ImmutableList<Task>> getTasksToBeNotified();
 

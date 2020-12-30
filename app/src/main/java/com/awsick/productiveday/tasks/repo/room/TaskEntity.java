@@ -77,6 +77,8 @@ public class TaskEntity {
         .setDirectoryId(directoryId)
         .setNotified(notified)
         .setRepeatability(repeatability == null ? null : repeatability.toRepeatability())
+        .setCompleted(completed)
+        .setLastUpdated(updatedMillis)
         .setClock(clock)
         .build();
   }

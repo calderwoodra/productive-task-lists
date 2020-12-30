@@ -18,8 +18,12 @@ import com.awsick.productiveday.tasks.create.TaskCreateActivity;
 import com.awsick.productiveday.tasks.models.Task;
 import com.awsick.productiveday.tasks.repo.TasksRepo;
 import com.awsick.productiveday.tasks.view.TaskListAdapter.TaskItemActionListener;
+import com.awsick.productiveday.tasks.view.TasksViewViewModel.TaskFilter;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.common.collect.ImmutableMap;
 import dagger.hilt.android.AndroidEntryPoint;
+import java.util.Map.Entry;
 import javax.inject.Inject;
 
 @AndroidEntryPoint
@@ -79,6 +83,48 @@ public final class TasksViewFragment extends Fragment {
                   break;
               }
             });
+
+    setupChips(root, viewModel);
+  }
+
+  private void setupChips(View root, TasksViewViewModel viewModel) {
+    Chip completed = root.findViewById(R.id.task_chip_completed);
+    Chip deadline = root.findViewById(R.id.task_chip_deadline);
+    Chip reminder = root.findViewById(R.id.task_chip_reminder);
+    Chip today = root.findViewById(R.id.task_chip_today);
+    Chip past = root.findViewById(R.id.task_chip_past);
+    Chip later = root.findViewById(R.id.task_chip_later);
+    Chip pipeDream = root.findViewById(R.id.task_chip_unscheduled);
+
+    ImmutableMap<TaskFilter, Chip> chipMap =
+        ImmutableMap.<TaskFilter, Chip>builder()
+            .put(TaskFilter.COMPLETED, completed)
+            .put(TaskFilter.TASKS, deadline)
+            .put(TaskFilter.REMINDERS, reminder)
+            .put(TaskFilter.DUE_TODAY, today)
+            .put(TaskFilter.PAST_DUE, past)
+            .put(TaskFilter.DUE_LATER, later)
+            .put(TaskFilter.PIPE_DREAMS, pipeDream)
+            .build();
+
+    for (Entry<TaskFilter, Chip> entry : chipMap.entrySet()) {
+      entry
+          .getValue()
+          .setOnCheckedChangeListener(
+              (buttonView, isChecked) -> viewModel.selectFilter(entry.getKey(), isChecked));
+    }
+
+    viewModel
+        .getSelectableFilters()
+        .observe(
+            getViewLifecycleOwner(),
+            filters -> {
+              for (Entry<TaskFilter, Chip> entry : chipMap.entrySet()) {
+                entry
+                    .getValue()
+                    .setVisibility(filters.contains(entry.getKey()) ? View.VISIBLE : View.GONE);
+              }
+            });
   }
 
   private final class TaskActionListener implements TaskItemActionListener {
@@ -92,6 +138,11 @@ public final class TasksViewFragment extends Fragment {
     @Override
     public void onCompleteTaskRequested(Task task) {
       repo.markTaskCompleted(task);
+    }
+
+    @Override
+    public void onUncompleteTaskRequested(Task task) {
+      repo.markTaskIncomplete(task);
     }
 
     @Override

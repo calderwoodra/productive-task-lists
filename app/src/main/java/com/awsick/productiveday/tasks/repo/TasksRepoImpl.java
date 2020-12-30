@@ -35,6 +35,8 @@ class TasksRepoImpl implements TasksRepo {
   private final TaskDatabase taskDatabase;
   private final NotificationsRepo notificationsRepo;
   private final RequestStatusLiveData<ImmutableList<Task>> tasks = new RequestStatusLiveData<>();
+  private final RequestStatusLiveData<ImmutableList<Task>> incompleteTasks =
+      new RequestStatusLiveData<>();
   private final HashMap<Integer, RequestStatusLiveData<ImmutableList<Task>>> directoryTasksMap =
       new HashMap<>();
   private final Clock clock;
@@ -53,11 +55,19 @@ class TasksRepoImpl implements TasksRepo {
   }
 
   @Override
-  public LiveData<RequestStatus<ImmutableList<Task>>> getIncompleteTasks() {
+  public LiveData<RequestStatus<ImmutableList<Task>>> getAllTasks() {
     if (tasks.getValue().status == Status.INITIAL) {
       refreshTasks();
     }
     return tasks;
+  }
+
+  @Override
+  public LiveData<RequestStatus<ImmutableList<Task>>> getIncompleteTasks() {
+    if (tasks.getValue().status == Status.INITIAL) {
+      refreshTasks();
+    }
+    return incompleteTasks;
   }
 
   @Override
@@ -137,18 +147,30 @@ class TasksRepoImpl implements TasksRepo {
   private void refreshTasks() {
     if (tasks.getValue().status != Status.SUCCESS) {
       tasks.setValue(RequestStatus.pending());
+      incompleteTasks.setValue(RequestStatus.pending());
     }
 
     Futures.addCallback(
-        taskDatabase.taskDao().getAllIncomplete(),
-        RequestStatusUtils.futureCallback(
-            tasks,
-            result ->
-                tasks.setValue(
-                    RequestStatus.success(
-                        result.stream()
-                            .map(entity -> entity.toTask(clock))
-                            .collect(toImmutableList())))),
+        taskDatabase.taskDao().getAll(),
+        new FutureCallback<List<TaskEntity>>() {
+          @Override
+          public void onSuccess(@NullableDecl List<TaskEntity> result) {
+            ImmutableList<Task> allTasks =
+                result.stream().map(entity -> entity.toTask(clock)).collect(toImmutableList());
+            tasks.setValue(RequestStatus.success(allTasks));
+            incompleteTasks.setValue(
+                RequestStatus.success(
+                    allTasks.stream()
+                        .filter(task -> !task.completed())
+                        .collect(toImmutableList())));
+          }
+
+          @Override
+          public void onFailure(@NonNull Throwable throwable) {
+            tasks.setValue(RequestStatus.error(throwable));
+            incompleteTasks.setValue(RequestStatus.error(throwable));
+          }
+        },
         executor);
   }
 
@@ -233,6 +255,31 @@ class TasksRepoImpl implements TasksRepo {
           @Override
           public void onFailure(Throwable throwable) {
             // TODO(allen): Push a "failed to mark completed" event to front-end
+            refreshTasks();
+          }
+        },
+        executor);
+  }
+
+  @Override
+  public void markTaskIncomplete(Task task) {
+    tasks.setValue(RequestStatus.pending());
+
+    TaskEntity entity = TaskEntity.from(task);
+    entity.completed = false;
+    ListenableFuture<Void> updateTask = taskDatabase.taskDao().update(clock, entity);
+    Futures.addCallback(
+        updateTask,
+        new FutureCallback<Void>() {
+          @Override
+          public void onSuccess(@NullableDecl Void result) {
+            refreshTasks();
+            refreshDirectoryTasks(task.directoryId());
+          }
+
+          @Override
+          public void onFailure(Throwable throwable) {
+            // TODO(allen): Push a "failed to mark incomplete" event to front-end
             refreshTasks();
           }
         },
