@@ -5,93 +5,82 @@
   android:layout_height="match_parent"
   app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-  <androidx.core.widget.NestedScrollView
-    android:layout_width="match_parent"
+  <HorizontalScrollView
+    android:id="@+id/chip_group_scrollview"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingTop="8dp"
+    android:paddingStart="@dimen/standard_side_margin"
+    android:paddingEnd="@dimen/standard_side_margin"
     android:clipToPadding="false"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
+    android:minHeight="48dp"
+    android:scrollbars="none"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <com.google.android.material.chip.ChipGroup
+      android:id="@+id/task_filter_type_chip_group"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:orientation="vertical">
+      android:animateLayoutChanges="true">
 
-      <HorizontalScrollView
+      <com.google.android.material.chip.Chip
+        android:id="@+id/task_chip_completed"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="@dimen/standard_side_margin"
-        android:paddingEnd="@dimen/standard_side_margin"
-        android:clipToPadding="false"
-        android:minHeight="48dp"
-        android:scrollbars="none">
+        android:text="Completed" />
 
-        <com.google.android.material.chip.ChipGroup
-          android:id="@+id/task_filter_type_chip_group"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:animateLayoutChanges="true">
+      <com.google.android.material.chip.Chip
+        android:id="@+id/task_chip_deadline"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tasks" />
 
-          <com.google.android.material.chip.Chip
-            android:id="@+id/task_chip_completed"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Completed" />
+      <com.google.android.material.chip.Chip
+        android:id="@+id/task_chip_reminder"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Reminders" />
 
-          <com.google.android.material.chip.Chip
-            android:id="@+id/task_chip_deadline"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tasks" />
+      <com.google.android.material.chip.Chip
+        android:id="@+id/task_chip_today"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Due Today" />
 
-          <com.google.android.material.chip.Chip
-            android:id="@+id/task_chip_reminder"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reminders" />
+      <com.google.android.material.chip.Chip
+        android:id="@+id/task_chip_past"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Past Due" />
 
-          <com.google.android.material.chip.Chip
-            android:id="@+id/task_chip_today"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Due Today" />
+      <com.google.android.material.chip.Chip
+        android:id="@+id/task_chip_later"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Due Later" />
 
-          <com.google.android.material.chip.Chip
-            android:id="@+id/task_chip_past"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Past Due" />
+      <com.google.android.material.chip.Chip
+        android:id="@+id/task_chip_unscheduled"
+        style="@style/Widget.MaterialComponents.Chip.Choice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pipe Dreams" />
+    </com.google.android.material.chip.ChipGroup>
+  </HorizontalScrollView>
 
-          <com.google.android.material.chip.Chip
-            android:id="@+id/task_chip_later"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Due Later" />
-
-          <com.google.android.material.chip.Chip
-            android:id="@+id/task_chip_unscheduled"
-            style="@style/Widget.MaterialComponents.Chip.Choice"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Pipe Dreams" />
-        </com.google.android.material.chip.ChipGroup>
-      </HorizontalScrollView>
-
-      <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/task_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="8dp"
-        android:paddingBottom="88dp"
-        android:clipToPadding="false"
-        android:overScrollMode="never" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-  </androidx.core.widget.NestedScrollView>
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/task_list"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="88dp"
+    android:clipToPadding="false"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/chip_group_scrollview" />
 </androidx.constraintlayout.widget.ConstraintLayout>
