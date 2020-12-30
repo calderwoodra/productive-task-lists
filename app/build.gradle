@@ -11,10 +11,10 @@ android {
         targetSdkVersion 29
         // Format for version code is as follows:
         // {minSdk}{major}{minor}{patch}
-        versionCode 23000100
+        versionCode 23000200
         // Format for version name is as follows:
         // {major}.{minor}.{patch}
-        versionName "0.1.0"
+        versionName "0.2.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
@@ -30,6 +30,7 @@ android {
         }
         debug {
             debuggable true
+            applicationIdSuffix ".debug"
         }
     }
     compileOptions {

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "201672513718",
+    "project_id": "productive-day",
+    "storage_bucket": "productive-day.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201672513718:android:181da1245e9d86251d6e17",
+        "android_client_info": {
+          "package_name": "com.awsick.productiveday.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "201672513718-aubpmip9ao04de404peiqn8hfcqkp86e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeq2APdl8LDI1vPgUthZthkwLxlUnpnWU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "201672513718-aubpmip9ao04de404peiqn8hfcqkp86e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
